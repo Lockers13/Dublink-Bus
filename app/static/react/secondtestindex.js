@@ -1,13 +1,47 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
+import React, { Component } from "react";
+import { render } from "react-dom";
+
+console.log("This is a test" + context.user)
 
 
-ReactDOM.render(
+class App extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      data: [],
+      loaded: false,
+      placeholder: "Loading"
+    };
+  }
 
-	<div>
-		<h1> This is a second react component </h1>
-		<h2> This has been compiled by webpack in a seperate file</h2>
-	</div>,
-	document.getElementById('root')	
+  componentDidMount() {
+    fetch("api/profile/" + context.user)
+      .then(response => {
+        if (response.status > 400) {
+          return this.setState(() => {
+            return { placeholder: "Something went wrong!" };
+          });
+        }
+        return response.json();
+      })
+      .then(data => {
+        this.setState(() => {
+          return {
+            data,
+            loaded: true
+          };
+        });
+      });
+  }
 
-)
+  render() {
+    return (
+      <p>{this.state.data.co2points}</p>
+    );
+  }
+}
+
+export default App;
+
+const container = document.getElementById("root");
+render(<App />, container);

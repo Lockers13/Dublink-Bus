@@ -9,21 +9,19 @@
 </head>
 <body>
 
-<h1>This is the homepage, this is rendered by the django template along with base.html that takes care of the navigation bar</h1>
-
-<!--Names is one of the things that is passed in with context in views.py-->
-{% for name in names %}
-	<h2>Name passed in: {{ name }}</h2>
-{% endfor %}
 
 <!--This is where the react component will be-->
-<div id="root"></div>
+<div class="container">
+	<div id="root"></div>
+</div>
 
-
+<!--Below is an example of passing context used for secondtestindex.js-->
+<script type="text/javascript">
+	var context = {
+		current_user: '{{current_user}}'
+	};
+</script>
 <script type="text/javascript" src="{% static 'dist/app.bundle.js' %}"></script>
-	<!-- Can pass in which js file to us with django render using below code -->
-<!-- <script type="text/javascript" src="{% static 'dist/{ component }.bundle.js' %}"></script> -->
-<!-- <script type="text/javascript" src="{% static 'src/index.js' %}"></script> -->
 </body>
 </html>
 {% endblock content %}

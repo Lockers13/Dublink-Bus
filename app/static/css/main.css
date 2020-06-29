@@ -90,3 +90,8 @@ h1{
 h3{
   color: #3ABEFF;
 }
+
+#root{
+  height: 30px;
+  background-color: red; 
+}
