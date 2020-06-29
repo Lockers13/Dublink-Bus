@@ -9,7 +9,6 @@ from rest_framework import generics
 from rest_framework.views import APIView
 
 
-
 def register(request):
     if request.method == 'POST':
         form = UserRegisterForm(request.POST)
@@ -42,29 +41,36 @@ def profile(request):
         context = {
                 'u_form' : u_form
         }
-
-
         return render(request, 'users/profile.html', context)
 
-class ProfileListCreate(generics.ListCreateAPIView):
+class ProfileListCreate(generics.ListAPIView):
     queryset = Profile.objects.all()
     serializer_class = ProfileSerializer
 
+#Used with primary key to retrieve individual profile details
 class ProfileDetailView(generics.RetrieveAPIView):
     queryset = Profile.objects.all()
     serializer_class = ProfileSerializer
 
-class FavStopListCreate(generics.ListCreateAPIView):
+class FavStopListCreate(generics.ListAPIView):
     #This view has been modified so no primary key is necessary in the url
     #Only want to ever get stops for current user
     def get_queryset(self):
         user = self.request.user
         return FavStop.objects.filter(user=user)
-
     serializer_class = FavStopSerializer
 
 class FavStopDetailView(generics.RetrieveAPIView):
     queryset = FavStop.objects.all()
     serializer_class = FavStopSerializer
 
+#Allows us to create new favourite stops
+class FavStopCreateView(generics.CreateAPIView):
+    queryset = FavStop.objects.all()
+    serializer_class = FavStopSerializer
+
+#Will be used to unfavorite a stop
+class FavStopDeleteView(generics.DestroyAPIView):
+    queryset = Article.objects.all()
+    serializer_class = ArticleSerializer
 

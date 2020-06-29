@@ -35,10 +35,7 @@ export default function Map(){
 
 		      	{selectedStop && (
 		        	<InfoWindow
-		          		position={{
-		            		lat: selectedStop.lat,
-		            		lng: selectedStop.long
-		          		}}
+		          		position={{ lat: selectedStop.lat, lng: selectedStop.long}}
 		          		onClickClose={() => {
 		            		setSelectedStop(null);
 		          		}}

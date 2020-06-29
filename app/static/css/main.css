@@ -91,7 +91,7 @@ h3{
   color: #3ABEFF;
 }
 
-#root{
-  height: 30px;
-  background-color: red; 
+#reactContainer{
+  width:10px;
+  background-color: red;
 }

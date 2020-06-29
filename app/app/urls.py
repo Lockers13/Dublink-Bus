@@ -14,4 +14,5 @@ urlpatterns = [
     path('api/profile/', user_views.ProfileListCreate.as_view()),
     path('api/profile/<pk>', user_views.ProfileDetailView.as_view()),
     path('api/favstop/', user_views.FavStopListCreate.as_view()),
+    path('api/favstop/create/', user_views.FavStopCreateView.as_view()),
 ]
