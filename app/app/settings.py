@@ -39,10 +39,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'rest_framework'
+    'rest_framework',
+    'corsheaders'
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -128,3 +130,6 @@ LOGIN_REDIRECT_URL = 'home'
 
 #By default django will redirect to log in page if non-logged in user tries to enter login require page. Must tell django where this is. Use the name of the route.
 LOGIN_URL = 'login'
+
+
+CORS_ORIGIN_ALLOW_ALL = True

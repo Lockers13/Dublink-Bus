@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import {GoogleMap, withScriptjs, withGoogleMap, Marker, InfoWindow } from 'react-google-maps';
 import * as staticStops from './static_stops.json'
 import mapStyles from './mapStyle'
+import FavouriteBtn from './FavouriteBtn'
 
 
 var favouriteStops = []
@@ -28,24 +29,23 @@ export default function Map(){
 
 				{staticStops.stops.map((stop) =>(
 						<Marker key={stop.id} position={{lat: stop.lat, lng: stop.long }} onClick={() => {setSelectedStop(stop)}} 
-								icon= {{ url: favouriteStops.includes(stop.id) ? "/static/images/favourite.png" : "/static/images/bus-stop.png" , scaledSize: new window.google.maps.Size(
-										15, 15)}} />
+								icon= {{ url: favouriteStops.includes(stop.id) ? "/static/images/favourite.png" : "/static/images/bus-stop.png", 
+								scaledSize: new window.google.maps.Size(15, 15)}} />
 					)
 				)}
 
 		      	{selectedStop && (
 		        	<InfoWindow
 		          		position={{ lat: selectedStop.lat, lng: selectedStop.long}}
-		          		onClickClose={() => {
-		            		setSelectedStop(null);
-		          		}}
+		          		onCloseClick={() => {
+         					setSelectedStop(null);
+      						}}
 		        		>
 		          		<div>
-		            		<h4>{selectedStop.name}</h4>
+		            		<h4 className="windowTitle">{selectedStop.name}</h4>
+		            		<FavouriteBtn data={{id:selectedStop.id, name:selectedStop.name}}/>
 		          		</div>
 		        	</InfoWindow>
 		      	)}
-
-			</GoogleMap>
-			);
+			</GoogleMap>);
 }

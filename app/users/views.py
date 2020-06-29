@@ -69,8 +69,8 @@ class FavStopCreateView(generics.CreateAPIView):
     queryset = FavStop.objects.all()
     serializer_class = FavStopSerializer
 
-#Will be used to unfavorite a stop
+#Will be used to unfavorite a stops
 class FavStopDeleteView(generics.DestroyAPIView):
-    queryset = Article.objects.all()
-    serializer_class = ArticleSerializer
+    queryset = FavStop.objects.all()
+    serializer_class = FavStopSerializer
 
