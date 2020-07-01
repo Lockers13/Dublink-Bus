@@ -1,4 +1,4 @@
-export default [
+mapStyle = [
     {
         "featureType": "administrative",
         "elementType": "labels.text.fill",
