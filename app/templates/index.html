@@ -9,19 +9,22 @@
 </head>
 <body>
 
-
-<!--This is where the react component will be-->
-<div id="reactContainer">
-	<div id="root"></div>
+<div id="planRouteContainter">
 </div>
 
-<!--Below is an example of passing context used for secondtestindex.js-->
+<div id="mapContainer">
+</div>
+
+<div id="co2Container">
+</div>
+
+<!--Below is an example of passing current user-->
 <script type="text/javascript">
 	var context = {
 		current_user: '{{current_user}}'
 	};
 </script>
-<script type="text/javascript" src="{% static 'dist/app.bundle.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/main.js' %}"></script>
 </body>
 </html>
 {% endblock content %}
