@@ -1,17 +1,3 @@
-var favouriteStops = []
-
-//api/favstop should only return fav stops for the current user
-fetch("api/favstop/")
-    .then(response => {
-        return response.json();
-    })
-    .then(data => {
-        for(var i = 0; i < data.length; i++){
-        	favouriteStops.push(data[i].stopid)
-        }
-    })
-
-
 function addFavStop (){
 			console.log(favouriteStops)
 		}
@@ -46,7 +32,7 @@ function initMap(){
 				};
 				console.log(favouriteStops)
 			}
-
+			//Style for marker
 			var marker = new google.maps.Marker({
 				position: coords,
 				map:map,
@@ -55,19 +41,46 @@ function initMap(){
 				name:stop.name,
 				id:stop.id
 			})
-
+			//Style for window
 			var infoWindow = new google.maps.InfoWindow({
             	content: marker.name + '<br>' + '<button htmlType="submit" onClick=addFavStop()> Add Stop As Favourite </button>'
           	});
-
+			//Marker click event
           	marker.addListener('click', function(){
 	        	infoWindow.open(map, marker);
 	        });
-
 		}
 
-		//Adding markers for each stop
-		for(var i = 0;i < stops_import.length;i++){
+		//Favouite stops will be pushed in here
+		const favouriteStops = []
+
+      	const getFavIDs = new Promise((resolve, reject) => {
+			setTimeout(() =>{
+				fetch("api/favstop/")
+    				.then(response => {
+        				return response.json();
+    			})
+    			.then(data => {
+        			data.forEach((stop) => {
+  						favouriteStops.push(stop.stopid)
+					});
+					resolve(favouriteStops)
+   				})
+			}, 1)
+		});
+
+      	//This function must wait until the for each loop above has resolved to run.
+      	//This function actually populates the map with the markers in the foreach loop
+		async function getFavIDsAwait(){
+			const IDs = await getFavIDs;
+			console.log("From await: ", IDs)
+			stops_import.forEach((stop) => {
+				addMarker(stop)
+			})
+			/*for(var i = 0;i < stops_import.length;i++){
         	addMarker(stops_import[i]);
-      	}
-	}
+        	}*/
+		}
+		getFavIDsAwait()	
+}
+
