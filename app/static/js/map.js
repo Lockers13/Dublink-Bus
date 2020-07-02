@@ -1,5 +1,7 @@
 const current_user = context.current_user
 
+console.log(current_user)
+
 function removeFavStop (id){
 		user = current_user
 		console.log(id)
@@ -81,6 +83,9 @@ function initMap(){
 
       	const getFavIDs = new Promise((resolve, reject) => {
 			setTimeout(() =>{
+				if (current_user == 0){
+					resolve(favouriteStops)
+				}
 				fetch("api/favstop/")
     			.then(response => {
         			return response.json();
@@ -102,6 +107,7 @@ function initMap(){
       	//This function actually populates the map with the markers in the foreach loop
 		async function getFavIDsAwait(){
 			const IDs = await getFavIDs;
+			//stops_import from static_stops.js
 			stops_import.forEach((stop) => {
 				addMarker(stop)
 			})
