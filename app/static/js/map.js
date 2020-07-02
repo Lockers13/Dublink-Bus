@@ -1,7 +1,24 @@
-function addFavStop (){
-			console.log(favouriteStops)
-		}
+const current_user = context.current_user
 
+function removeFavStop (id){
+		user = current_user
+		console.log(id)
+		console.log(user)
+}
+
+function addFavStop (id){
+		user = current_user
+		axios.post('http://127.0.0.1:8000/api/favstop/create/', {
+			name : "test",
+			stopid : id,
+			user : user,
+			current_user: user
+		})
+		.then(res => console.log(res))
+		.catch(err => console.log(err));
+}
+
+//Function is automatically as callback in index.html script tag for map
 function initMap(){
 		//Map options
 		var options = {
@@ -30,7 +47,6 @@ function initMap(){
 	    			url: '../static/images/bus-stop.png',
 	    			scaledSize: new google.maps.Size(12, 12)
 				};
-				console.log(favouriteStops)
 			}
 			//Style for marker
 			var marker = new google.maps.Marker({
@@ -42,11 +58,20 @@ function initMap(){
 				id:stop.id
 			})
 			//Style for window
-			var infoWindow = new google.maps.InfoWindow({
-            	content: marker.name + '<br>' + '<button htmlType="submit" onClick=addFavStop()> Add Stop As Favourite </button>'
-          	});
+			if(favouriteStops.includes(stop.id)){
+				var infoWindow = new google.maps.InfoWindow({
+	            	content: marker.name + '<br>' + '<button htmlType="submit" onClick=removeFavStop(' + marker.id + ')> Unfavourite Stop </button>' 
+	          	});
+			} else {
+				var infoWindow = new google.maps.InfoWindow({
+	            	content: marker.name + '<br>' + '<button htmlType="submit" onClick=addFavStop(' + marker.id + ')> Add Stop As Favourite </button>' 
+	          	});
+			}
 			//Marker click event
           	marker.addListener('click', function(){
+          		if (infoWindow) {
+        			infoWindow.close();
+    			}
 	        	infoWindow.open(map, marker);
 	        });
 		}
@@ -57,8 +82,8 @@ function initMap(){
       	const getFavIDs = new Promise((resolve, reject) => {
 			setTimeout(() =>{
 				fetch("api/favstop/")
-    				.then(response => {
-        				return response.json();
+    			.then(response => {
+        			return response.json();
     			})
     			.then(data => {
         			data.forEach((stop) => {
@@ -66,6 +91,10 @@ function initMap(){
 					});
 					resolve(favouriteStops)
    				})
+   				.catch(error => {
+   					reject(console.log(error))
+   				})
+   			//Increase this number if want to be a delay effect between map load and stops load 	
 			}, 1)
 		});
 
@@ -73,7 +102,6 @@ function initMap(){
       	//This function actually populates the map with the markers in the foreach loop
 		async function getFavIDsAwait(){
 			const IDs = await getFavIDs;
-			console.log("From await: ", IDs)
 			stops_import.forEach((stop) => {
 				addMarker(stop)
 			})

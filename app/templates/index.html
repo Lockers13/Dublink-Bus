@@ -19,14 +19,15 @@
 <div id="co2Container">
 </div>
 
-
+<!-- Adding Axios -->
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<!--Below passing current user, used for the adding of favourite stops-->
+<script type="text/javascript">var context = {current_user: '{{current_user}}'};</script>
 <!--Map related scripts-->
 <script type="text/javascript" src="{% static 'js/mapStyle.js' %}"></script>
 <script type="text/javascript" src="{% static 'js/static_stops.js' %}"></script>
 <script type="text/javascript" src="{% static 'js/map.js' %}"></script>
 <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBTqQ5XI6Z3N5j26PNXbFKUxUFfq8dnGV8&callback=initMap"></script>
-<!--Below is an example of passing current user-->
-<script type="text/javascript">var context = {current_user: '{{current_user}}'};</script>
 </body>
 </html>
 {% endblock content %}
