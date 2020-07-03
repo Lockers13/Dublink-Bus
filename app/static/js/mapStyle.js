@@ -70,7 +70,7 @@ mapStyle = [
         "elementType": "all",
         "stylers": [
             {
-                "color": "#46bcec"
+                "color": "#98c1d9"
             },
             {
                 "visibility": "on"
