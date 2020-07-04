@@ -1,5 +1,5 @@
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
 from . import views
 from users import views as user_views
 from django.contrib.auth import views as auth_views
@@ -16,4 +16,5 @@ urlpatterns = [
     path('api/favstop/', user_views.FavStopListCreate.as_view()),
     path('api/favstop/create/', user_views.FavStopCreateView.as_view()),
     path('api/favstop/destroy/<pk>', user_views.FavStopDeleteView.as_view()),
+    path('routes/', include("routes.urls")), 
 ]

@@ -4,6 +4,7 @@ const favouriteStops = []
 //Used for unfavourite functionality
 const favouriteStopsPKs = []
 
+
 //Called from infowindow button
 function addFavStop (stopid){
 		user = current_user
@@ -38,6 +39,32 @@ function initMap(){
 
 		//Creating the map 
 		var map = new google.maps.Map(document.getElementById('map'), options);
+
+		// UNCOMMENT BELOW TO LOAD MARKERS BY FAV LINES!!
+		// google.maps.event.addListenerOnce(map, 'idle', map_route)
+
+		// function map_route() {
+		// 	fetch("http://127.0.0.1:8000/routes/api/routemaps/46A")
+		// 	.then(response => response.json())
+		// 	.then(function (data) {
+		// 		for(var i = 0; i < Object.keys(data).length; i++) { 
+		// 			var key = Object.keys(data)[i];
+		// 			for(var j = 0; j < data[key].length; j++) {
+		// 				try {
+		// 					addMarker(data[key][j]);
+		// 				}
+		// 				catch {
+		// 					;
+		// 				}
+					
+						
+		// 			}
+	
+			
+		// 		}
+		// 	}
+		// 	)}
+
 		var i;
 		//Contains all the marker objects
 		var markerList = [] 
@@ -134,6 +161,7 @@ function initMap(){
 		async function getFavIDsAwait(){
 			const IDs = await getFavIDs;
 			//stops_import from static_stops.js
+			// COMMENT BELOW TO ONLY SHOW MARKERS FOR FAV LINES
 			stops_import.forEach((stop) => {
 				addMarker(stop)
 			})
