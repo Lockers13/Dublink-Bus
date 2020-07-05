@@ -3,6 +3,25 @@ const current_user = context.current_user
 const favouriteStops = []
 //Used for unfavourite functionality
 const favouriteStopsPKs = []
+var markerList = [] 
+
+function clearOverlays() {
+	for (var i = 0; i < markerList.length; i++ ) {
+	  markerList[i].setMap(null);
+	}
+	markerList.length = 0;
+  }
+
+const line_selector = document.getElementById('line_select')
+line_selector.innerHTML = ""
+for(let j = 0; j < distinct_lines.length; j++) {
+	console.log(distinct_lines[j])
+	line_selector.innerHTML += "<option value='" + distinct_lines[j] + "'>" +
+	distinct_lines[j] + "</option>"
+	
+	}
+
+
 
 
 //Called from infowindow button
@@ -31,7 +50,7 @@ function removeFavStop (stopid){
 function initMap(){
 		//Map options
 		var options = {
-			zoom: 15,
+			zoom: 12,
 			center: {lat:53.3477, lng:-6.2800},
 			styles: mapStyle,
 			disableDefaultUI: true
@@ -41,33 +60,40 @@ function initMap(){
 		var map = new google.maps.Map(document.getElementById('map'), options);
 
 		// UNCOMMENT BELOW TO LOAD MARKERS BY FAV LINES!!
-		// google.maps.event.addListenerOnce(map, 'idle', map_route)
 
-		// function map_route() {
-		// 	fetch("http://127.0.0.1:8000/routes/api/routemaps/46A")
-		// 	.then(response => response.json())
-		// 	.then(function (data) {
-		// 		for(var i = 0; i < Object.keys(data).length; i++) { 
-		// 			var key = Object.keys(data)[i];
-		// 			for(var j = 0; j < data[key].length; j++) {
-		// 				try {
-		// 					addMarker(data[key][j]);
-		// 				}
-		// 				catch {
-		// 					;
-		// 				}
+			//line_selector.addEventListener("change", map_)
+
+
+
+		function map_route(line_id) {
+			clearOverlays()
+			fetch("http://127.0.0.1:8000/routes/api/routemaps?lineid=" + this.value)
+			.then(response => response.json())
+			.then(function (data) {
+				for(var i = 0; i < Object.keys(data).length; i++) { 
+					var key = Object.keys(data)[i];
+					for(var j = 0; j < data[key].length; j++) {
+						try {
+							addMarker(data[key][j]);
+						}
+						catch {
+							;
+						}
 					
 						
-		// 			}
+					}
 	
 			
-		// 		}
-		// 	}
-		// 	)}
+				}
+			}
+			)}
+
+		line_selector.addEventListener("change", map_route, false)
+
 
 		var i;
 		//Contains all the marker objects
-		var markerList = [] 
+		
 		//Add marker function
 		function addMarker(stop){
 
@@ -162,9 +188,9 @@ function initMap(){
 			const IDs = await getFavIDs;
 			//stops_import from static_stops.js
 			// COMMENT BELOW TO ONLY SHOW MARKERS FOR FAV LINES
-			stops_import.forEach((stop) => {
-				addMarker(stop)
-			})
+			// stops_import.forEach((stop) => {
+			// 	addMarker(stop)
+			// })
 			/*for(var i = 0;i < stops_import.length;i++){
         	addMarker(stops_import[i]);
         	}*/

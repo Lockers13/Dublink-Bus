@@ -17,7 +17,12 @@
 		</form>
 </div>
 </div>
-
+<div class="custom-select" style="width:200px;">
+		<select id="line_select" value="Select Line">
+	
+		</select>
+	</div>
+	
 <div>
 <div id="co2Container">
 	{% if schedule_times %}
@@ -30,6 +35,7 @@
 </div>
 </div>
 
+
 <!-- Adding Axios -->
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 <!--Below passing current user, used for the adding of favourite stops-->
@@ -37,6 +43,7 @@
 <!--Map related scripts-->
 <script type="text/javascript" src="{% static 'js/mapStyle.js' %}"></script>
 <script type="text/javascript" src="{% static 'js/static_stops.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/distinct_lines.js' %}"></script>
 <script type="text/javascript" src="{% static 'js/map.js' %}"></script>
 <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBTqQ5XI6Z3N5j26PNXbFKUxUFfq8dnGV8&callback=initMap"></script>
 

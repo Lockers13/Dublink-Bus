@@ -7,18 +7,19 @@ import os.path
 import json
 from rest_framework import status
 from rest_framework.response import Response
+from django.contrib.staticfiles.storage import staticfiles_storage
+from django.conf import settings
 
-# Create your views here.
+
 
 class RouteMapView(generics.RetrieveAPIView):
-    def get(self, request, line_id):
-        with open(os.path.join(
-            os.environ.get('HOME'),
-             'comp_msc/dublink_bus/routemaps/46A_routemap.json')) as f:
+    def get(self, request):
+        url = staticfiles_storage.url('json/routemaps/{}_routemap.json'.format(
+            request.query_params.get('lineid')))
+        with open(settings.BASE_DIR + url) as f:
                 data = json.loads(f.read())
         return Response(data, status=status.HTTP_200_OK)
 
-#Will be used to unfavorite a stops
-#class RouteCoords(generics.DestroyAPIView):
+
     
 
