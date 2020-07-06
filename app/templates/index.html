@@ -10,10 +10,10 @@
 	<div id="map"></div>
 </div>
 <div style="margin-left: 620px;" id="planRouteContainter">
-		<form method="post" action="." id="route_form">
+		<form id="predict_form">
 			{% csrf_token %}
 			{{ form|crispy }}
-			<button type="submit" class="btn btn-primary">Predict Route</button>
+			<button type="submit" class="btn btn-primary" id="predict_btn">Predict Route</button>
 		</form>
 </div>
 </div>
@@ -24,6 +24,9 @@
 	</div>
 	
 <div>
+<div>
+	<p id="journey_info"></p>
+</div>
 <div id="co2Container">
 	{% if schedule_times %}
 	<br><br>
@@ -42,6 +45,7 @@
 <script type="text/javascript">var context = {current_user: '{{current_user}}'};</script>
 <!--Map related scripts-->
 <script type="text/javascript" src="{% static 'js/mapStyle.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/route_predict.js' %}"></script>
 <script type="text/javascript" src="{% static 'js/static_stops.js' %}"></script>
 <script type="text/javascript" src="{% static 'js/distinct_lines.js' %}"></script>
 <script type="text/javascript" src="{% static 'js/map.js' %}"></script>

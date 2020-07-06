@@ -12,14 +12,23 @@ function clearOverlays() {
 	markerList.length = 0;
   }
 
+ 
 const line_selector = document.getElementById('line_select')
 line_selector.innerHTML = ""
 for(let j = 0; j < distinct_lines.length; j++) {
-	console.log(distinct_lines[j])
-	line_selector.innerHTML += "<option value='" + distinct_lines[j] + "'>" +
-	distinct_lines[j] + "</option>"
-	
+
+	if(distinct_lines[j] == "68") {
+		line_selector.innerHTML += "<option selected value='" + distinct_lines[j] + "'>" +
+		distinct_lines[j] + "</option>"
+		
 	}
+	else {
+		line_selector.innerHTML += "<option value='" + distinct_lines[j] + "'>" +
+		distinct_lines[j] + "</option>"
+	}
+	
+}
+
 
 
 
@@ -59,15 +68,11 @@ function initMap(){
 		//Creating the map 
 		var map = new google.maps.Map(document.getElementById('map'), options);
 
-		// UNCOMMENT BELOW TO LOAD MARKERS BY FAV LINES!!
-
-			//line_selector.addEventListener("change", map_)
-
-
-
-		function map_route(line_id) {
+		function map_route() {
 			clearOverlays()
-			fetch("http://127.0.0.1:8000/routes/api/routemaps?lineid=" + this.value)
+			var lineid = this.value
+			console.log(lineid)
+			fetch("http://127.0.0.1:8000/routes/api/routemaps?lineid=" + lineid)
 			.then(response => response.json())
 			.then(function (data) {
 				for(var i = 0; i < Object.keys(data).length; i++) { 
@@ -82,12 +87,17 @@ function initMap(){
 					
 						
 					}
-	
+		
 			
 				}
 			}
 			)}
+		
 
+		// UNCOMMENT BELOW TO LOAD MARKERS BY FAV LINES!!
+
+			//line_selector.addEventListener("change", map_)
+		line_selector.addEventListener("load", map_route, false)
 		line_selector.addEventListener("change", map_route, false)
 
 
