@@ -4,35 +4,22 @@
 {% block content %}	
 
 
-
-<div style="width: 100%;">
-<div id="mapContainer" style="width: 600px; float: left;">
-	<div id="map"></div>
-</div>
-<div style="margin-left: 620px;" id="planRouteContainter">
+<div class="upperContainer">
+	<!--Part of form is underneath the header-->
+	<!-- <div id="planRouteContainter">
 		<form method="post" action="." id="route_form">
-			{% csrf_token %}
-			{{ form|crispy }}
+				{% csrf_token %}
+				{{ form|crispy }}
 			<button type="submit" class="btn btn-primary">Predict Route</button>
 		</form>
-</div>
-</div>
-<div class="custom-select" style="width:200px;">
-		<select id="line_select" value="Select Line">
-	
-		</select>
+	</div> -->
+
+	<div id="mapContainer">
+		<div id="map"></div>
 	</div>
-	
-<div>
-<div id="co2Container">
-	{% if schedule_times %}
-	<br><br>
-	<h1>Schedule Times</h1>
-	{% for st in schedule_times %}
-	<p>{{ st }}</p>
-	{% endfor %}
-	{% endif %}
 </div>
+
+<div id="co2Container">
 </div>
 
 
@@ -46,5 +33,6 @@
 <script type="text/javascript" src="{% static 'js/distinct_lines.js' %}"></script>
 <script type="text/javascript" src="{% static 'js/map.js' %}"></script>
 <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBTqQ5XI6Z3N5j26PNXbFKUxUFfq8dnGV8&callback=initMap"></script>
+<script type="text/javascript" src="{% static 'js/mapcluster.js' %}"></script>
 
 {% endblock content %}

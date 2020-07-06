@@ -1,3 +1,8 @@
+
+/*
+Right hand side indent due to use of bootstrap for navbar, will recreate navbar in future and fix issue
+*/
+
 :root {
   --darkblue:#3d5a80;
   --lightgrey:#98c1d9;
@@ -7,10 +12,14 @@
   --white:#ffffff;
 }
 
+
+
 body {
   background: var(--white);
   color: #333333;
   margin-top: 5rem;
+  margin: 0;
+  padding: 0;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -52,4 +61,10 @@ h3{
 
 input {
   min-width: 20em;
+}
+
+.upperContainer{
+  display: inline-block;
+  background-color: red;
+  width: 100%;
 }

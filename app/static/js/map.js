@@ -3,26 +3,6 @@ const current_user = context.current_user
 const favouriteStops = []
 //Used for unfavourite functionality
 const favouriteStopsPKs = []
-var markerList = [] 
-
-function clearOverlays() {
-	for (var i = 0; i < markerList.length; i++ ) {
-	  markerList[i].setMap(null);
-	}
-	markerList.length = 0;
-  }
-
-const line_selector = document.getElementById('line_select')
-line_selector.innerHTML = ""
-for(let j = 0; j < distinct_lines.length; j++) {
-	console.log(distinct_lines[j])
-	line_selector.innerHTML += "<option value='" + distinct_lines[j] + "'>" +
-	distinct_lines[j] + "</option>"
-	
-	}
-
-
-
 
 //Called from infowindow button
 function addFavStop (stopid){
@@ -50,7 +30,7 @@ function removeFavStop (stopid){
 function initMap(){
 		//Map options
 		var options = {
-			zoom: 12,
+			zoom: 13,
 			center: {lat:53.3477, lng:-6.2800},
 			styles: mapStyle,
 			disableDefaultUI: true
@@ -58,42 +38,15 @@ function initMap(){
 
 		//Creating the map 
 		var map = new google.maps.Map(document.getElementById('map'), options);
-
-		// UNCOMMENT BELOW TO LOAD MARKERS BY FAV LINES!!
-
-			//line_selector.addEventListener("change", map_)
-
-
-
-		function map_route(line_id) {
-			clearOverlays()
-			fetch("http://127.0.0.1:8000/routes/api/routemaps?lineid=" + this.value)
-			.then(response => response.json())
-			.then(function (data) {
-				for(var i = 0; i < Object.keys(data).length; i++) { 
-					var key = Object.keys(data)[i];
-					for(var j = 0; j < data[key].length; j++) {
-						try {
-							addMarker(data[key][j]);
-						}
-						catch {
-							;
-						}
-					
-						
-					}
-	
-			
-				}
-			}
-			)}
-
-		line_selector.addEventListener("change", map_route, false)
-
+		//Decrease number to view individual stops from greater height
+		var clusterOptions = {
+            maxZoom: 15
+        };
+		var markerCluster = new MarkerClusterer(map, [], clusterOptions);
+		//Contains all the marker objects
+		var markerList = [] 
 
 		var i;
-		//Contains all the marker objects
-		
 		//Add marker function
 		function addMarker(stop){
 
@@ -121,6 +74,13 @@ function initMap(){
 			})
 			markerList.push(marker)
 
+			//Used for clustering, will exclude favourites so are visible outside clusters
+			if (favouriteStops.includes(stop.id)){
+				//pass
+			}else {
+				markerCluster.addMarker(marker)	
+			}
+
 			//Content for infowindow
 			if(favouriteStops.includes(stop.id)){
 	        	var contentString = marker.name + '<br>' + '<button id="removeFavBtn" htmlType="submit" onClick=removeFavStop(' + marker.id + ')> Unfavourite Stop </button>' 
@@ -147,7 +107,7 @@ function initMap(){
                     			contentString + 
                     			//Need to implement a loop to dispaly between 1 and 5
                     			//Set to 3 as some stops only have 3 pieces of information
-                    			//If no information display: "Sorry, no real time data is available"
+                    			//If no information display: "Sorry, no real time data is available	"
                     			'<br> <p>' + data.results[0].route + ' : ' + data.results[0].duetime + '</p>' +
                     			'<p>' + data.results[1].route + ' : ' + data.results[1].duetime + '</p>' +
                     			'<p>' + data.results[2].route + ' : ' + data.results[2].duetime + '</p>'
@@ -187,10 +147,9 @@ function initMap(){
 		async function getFavIDsAwait(){
 			const IDs = await getFavIDs;
 			//stops_import from static_stops.js
-			// COMMENT BELOW TO ONLY SHOW MARKERS FOR FAV LINES
-			// stops_import.forEach((stop) => {
-			// 	addMarker(stop)
-			// })
+			stops_import.forEach((stop) => {
+				addMarker(stop)
+			})
 			/*for(var i = 0;i < stops_import.length;i++){
         	addMarker(stops_import[i]);
         	}*/
