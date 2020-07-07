@@ -4,4 +4,5 @@ from . import views as route_views
 
 urlpatterns = [
 	path('api/routemaps/', route_views.RouteMapView.as_view(), name="routemap"),
+	path('api/predict/', route_views.RoutePredictView.as_view(), name="routes")
 ]

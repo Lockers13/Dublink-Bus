@@ -4,6 +4,17 @@ const favouriteStops = []
 //Used for unfavourite functionality
 const favouriteStopsPKs = []
 
+var markerList = [] 
+
+//ClearOverlay clears the map for route drawing 
+function clearOverlays() {
+	for (var i = 0; i < markerList.length; i++ ) {
+	  markerList[i].setMap(null);
+	}
+	markerList.length = 0;
+}
+
+
 //Called from infowindow button
 function addFavStop (stopid){
 		user = current_user
