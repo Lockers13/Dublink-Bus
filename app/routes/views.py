@@ -24,6 +24,7 @@ class RouteMapView(generics.RetrieveAPIView):
         with open(settings.BASE_DIR + url) as f:
                 data = json.loads(f.read())
         return Response(data, status=status.HTTP_200_OK)
+        
 
 class RoutePredictView(generics.RetrieveAPIView):
 
@@ -50,42 +51,55 @@ class RoutePredictView(generics.RetrieveAPIView):
 
         return Response(data, status=status.HTTP_200_OK)
 
+
 class RouteFindView(generics.RetrieveAPIView):
     def get(self, request):
+        
         data = {}
         addr_suffix = ",Dublin,Ireland"
-        print(request.query_params.get('start_addr') + addr_suffix)
-        print(request.query_params.get('end_addr') + addr_suffix)
         start_addr = request.query_params.get('start_addr') + addr_suffix
         end_addr = request.query_params.get('end_addr') + addr_suffix
         api_url = "https://maps.googleapis.com/maps/api/directions/" + \
-            "json?origin={0}&destination={1}&mode=transit&key={2}".format(
-                start_addr, end_addr, "AIzaSyBMnTVsjzHYZLzjrQxikSY6UiXOBCzmOXw")
+            "json?origin={0}&destination={1}&alternatives=true&mode=transit&key={2}".format(
+                start_addr, end_addr, os.environ.get('DIR_API_KEY'))
+
         try:
             res = requests.get(api_url)
         except Exception as e:
-            print(str(e))
+            print("ERROR, problem with google API request")
 
         json_resp = json.loads(res.text)
 
-        steps = json_resp['routes'][0]['legs'][0]['steps']
-        
-        count = 1
+        try:
+            routes = json_resp['routes']
+            x = routes[0]
+        except IndexError:
+            print("ERROR, no routes available")
+       
+        count_route = 1
 
-        for step in steps:
-            step_key = "Step_" + str(count)
-            data[step_key] = []
-            try:
-                transit_details = step['transit_details']
-                if transit_details['line']['vehicle']['type'] == 'BUS':
-                    data[step_key].append({"Instructions": step['html_instructions']})
-                    data[step_key].append({"Departure Stop": transit_details['departure_stop']})
-                    data[step_key].append({"Arrival Stop": transit_details['arrival_stop']})
-                    data[step_key].append({"Line": transit_details['line']['short_name']})
-                    data[step_key].append({"Num Stops": transit_details['num_stops']})
-            except Exception as e:
-                data[step_key].append({"Instructions": step['html_instructions']})     
-            finally:
-                count += 1
+        for route in routes:
+            route_key = "Route_" + str(count_route)
+            data[route_key] = {}
+
+            count_step = 1
+            steps = route['legs'][0]['steps']
+
+            for step in steps:
+                step_key = "Step_" + str(count_step)
+                data[route_key][step_key] = []
+                try:
+                    transit_details = step['transit_details']
+                    if transit_details['line']['vehicle']['type'] == 'BUS':
+                        data[route_key][step_key].append({"Instructions": step['html_instructions']})
+                        data[route_key][step_key].append({"Departure Stop": transit_details['departure_stop']})
+                        data[route_key][step_key].append({"Arrival Stop": transit_details['arrival_stop']})
+                        data[route_key][step_key].append({"Line": transit_details['line']['short_name']})
+                        data[route_key][step_key].append({"Num Stops": transit_details['num_stops']})
+                except Exception as e:
+                    data[route_key][step_key].append({"Instructions": step['html_instructions']})     
+                finally:
+                    count_step += 1
+            count_route += 1
 
         return Response(data, status=status.HTTP_200_OK)
