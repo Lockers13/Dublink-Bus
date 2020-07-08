@@ -27,6 +27,15 @@
 <div id="co2Container">
 </div>
 
+<div style="margin-top:20px" id="getRouteContainer">
+	<form id="route_get_form">
+		Origin Address: <input value="Rathmines Road" style="display:block;margin:20;" id="addr1" type="text">
+		Destination Address: <input value="Grafton Street" style="display:block;margin:20;" id="addr2" type="text">
+		<br>
+		<button type="submit" class="btn btn-primary" id="rget_btn">Get Route</button>
+	</form>
+</div>
+
 
 
 <!-- Adding Axios -->
@@ -36,6 +45,7 @@
 <!--Map related scripts-->
 <script type="text/javascript" src="{% static 'js/mapStyle.js' %}"></script>
 <script type="text/javascript" src="{% static 'js/route_predict.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/get_route.js' %}"></script>
 <script type="text/javascript" src="{% static 'js/static_stops.js' %}"></script>
 <script type="text/javascript" src="{% static 'js/distinct_lines.js' %}"></script>
 <script type="text/javascript" src="{% static 'js/map.js' %}"></script>
