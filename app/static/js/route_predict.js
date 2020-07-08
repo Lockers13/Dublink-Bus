@@ -3,13 +3,14 @@ var pred_form = document.getElementById('predict_form')
 var journey_info = document.getElementById('journey_info')
 
 
+//Commented out, was returning error: "Cannot read property 'addEventListener' of null"
 
-pred_button.addEventListener("click", function() {
+/*pred_button.addEventListener("click", function() {
     pred_form.submit
-})
+})*/
 
 
-function handleForm(event) {
+/*function handleForm(event) {
     event.preventDefault()
     journey_info.innerHTML = ""
     fetch('http://localhost:8000/routes/api/predict?lineid=68')
@@ -34,5 +35,5 @@ function handleForm(event) {
     })
 }
 
-pred_form.addEventListener("submit", handleForm)
+pred_form.addEventListener("submit", handleForm)*/
 

@@ -69,7 +69,6 @@ function MarkerClusterer(map, opt_markers, opt_options) {
   // because it might not always be available when the code is defined so we
   // look for it at the last possible moment. If it doesn't exist now then
   // there is no point going ahead :)
-  console.log(opt_markers)
 
   this.extend(MarkerClusterer, google.maps.OverlayView);
   this.map_ = map;

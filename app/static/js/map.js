@@ -56,8 +56,12 @@ function initMap(){
 		var markerCluster = new MarkerClusterer(map, [], clusterOptions);
 		//Contains all the marker objects
 		var markerList = [] 
-
 		var i;
+		//Infowindow must be created outside of the addMarker loop
+		var infoWindow = new google.maps.InfoWindow({
+            content: '' //Put loader as the content here
+        });
+
 		//Add marker function
 		function addMarker(stop){
 
@@ -100,32 +104,62 @@ function initMap(){
 	            var contentString = marker.name + '<br>' + '<button id="favBtn" htmlType="submit" onClick=addFavStop(' + marker.id + ')> Add Stop As Favourite </button>'   	
 			}
 
-
-			var infoWindow = new google.maps.InfoWindow();
 			//Marker click event
           	google.maps.event.addListener(marker, 'click', (function (marker, i) {
                     return function () {
+                    	//Initially set to loader
+                    	infoWindow.setContent( '<p>' + marker.name + '</p> <div class="spinner"> <div class="double-bounce1"></div> <div class="double-bounce2"></div> </div>');
+                    	infoWindow.open(map, marker);
                     	//Using proxyURL here as target blocks by CORS policy
-                    	var proxyURL = "https://cors-anywhere.herokuapp.com/"
+                    	var proxyURL = "https://thingproxy.freeboard.io/fetch/"
                     	var targetURL = "https://data.smartdublin.ie/cgi-bin/rtpi/realtimebusinformation?stopid=" + marker.id + "&format=json"
                     	fetch(proxyURL + targetURL)
                     	.then(response => {
                     		return response.json();
                     	})
                     	.then(data => {
-                    		console.log(data)
+                    		if (data.results.length === 0){
+                    			var rtResults = 	"<p> Sorry, no real time information is available </p>"
+                    		}
+                    		else if (data.results.length === 1){
+                    			var rtResults = 	'<br> <p>' + data.results[0].route + ' : ' + data.results[0].duetime + '</p>'
+                    		}
+                    		else if (data.results.length === 2){
+                    			var rtResults = 	'<br> <p>' + data.results[0].route + ' : ' + data.results[0].duetime + '</p>' 
+                    								+ '<p>' + data.results[1].route + ' : ' + data.results[1].duetime + '</p>'
+                    		}
+                    		else if (data.results.length === 3){
+                    			var rtResults = 	'<br> <p>' + data.results[0].route + ' : ' + data.results[0].duetime + '</p>' 
+                    								+ '<p>' + data.results[1].route + ' : ' + data.results[1].duetime + '</p>'
+                    								+ '<p>' + data.results[2].route + ' : ' + data.results[2].duetime + '</p>'
+                    		}
+                    		else if (data.results.length === 4){
+                    			var rtResults = 	'<br> <p>' + data.results[0].route + ' : ' + data.results[0].duetime + '</p>' 
+                    								+ '<p>' + data.results[1].route + ' : ' + data.results[1].duetime + '</p>'
+                    								+ '<p>' + data.results[2].route + ' : ' + data.results[2].duetime + '</p>'
+                    								+ '<p>' + data.results[3].route + ' : ' + data.results[3].duetime + '</p>'
+                    		}
+                    		else if (data.results.length === 5){
+                    			var rtResults = '<br> <p>' + data.results[0].route + ' : ' + data.results[0].duetime + '</p>' 
+                    								+ '<p>' + data.results[1].route + ' : ' + data.results[1].duetime + '</p>'
+                    								+ '<p>' + data.results[2].route + ' : ' + data.results[2].duetime + '</p>'
+                    								+ '<p>' + data.results[3].route + ' : ' + data.results[3].duetime + '</p>'
+                    								+ '<p>' + data.results[4].route + ' : ' + data.results[4].duetime + '</p>'
+                    		}
+                    		//Max amount of results, may add button to show more / all later
+                    		else {
+                    			var rtResults = '<br> <p>' + data.results[0].route + ' : ' + data.results[0].duetime + '</p>' 
+                    								+ '<p>' + data.results[1].route + ' : ' + data.results[1].duetime + '</p>'
+                    								+ '<p>' + data.results[2].route + ' : ' + data.results[2].duetime + '</p>'
+                    								+ '<p>' + data.results[3].route + ' : ' + data.results[3].duetime + '</p>'
+                    								+ '<p>' + data.results[4].route + ' : ' + data.results[4].duetime + '</p>'
+                    								+ '<p>' + data.results[5].route + ' : ' + data.results[5].duetime + '</p>'
+                    		}
                     		infoWindow.setContent(
-                    			contentString + 
-                    			//Need to implement a loop to dispaly between 1 and 5
-                    			//Set to 3 as some stops only have 3 pieces of information
-                    			//If no information display: "Sorry, no real time data is available	"
-                    			'<br> <p>' + data.results[0].route + ' : ' + data.results[0].duetime + '</p>' +
-                    			'<p>' + data.results[1].route + ' : ' + data.results[1].duetime + '</p>' +
-                    			'<p>' + data.results[2].route + ' : ' + data.results[2].duetime + '</p>'
+                    			contentString + rtResults
                     		)
-                    	})
-                        //infoWindow.setContent(contentString);
-                        infoWindow.open(map, marker);
+               
+                    	})   
                 	}
             })(marker, i));
 		}
@@ -161,10 +195,34 @@ function initMap(){
 			stops_import.forEach((stop) => {
 				addMarker(stop)
 			})
-			/*for(var i = 0;i < stops_import.length;i++){
-        	addMarker(stops_import[i]);
-        	}*/
 		}
-		getFavIDsAwait()	
+		getFavIDsAwait()
+
+		//Functionality for the map search bar
+		const inputBox = document.getElementById('stoptextbox'); 
+		function findStop(){
+			var station = inputBox.value;
+			for (i = 0; i < stops_import.length; i++) {
+				if (station === stops_import[i].name){
+					var latLng = new google.maps.LatLng(stops_import[i].lat, stops_import[i].long);
+					map.panTo(latLng);
+					//Need to add in fetch for real time, loader, buttons etc.
+					infoWindow.setContent('<p>' + stops_import[i].name + '</p><div class="spinner"><div class="double-bounce1"></div><div class="double-bounce2"></div></div>');
+					setTimeout(function () { 
+                            //Zoom in
+                            map.setZoom(16);
+                        }, 1000)
+					infoWindow.open(map, markerList[i]);
+					break;
+				}
+			}
+		}
+
+		inputBox.addEventListener("keyup", function (event) {
+            if (event.keyCode === 13) {
+                event.preventDefault();
+                findStop();
+            }
+        });	
 }
 
