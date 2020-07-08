@@ -24,7 +24,7 @@ class RouteMapView(generics.RetrieveAPIView):
         with open(settings.BASE_DIR + url) as f:
                 data = json.loads(f.read())
         return Response(data, status=status.HTTP_200_OK)
-        
+
 
 class RoutePredictView(generics.RetrieveAPIView):
 
@@ -79,6 +79,9 @@ class RouteFindView(generics.RetrieveAPIView):
         count_route = 1
 
         for route in routes:
+            if count_route > 3:
+                break
+                
             route_key = "Route_" + str(count_route)
             data[route_key] = {}
 
@@ -101,5 +104,7 @@ class RouteFindView(generics.RetrieveAPIView):
                 finally:
                     count_step += 1
             count_route += 1
+
+            
 
         return Response(data, status=status.HTTP_200_OK)
