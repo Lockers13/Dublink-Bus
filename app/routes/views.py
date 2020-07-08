@@ -12,6 +12,8 @@ from django.conf import settings
 import pandas as pd
 import joblib 
 from predict_route import get_prediction
+import sys
+import requests
 
 
 
@@ -45,5 +47,45 @@ class RoutePredictView(generics.RetrieveAPIView):
 
         data = {}
         data["journey_info"] = get_prediction(model, m_args, data_dir)
+
+        return Response(data, status=status.HTTP_200_OK)
+
+class RouteFindView(generics.RetrieveAPIView):
+    def get(self, request):
+        data = {}
+        addr_suffix = ",Dublin,Ireland"
+        print(request.query_params.get('start_addr') + addr_suffix)
+        print(request.query_params.get('end_addr') + addr_suffix)
+        start_addr = request.query_params.get('start_addr') + addr_suffix
+        end_addr = request.query_params.get('end_addr') + addr_suffix
+        api_url = "https://maps.googleapis.com/maps/api/directions/" + \
+            "json?origin={0}&destination={1}&mode=transit&key={2}".format(
+                start_addr, end_addr, "AIzaSyBMnTVsjzHYZLzjrQxikSY6UiXOBCzmOXw")
+        try:
+            res = requests.get(api_url)
+        except Exception as e:
+            print(str(e))
+
+        json_resp = json.loads(res.text)
+
+        steps = json_resp['routes'][0]['legs'][0]['steps']
+        
+        count = 1
+
+        for step in steps:
+            step_key = "Step_" + str(count)
+            data[step_key] = []
+            try:
+                transit_details = step['transit_details']
+                if transit_details['line']['vehicle']['type'] == 'BUS':
+                    data[step_key].append({"Instructions": step['html_instructions']})
+                    data[step_key].append({"Departure Stop": transit_details['departure_stop']})
+                    data[step_key].append({"Arrival Stop": transit_details['arrival_stop']})
+                    data[step_key].append({"Line": transit_details['line']['short_name']})
+                    data[step_key].append({"Num Stops": transit_details['num_stops']})
+            except Exception as e:
+                data[step_key].append({"Instructions": step['html_instructions']})     
+            finally:
+                count += 1
 
         return Response(data, status=status.HTTP_200_OK)
