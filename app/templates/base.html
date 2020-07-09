@@ -5,17 +5,15 @@
 	<!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
     <!-- Bootstrap CSS -->
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-
 	<!--JqueryUI -->
 	<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-
 	<!-- Custom CSS --> 
 	<link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
-
 	<link rel="icon" href="{% static 'images/bus-stop.png' %}">
+	<!-- Google Fonts -->
+	<link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
 	<!-- Jinja title -->
 	{% if title %}
 		<title>Dublin Bus - {{ title }}</title>
@@ -26,37 +24,34 @@
 <body>
 	<!-- This is the header -->
 	<header class="site-header">
-	  <nav class="navbar navbar-expand-md navbar-dark bg-steel fixed-top">
-	    <div class="container">
-	      <a class="navbar-brand mr-4" href="{% url 'home' %}">Dublin Bus</a>
-	      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggle" aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation">
-	      <span class="navbar-toggler-icon"></span>
-	      </button>
-	      <div class="collapse navbar-collapse" id="navbarToggle">
-	        <div class="navbar-nav mr-auto">
-	          	<a class="nav-item nav-link" href="{% url 'home' %}">Home</a>
-	          	<a class="nav-item nav-link" href="#">About</a>
-	        </div>
-	        <!-- Navbar Right Side -->
-	        <div class="navbar-nav">
-	        	{% if user.is_authenticated %}
+	<div class="menu-wrap">
+    	<input type="checkbox" class="toggler">
+    	<div class="hamburger"><div></div></div>
+	    <div class="menu">
+	      <div>
+	        <div>
+	          <ul>
+	          	{% if user.is_authenticated %}
 	        		<p class="nav-item nav-link" href="#">CO2 Points: {{ user.profile.co2points }}</p>
-	        		<a class="nav-item nav-link" href="{% url 'profile' %}">{{ user.username }}</p>
-	        		<a class="nav-item nav-link" href="{% url 'logout' %}">Logout</a>
+	        		<h1>Welcome, {{ user.username }}</h1>
+	        		<a class="nav-item nav-link" href="{% url 'logout' %}"><h3>Logout</h3></a>
 	        	{% else %}
-	          	<a class="nav-item nav-link" href="{% url 'login' %}">Login</a>
-	          	<a class="nav-item nav-link" href="{% url 'register' %}">Register</a>
+		          	<a class="nav-item nav-link" href="{% url 'login' %}">Login</a>
+		          	<a class="nav-item nav-link" href="{% url 'register' %}">Register</a>
 	          	{% endif %}
+	            <li><a href="#">Home</a></li>
+	            <li><a href="#">Profile</a></li>
+	          </ul>
 	        </div>
 	      </div>
 	    </div>
-	  </nav>
+  	</div>
 	</header>
 
 	<!-- This is where our actual pages will go --> 
 	<main role="main" class="fluid-container">
 	  <div class="row">
-	    <div class="col-md-8">
+	    <div class="col-md-12">
 	    <!--Alert for messages -->
 	    {% if messages %}
 	    	{% for message in messages %}
@@ -69,6 +64,10 @@
 	    {% block content %}{% endblock %}
 	</main>
 	<!--Content here is the name given to the block --> 
+
+	<footer style="margin-top: 200px;">
+		<p>This is the footer area</p>
+	</footer>
 	
 
 	<!-- Optional JavaScript -->
