@@ -11,11 +11,13 @@ def validate_route(start_stop, end_stop, line_id):
     def check_stop(stop, stoppoint, interpolate):
         if interpolate:
             for i in stoppoint:
-                if stop["name"].find(i) == 0:
+                if i.find(stop["name"]) == 0:
                     return True, stop["id"]
+            return False, stoppoint
         else:
             if stop["id"] == stoppoint:
                 return True, stoppoint
+            return False, stoppoint
             
 
     def validate(start_stop, end_stop, line_id, interpolate1, interpolate2):
@@ -36,7 +38,7 @@ def validate_route(start_stop, end_stop, line_id):
             idx1 = 0
             for stop in stop_list:
                 try: 
-                    start_found, start_stop = check_stop(stop, start_stop, interpolate1)
+                    start_found, new_start_stop = check_stop(stop, start_stop, interpolate1)
                     if start_found:
                         break
                 except:
@@ -46,14 +48,14 @@ def validate_route(start_stop, end_stop, line_id):
 
             for idx2 in range(idx1+1, len(stop_list)):
                 try:
-                    end_found, end_stop = check_stop(stop_list[idx2], end_stop, interpolate2)
+                    end_found, new_end_stop = check_stop(stop_list[idx2], end_stop, interpolate2)
                     if end_found:
                         break
                 except:
                     pass
 
             if start_found and end_found:
-                return 0, start_stop, end_stop
+                return 0, new_start_stop, new_end_stop
 
         return 1, None, None
 
@@ -63,13 +65,13 @@ def validate_route(start_stop, end_stop, line_id):
     try:
         start_stop = [int(x) for x in start_stop.split() if x.isdigit()][0]
     except:
-        start_stop = start_stop.split(" ")
+        start_stop = start_stop.split(", ")
         interpolate1 = True
         
     try:
         end_stop = [int(x) for x in end_stop.split() if x.isdigit()][0]
     except:
-        end_stop = end_stop.split(" ")
+        end_stop = end_stop.split(", ")
         interpolate2 = True
         
     return validate(start_stop, end_stop, line_id, interpolate1, interpolate2)
