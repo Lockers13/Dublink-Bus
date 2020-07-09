@@ -119,41 +119,41 @@ function initMap(){
                     	})
                     	.then(data => {
                     		if (data.results.length === 0){
-                    			var rtResults = 	"<p> Sorry, no real time information is available </p>"
+                    			var rtResults = 	'<p class="pink"> Sorry, no real time information is available </p>'
                     		}
                     		else if (data.results.length === 1){
-                    			var rtResults = 	'<br> <p>' + data.results[0].route + ' : ' + data.results[0].duetime + '</p>'
+                    			var rtResults = 	'<br> <pclass="pink">' + data.results[0].route + ' : ' + data.results[0].duetime + '</p>'
                     		}
                     		else if (data.results.length === 2){
-                    			var rtResults = 	'<br> <p>' + data.results[0].route + ' : ' + data.results[0].duetime + '</p>' 
-                    								+ '<p>' + data.results[1].route + ' : ' + data.results[1].duetime + '</p>'
+                    			var rtResults = 	'<br> <pclass="pink">' + data.results[0].route + ' : ' + data.results[0].duetime + '</p>' 
+                    								+ '<pclass="pink">' + data.results[1].route + ' : ' + data.results[1].duetime + '</p>'
                     		}
                     		else if (data.results.length === 3){
-                    			var rtResults = 	'<br> <p>' + data.results[0].route + ' : ' + data.results[0].duetime + '</p>' 
-                    								+ '<p>' + data.results[1].route + ' : ' + data.results[1].duetime + '</p>'
-                    								+ '<p>' + data.results[2].route + ' : ' + data.results[2].duetime + '</p>'
+                    			var rtResults = 	'<br> <pclass="pink">' + data.results[0].route + ' : ' + data.results[0].duetime + '</p>' 
+                    								+ '<pclass="pink">' + data.results[1].route + ' : ' + data.results[1].duetime + '</p>'
+                    								+ '<pclass="pink">' + data.results[2].route + ' : ' + data.results[2].duetime + '</p>'
                     		}
                     		else if (data.results.length === 4){
-                    			var rtResults = 	'<br> <p>' + data.results[0].route + ' : ' + data.results[0].duetime + '</p>' 
-                    								+ '<p>' + data.results[1].route + ' : ' + data.results[1].duetime + '</p>'
-                    								+ '<p>' + data.results[2].route + ' : ' + data.results[2].duetime + '</p>'
-                    								+ '<p>' + data.results[3].route + ' : ' + data.results[3].duetime + '</p>'
+                    			var rtResults = 	'<br> <pclass="pink">' + data.results[0].route + ' : ' + data.results[0].duetime + '</p>' 
+                    								+ '<pclass="pink">' + data.results[1].route + ' : ' + data.results[1].duetime + '</p>'
+                    								+ '<pclass="pink">' + data.results[2].route + ' : ' + data.results[2].duetime + '</p>'
+                    								+ '<pclass="pink">' + data.results[3].route + ' : ' + data.results[3].duetime + '</p>'
                     		}
                     		else if (data.results.length === 5){
-                    			var rtResults = '<br> <p>' + data.results[0].route + ' : ' + data.results[0].duetime + '</p>' 
-                    								+ '<p>' + data.results[1].route + ' : ' + data.results[1].duetime + '</p>'
-                    								+ '<p>' + data.results[2].route + ' : ' + data.results[2].duetime + '</p>'
-                    								+ '<p>' + data.results[3].route + ' : ' + data.results[3].duetime + '</p>'
-                    								+ '<p>' + data.results[4].route + ' : ' + data.results[4].duetime + '</p>'
+                    			var rtResults = '<br> <pclass="pink">' + data.results[0].route + ' : ' + data.results[0].duetime + '</p>' 
+                    								+ '<pclass="pink">' + data.results[1].route + ' : ' + data.results[1].duetime + '</p>'
+                    								+ '<pclass="pink">' + data.results[2].route + ' : ' + data.results[2].duetime + '</p>'
+                    								+ '<pclass="pink">' + data.results[3].route + ' : ' + data.results[3].duetime + '</p>'
+                    								+ '<pclass="pink">' + data.results[4].route + ' : ' + data.results[4].duetime + '</p>'
                     		}
                     		//Max amount of results, may add button to show more / all later
                     		else {
-                    			var rtResults = '<br> <p>' + data.results[0].route + ' : ' + data.results[0].duetime + '</p>' 
-                    								+ '<p>' + data.results[1].route + ' : ' + data.results[1].duetime + '</p>'
-                    								+ '<p>' + data.results[2].route + ' : ' + data.results[2].duetime + '</p>'
-                    								+ '<p>' + data.results[3].route + ' : ' + data.results[3].duetime + '</p>'
-                    								+ '<p>' + data.results[4].route + ' : ' + data.results[4].duetime + '</p>'
-                    								+ '<p>' + data.results[5].route + ' : ' + data.results[5].duetime + '</p>'
+                    			var rtResults = '<br> <pclass="pink">' + data.results[0].route + ' : ' + data.results[0].duetime + '</p>' 
+                    								+ '<pclass="pink">' + data.results[1].route + ' : ' + data.results[1].duetime + '</p>'
+                    								+ '<pclass="pink">' + data.results[2].route + ' : ' + data.results[2].duetime + '</p>'
+                    								+ '<pclass="pink">' + data.results[3].route + ' : ' + data.results[3].duetime + '</p>'
+                    								+ '<pclass="pink">' + data.results[4].route + ' : ' + data.results[4].duetime + '</p>'
+                    								+ '<pclass="pink">' + data.results[5].route + ' : ' + data.results[5].duetime + '</p>'
                     		}
                     		infoWindow.setContent(
                     			contentString + rtResults
@@ -207,13 +207,63 @@ function initMap(){
 					var latLng = new google.maps.LatLng(stops_import[i].lat, stops_import[i].long);
 					map.panTo(latLng);
 					//Need to add in fetch for real time, loader, buttons etc.
-					infoWindow.setContent('<p>' + stops_import[i].name + '</p><div class="spinner"><div class="double-bounce1"></div><div class="double-bounce2"></div></div>');
+					var loader = '<div class="spinner"><div class="double-bounce1"></div><div class="double-bounce2"></div></div>'
+					infoWindow.setContent('<p>' + stops_import[i].name + '</p>' + loader);
 					setTimeout(function () { 
                             //Zoom in
                             map.setZoom(16);
                         }, 1000)
 					infoWindow.open(map, markerList[i]);
-					break;
+					//Will fix the repetition of this code later
+					var proxyURL = "https://thingproxy.freeboard.io/fetch/"
+                	var targetURL = "https://data.smartdublin.ie/cgi-bin/rtpi/realtimebusinformation?stopid=" + markerList[i].id + "&format=json"
+                	fetch(proxyURL + targetURL)
+                	.then(response => {
+                		return response.json();
+                	})
+                	.then(data => {
+                		if (data.results.length === 0){
+                			var rtResults = 	'<p class="pink"> Sorry, no real time information is available </p>'
+                		}
+                		else if (data.results.length === 1){
+                			var rtResults = 	'<br> <p class="pink">' + data.results[0].route + ' : ' + data.results[0].duetime + '</p>'
+                		}
+                		else if (data.results.length === 2){
+                			var rtResults = 	'<br> <p class="pink">' + data.results[0].route + ' : ' + data.results[0].duetime + '</p>' 
+                								+ '<p class="pink">' + data.results[1].route + ' : ' + data.results[1].duetime + '</p>'
+                		}
+                		else if (data.results.length === 3){
+                			var rtResults = 	'<br> <p class="pink">' + data.results[0].route + ' : ' + data.results[0].duetime + '</p>' 
+                								+ '<p class="pink">' + data.results[1].route + ' : ' + data.results[1].duetime + '</p>'
+                								+ '<p class="pink">' + data.results[2].route + ' : ' + data.results[2].duetime + '</p>'
+                		}
+                		else if (data.results.length === 4){
+                			var rtResults = 	'<br> <p class="pink">' + data.results[0].route + ' : ' + data.results[0].duetime + '</p>' 
+                								+ '<p class="pink">' + data.results[1].route + ' : ' + data.results[1].duetime + '</p>'
+                								+ '<p class="pink">' + data.results[2].route + ' : ' + data.results[2].duetime + '</p>'
+                								+ '<p class="pink">' + data.results[3].route + ' : ' + data.results[3].duetime + '</p>'
+                		}
+                		else if (data.results.length === 5){
+                			var rtResults = '<br> <p class="pink">' + data.results[0].route + ' : ' + data.results[0].duetime + '</p>' 
+                								+ '<p class="pink">' + data.results[1].route + ' : ' + data.results[1].duetime + '</p>'
+                								+ '<p class="pink">' + data.results[2].route + ' : ' + data.results[2].duetime + '</p>'
+                								+ '<p class="pink">' + data.results[3].route + ' : ' + data.results[3].duetime + '</p>'
+                								+ '<p class="pink">' + data.results[4].route + ' : ' + data.results[4].duetime + '</p>'
+                		}
+                		//Max amount of results, may add button to show more / all later
+                		else {
+                			var rtResults = '<br> <p>' + data.results[0].route + ' : ' + data.results[0].duetime + '</p>' 
+                								+ '<p>' + data.results[1].route + ' : ' + data.results[1].duetime + '</p>'
+                								+ '<p>' + data.results[2].route + ' : ' + data.results[2].duetime + '</p>'
+                								+ '<p>' + data.results[3].route + ' : ' + data.results[3].duetime + '</p>'
+                								+ '<p>' + data.results[4].route + ' : ' + data.results[4].duetime + '</p>'
+                								+ '<p>' + data.results[5].route + ' : ' + data.results[5].duetime + '</p>'
+                		}
+                		infoWindow.setContent(
+                			stops_import[i].name + rtResults
+                		)
+                	})
+                break;
 				}
 			}
 		}

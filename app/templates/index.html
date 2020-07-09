@@ -5,38 +5,53 @@
 
 
 <div class="upperContainer">
-	<div id="planRouteContainter">
-		<!-- <form id="predict_form">
-			{% csrf_token %}
-			{{ form|crispy }}
-			<button type="submit" class="btn btn-primary" id="predict_btn">Predict Route</button>
-		</form> -->
-		<input type="text" name="" class="stoptextbox" placeholder="Enter start address...." />
-		<input type="text" name="" class="stoptextbox" placeholder="Enter end address...." />
-	</div>
+	<div class="row">
+		<div id="mapSectionContainer" class="col-sm-12 col-md-6">
+			<h1>MAP</h1>
+			<div class="mapForm">
+				<input type="text" name="" id="stoptextbox" placeholder="Search by stop name here (Need to add serach by stop ID too)..." class="maptextbox"/>
+			</div>
+			<div class="mapContainer">
+				<div id="map"></div>
+			</div>
+		</div>
 
-	<div id="mapContainer">
-		<input type="text" name="" id="stoptextbox" placeholder="Search for a stop here..." />
-		<div id="map"></div>
+		<div id="planRouteSectionContainter" class="col-sm-12 col-md-6">
+			<!-- <form id="predict_form">
+				{% csrf_token %}
+				{{ form|crispy }}
+				<button type="submit" class="btn btn-primary" id="predict_btn">Predict Route</button>
+			</form> -->
+			<h1> ROUTE PLANNER </h1>
+			<div class="routePlanForm">
+				<input id="autocomplete" placeholder="Enter start location" type="text" class="stoptextbox"/>
+				<input id="autocomplete2" placeholder="Enter end location" type="text" class="stoptextbox"/>
+				{% if user.is_authenticated %}
+		        		<p>Put favourite stops here</p>
+		        {% else %}
+			          	<p>Register to save favourite stops </p>
+		        {% endif %}
+			</div>
+		</div>
 	</div>
 </div>
 	
-<div>
+<!-- <div>
 	<p id="journey_info"></p>
-</div>
+</div> -->
 
 
 <div id="co2Container">
 </div>
 
-<div style="margin-top:20px" id="getRouteContainer">
+<!-- <div style="margin-top:20px" id="getRouteContainer">
 	<form id="route_get_form">
 		Origin Address: <input value="Rathmines Road" style="display:block;margin:20;" id="addr1" type="text">
 		Destination Address: <input value="Grafton Street" style="display:block;margin:20;" id="addr2" type="text">
 		<br>
 		<button type="submit" class="btn btn-primary" id="rget_btn">Get Route</button>
 	</form>
-</div>
+</div> -->
 
 
 
@@ -51,7 +66,10 @@
 <script type="text/javascript" src="{% static 'js/static_stops.js' %}"></script>
 <script type="text/javascript" src="{% static 'js/distinct_lines.js' %}"></script>
 <script type="text/javascript" src="{% static 'js/map.js' %}"></script>
-<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBTqQ5XI6Z3N5j26PNXbFKUxUFfq8dnGV8&callback=initMap"></script>
+<script type="text/javascript" src="{% static 'js/initialize.js' %}"></script>
+<!-- Version of map script with key commented out while styling due to many refreshes -->
+<!-- <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBTqQ5XI6Z3N5j26PNXbFKUxUFfq8dnGV8&libraries=places&callback=initialize"></script> -->
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=&libraries=places&callback=initialize"></script>
 <script type="text/javascript" src="{% static 'js/mapcluster.js' %}"></script>
 <!--Jquery used for autocomplete search bar -->
 <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
