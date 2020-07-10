@@ -1,7 +1,7 @@
 let autocomplete;
 function initAutocomplete(){
 	autocomplete = new google.maps.places.Autocomplete(
-		document.getElementById('autocomplete'),
+		document.getElementById('startLocation'),
 		{
 			types:['address'],
 			componentRestrictions:{'country':['IE']},
@@ -9,7 +9,7 @@ function initAutocomplete(){
 		}
 	);
 	autocomplete = new google.maps.places.Autocomplete(
-		document.getElementById('autocomplete2'),
+		document.getElementById('endLocation'),
 		{
 			types:['address'],
 			componentRestrictions:{'country':['IE']},

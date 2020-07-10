@@ -16,7 +16,7 @@
 	                    	<div class="sub-element">Hello, {{user.username}}</div>
 	                    	<div class="sub-element">Welcome back</div>
 	                    {% else %}
-	                    	<div class="sub-element">Sign up or log in to use great extra features</div>
+	                    	<div class="sub-element"><a href="{% url 'register' %}">Sign up</a> or <a href="{% url 'login' %}">log in</a> to use great extra features</div>
 	                    {% endif %}
 	                </div>
 	            </div>
@@ -46,14 +46,19 @@
 			</form> -->
 			<h1> ROUTE PLANNER </h1>
 			<div class="routePlanForm">
-				<input id="autocomplete" placeholder="Enter start location" type="text" class="stoptextbox"/>
-				<input id="autocomplete2" placeholder="Enter end location" type="text" class="stoptextbox"/>
+				<input id="startLocation" placeholder="Enter start location" type="text" class="stoptextbox"/>
+				<input id="endLocation" placeholder="Enter end location" type="text" class="stoptextbox"/>
 				{% if user.is_authenticated %}
 		        		<p>Put favourite stops here</p>
 		        {% else %}
-			          	<p>Register to save favourite stops </p>
+			          	<p><a href="{% url 'login' %}">Log in</a> or <a href="{% url 'register' %}"> register </a> to save favourite locations </p>
 		        {% endif %}
+		        <button class="routePlanButton" id="planRouteSubmit">Search</button>
 			</div>
+			<div class="RoutePlanResults">
+				<p id="results1"> </p>
+				<p id="results2"> </p>
+			<div>
 		</div>
 	</div>
 </div>

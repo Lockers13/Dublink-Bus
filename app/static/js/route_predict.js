@@ -1,6 +1,6 @@
-var pred_button = document.getElementById('predict_btn')
+/*var pred_button = document.getElementById('predict_btn')
 var pred_form = document.getElementById('predict_form')
-var journey_info = document.getElementById('journey_info')
+var journey_info = document.getElementById('journey_info')*/
 
 
 //Commented out, was returning error: "Cannot read property 'addEventListener' of null"
@@ -36,4 +36,21 @@ var journey_info = document.getElementById('journey_info')
 }
 
 pred_form.addEventListener("submit", handleForm)*/
+
+var submitBtn = document.getElementById('planRouteSubmit');
+var startLocation = document.getElementById('startLocation');
+var endLocation = document.getElementById('endLocation');
+var results = document.getElementById('results1');
+
+submitBtn.addEventListener("click", function (event) {
+    var start = startLocation.value
+    var end = endLocation.value
+    fetch("http://localhost:8000/api/profile/12")
+    .then(response => {
+        return response.json();
+    })
+    .then(data => {
+        results.innerHTML = start + " " + end + " " + data.co2points;
+    })
+});
 
