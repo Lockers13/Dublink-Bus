@@ -1,7 +1,4 @@
 :root {
-  --darkblue:#3d5a80;
-  --lightgrey:#98c1d9;
-  --lightblue:#e0fbfc;
   --pink:#F86379;
   --black:#202346;
   --white:#ffffff;
@@ -16,21 +13,65 @@ body {
   margin: 0;
   padding: 0;
   font-family: 'Poppins', sans-serif;
+  overflow-x: hidden;
 }
 
 h1{
 	color:var(--pink);
   text-align: center;
-  text-decoration: underline;
 }
 
 p{
   color: var(--white);
 }
 
+/* start home */
+#home{
+  background: url('../images/home.jpg') 100% 100% no-repeat;
+  background-size: cover;
+  padding-top: 250px;
+  min-height: 650px;
+}
+
+#home h1{
+  font-weight: 300;
+  font-size: 70px;
+  padding-bottom: 10px;
+}
+
+.secondaryHeading{
+  color: 
+}
+
+.element {
+  height: 60px;
+  font-size: 22px;
+  font-weight: bold;
+  color: var(--white);
+}
+
+@media only screen and (max-width: 600px) {
+  #home{
+    background: url('../images/home.jpg') 100% 100% no-repeat;
+    background-size: cover;
+    padding-top: 100px;
+    min-height: 450px;
+  }
+
+  .homeContent{
+    margin-bottom: 300px;
+    text-align: center;
+  }
+
+  .sub-elemet{
+    text-align: center;
+  }
+}
+
+/* end home */
 
 
-/*Upper container styling starts here */
+        /*Upper container styling starts here */
 
 .upperContainer{
   display: inline-block;
@@ -38,16 +79,12 @@ p{
   margin-top: 30px;
 }
 
-/*Upper container styling ends here */
-/*Route planner styling start*/
-.planRouteSectionContainer{
-  width:100%;
-  margin-top: 20px;
-  display: inline-block;
-  float: left;
-  border-right: 2px solid var(--pink);
+.upperContainer h1{
+  text-decoration: underline;
 }
 
+        
+        /*Route planner styling start*/
 .stoptextbox{
   text-align: center;
   border:none;
@@ -81,8 +118,20 @@ p{
 .addressBox{
   width:100%;
 }
-/*Route planner styling end*/
-/*Map styling starts here */
+
+@media only screen and (max-width: 600px) {
+  #planRouteSectionContainter{
+    margin-top: 80px;
+  }
+
+  .routePlanForm{
+    text-align: center;
+    margin-top: 30px; 
+  }
+}
+
+        
+        /*Map styling starts here */
 
 #map{
   height: 600px;
@@ -237,7 +286,7 @@ p{
   width: 60px;
   height: 60px;
   padding: 1rem;
-  background: var(--black);
+  background: #0D0E12;
   display: flex;
   align-items: center;
   justify-content: center;

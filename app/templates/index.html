@@ -3,6 +3,28 @@
 {% load static %}
 {% block content %}	
 
+<!-- start banner -->
+<section id="home">
+	<div class="container">
+		<div class="row toptitle">
+			<div class="col-md-offset-2 col-md-8">
+				<div class="homeContent">
+					<h1>DUBLINK BUS</h1>
+					<h1 class="secondaryHeading">Get there on time</h1>
+					<div class="element">
+						{% if user.is_authenticated %}
+	                    	<div class="sub-element">Hello, {{user.username}}</div>
+	                    	<div class="sub-element">Welcome back</div>
+	                    {% else %}
+	                    	<div class="sub-element">Sign up or log in to use great extra features</div>
+	                    {% endif %}
+	                </div>
+	            </div>
+			</div>
+		</div>
+	</div>
+</section>
+<!-- end banner -->
 
 <div class="upperContainer">
 	<div class="row">
