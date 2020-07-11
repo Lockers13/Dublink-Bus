@@ -7,16 +7,24 @@ import sys
 import os.path
 
 def validate_route(start_stop, end_stop, line_id):
+    def measure_coord_prox(stop, stoppoint):
+        lat_diff = abs(stop["lat"] - stoppoint["location"]["lat"])
+        long_diff = abs(stop["long"] - stoppoint["location"]["lng"])
+        #print(lat_diff, long_diff)
+        if lat_diff < .001 and long_diff < .001:
+            return True
+        return False
+
     
     def check_stop(stop, stoppoint, interpolate):
         if interpolate:
-            for i in stoppoint:
-                if i.find(stop["name"]) == 0:
-                    return True, stop["id"]
+            if measure_coord_prox(stop, stoppoint):
+                return True, stop["id"]
             return False, stoppoint
         else:
-            if stop["id"] == stoppoint:
-                return True, stoppoint
+            #print(stop["id"], stoppoint["name"])
+            if stop["id"] == stoppoint["name"]:
+                return True, stoppoint["name"]
             return False, stoppoint
             
 
@@ -63,15 +71,13 @@ def validate_route(start_stop, end_stop, line_id):
     interpolate2=False
 
     try:
-        start_stop = [int(x) for x in start_stop.split() if x.isdigit()][0]
+        start_stop["name"] = [int(x) for x in start_stop["name"].split() if x.isdigit()][0]
     except:
-        start_stop = start_stop.split(", ")
         interpolate1 = True
         
     try:
-        end_stop = [int(x) for x in end_stop.split() if x.isdigit()][0]
+        end_stop["name"] = [int(x) for x in end_stop["name"].split() if x.isdigit()][0]
     except:
-        end_stop = end_stop.split(", ")
         interpolate2 = True
-        
+
     return validate(start_stop, end_stop, line_id, interpolate1, interpolate2)

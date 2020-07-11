@@ -14,8 +14,7 @@ import joblib
 from predict_route import get_prediction
 import sys
 import requests
-from route_validator import validate_route
-
+from dir_api_resp import process_resp
 
 
 class RouteMapView(generics.RetrieveAPIView):
@@ -55,8 +54,7 @@ class RoutePredictView(generics.RetrieveAPIView):
 
 class RouteFindView(generics.RetrieveAPIView):
     def get(self, request):
-        
-        data = {}
+
         addr_suffix = ",Dublin,Ireland"
         start_addr = request.query_params.get('start_addr') + addr_suffix
         end_addr = request.query_params.get('end_addr') + addr_suffix
@@ -67,7 +65,8 @@ class RouteFindView(generics.RetrieveAPIView):
         try:
             res = requests.get(api_url)
         except Exception as e:
-            print("ERROR, problem with google API request")
+            error_data = "ERROR, problem with google API"
+            return Response(error_data, status=status.HTTP_503_SERVICE_UNAVAILABLE)
 
         json_resp = json.loads(res.text)
 
@@ -75,40 +74,9 @@ class RouteFindView(generics.RetrieveAPIView):
             routes = json_resp['routes']
             x = routes[0]
         except IndexError:
-            print("ERROR, no routes available")
-       
-        count_route = 1
+            error_data = "ERROR, no routes found"
+            return Response(error_data, status=status.HTTP_503_SERVICE_UNAVAILABLE)
 
-        for route in routes:
-            if count_route > 3:
-                break
-                
-            route_key = "Route_" + str(count_route)
-            data[route_key] = {}
-
-            count_step = 1
-            steps = route['legs'][0]['steps']
-
-            for step in steps:
-                step_key = "Step_" + str(count_step)
-                data[route_key][step_key] = []
-                try:
-                    transit_details = step['transit_details']
-                    if transit_details['line']['vehicle']['type'] == 'BUS':
-                        data[route_key][step_key].append({"Instructions": step['html_instructions']})
-                        data[route_key][step_key].append({"Departure Stop": transit_details['departure_stop']})
-                        data[route_key][step_key].append({"Arrival Stop": transit_details['arrival_stop']})
-                        data[route_key][step_key].append({"Line": transit_details['line']['short_name']})
-                        data[route_key][step_key].append({"Num Stops": transit_details['num_stops']})
-                        data[route_key][step_key].append({"Route validation status": validate_route(
-                            transit_details['departure_stop']['name'],
-                            transit_details['arrival_stop']['name'],
-                            transit_details['line']['short_name'])})
-                except Exception as e:
-                    data[route_key][step_key].append({"Instructions": step['html_instructions']})
-                    print(str(e))     
-                finally:
-                    count_step += 1
-            count_route += 1
+        data = process_resp(routes)
 
         return Response(data, status=status.HTTP_200_OK)
