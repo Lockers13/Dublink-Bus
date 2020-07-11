@@ -25,7 +25,7 @@ def process_resp(routes):
                     data[route_key][step_key].append({"Arrival Stop": transit_details['arrival_stop']})
                     data[route_key][step_key].append({"Line": transit_details['line']['short_name']})
                     data[route_key][step_key].append({"Num Stops": transit_details['num_stops']})
-                    data[route_key][step_key].append({"Route validation status": validate_route(
+                    data[route_key][step_key].append({"Route validation": validate_route(
                         transit_details['departure_stop'],
                         transit_details['arrival_stop'],
                         transit_details['line']["short_name"].upper())})

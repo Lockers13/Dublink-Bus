@@ -32,7 +32,7 @@ def validate_route(start_stop, end_stop, line_id):
         json_file = '/Users/lconroy/comp_msc/dublink_bus/DB_webapp/app/static/json/routemaps/{0}_routemap.json'.format(line_id)
     
         if not os.path.exists(json_file):
-            return 2, None, None
+            return 2, None, None, None
 
         valid_routes = {}
 
@@ -63,9 +63,10 @@ def validate_route(start_stop, end_stop, line_id):
                     pass
 
             if start_found and end_found:
-                return 0, new_start_stop, new_end_stop
+                return {"Status code": 0, "Start_stop": new_start_stop,
+                        "End stop": new_end_stop, "Route ID": route}
 
-        return 1, None, None
+        return 1, None, None, None
 
     interpolate1=False
     interpolate2=False
