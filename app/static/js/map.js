@@ -201,7 +201,7 @@ function initMap(){
 			
 		}
 
-		function routePlotClick(event) {
+		function routeViewClick(event) {
 			let addr1 = document.getElementById('startLocation').value
 			let addr2 = document.getElementById('endLocation').value
 			addr1 = addr1.replace(" ", "%20").replace("'", "%27")
@@ -258,7 +258,7 @@ function initMap(){
 		}
 
 
-		get_button.addEventListener("click", routePlotClick)
+		get_button.addEventListener("click", routeViewClick)
 
 		//////////// end of route plotting code
 	
