@@ -34,10 +34,10 @@ class RouteMapView(generics.RetrieveAPIView):
             try:
                 if stop["id"] == start_stop:
                     on_route = True
-                if stop["id"] == end_stop:
-                    on_route = False
                 if on_route:
                     data.append(stop) 
+                if stop["id"] == end_stop:
+                    on_route = False
             except:
                 pass
 
