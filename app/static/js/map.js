@@ -6,6 +6,9 @@ const favouriteStopsPKs = []
 
 var markerList = [] 
 
+
+
+
 //ClearOverlay clears the map for route drawing 
 function clearOverlays() {
 	for (var i = 0; i < markerList.length; i++ ) {
@@ -63,7 +66,7 @@ function initMap(){
         });
 
 		//Add marker function
-		function addMarker(stop){
+		function addMarker(stop) {
 
 			var coords = {lat: stop.lat, lng: stop.long}
 			//Style for the icon
@@ -89,6 +92,16 @@ function initMap(){
 			})
 			markerList.push(marker)
 
+			var line = new google.maps.Polyline({
+				path: coords,
+				geodesic: true,
+				strokeColor: '#FF0000',
+				strokeOpacity: 1.0,
+				strokeWeight: 2
+			});
+			
+			line.setMap(map);
+
 			//Used for clustering, will exclude favourites so are visible outside clusters
 			if (favouriteStops.includes(stop.id)){
 				//pass
@@ -104,6 +117,7 @@ function initMap(){
 	            var contentString = marker.name + '<br>' + '<button id="favBtn" htmlType="submit" onClick=addFavStop(' + marker.id + ')> Add Stop As Favourite </button>'   	
 			}
 
+			
 			//Marker click event
           	google.maps.event.addListener(marker, 'click', (function (marker, i) {
                     return function () {
@@ -164,6 +178,91 @@ function initMap(){
             })(marker, i));
 		}
 
+		// route plotting code
+
+		const get_button = document.getElementById('planRouteSubmit')
+		const directions = document.getElementById('results2')
+
+		function getPlotMarkers(route_obj) {
+			for(let i = 0; i < route_obj.length; i++) {
+				fetch("http://localhost:8000/routes/api/routemaps?lineid=" + route_obj[i]["Line"] +
+															"&start=" + route_obj[i]["Departure Stop"] +
+															"&end=" + route_obj[i]["Arrival Stop"] + 
+															"&routeid=" + route_obj[i]["Route ID"])
+				.then(response => response.json())
+				.then(function (data) {
+					clearOverlays()
+
+					for(let i = 0; i < data.length; i++) {
+						addMarker(data[i])
+					}
+				})
+			}
+			
+		}
+
+		function routePlotClick(event) {
+			let addr1 = document.getElementById('startLocation').value
+			let addr2 = document.getElementById('endLocation').value
+			addr1 = addr1.replace(" ", "%20").replace("'", "%27")
+			addr2 = addr2.replace(" ", "%20").replace("'", "%27")
+
+			fetch("http://localhost:8000/routes/api/find_route?start_addr=" + addr1 +
+				"&end_addr=" + addr2)
+				.then(response => response.json())
+				.then(function (data) {
+					directions.innerHTML = ""
+					let route_keys = Object.keys(data)
+					let count = 0
+					let route_info = {}
+					for (let i = 0; i < route_keys.length; i++) {
+						let route = route_keys[i]
+						step_keys = Object.keys(data[route])
+						route_info[route] = []
+						if (data[route]["routable"] == "b") {
+							directions.innerHTML += "<h2>Route " + ++count + "</h2><button class='route_plot' id='route" + count + "' style='display:block;clear:both;'>Plot Route</button><br>"
+							for (let j = 0; j < step_keys.length; j++) {
+								let step = "Step_" + (j + 1)
+								try {
+									directions.innerHTML += "-> " + data[route][step]["Instructions"] + "<br>"
+
+									if (Object.keys(data[route][step]).length > 1) {
+										
+										route_info[route].push({
+											"Line": data[route][step]["Line"],
+											"Departure Stop": data[route][step]["Route Validation"]["Start_stop"],
+											"Arrival Stop": data[route][step]["Route Validation"]["End stop"],
+											"Route ID": data[route][step]["Route Validation"]["Route ID"]
+										})
+										directions.innerHTML += "<ul style'margin-left:200px;'>"
+										directions.innerHTML += "<li>Line: " + data[route][step]["Line"] + "</li>"
+										directions.innerHTML += "<li>Departure Stop: " + data[route][step]["Departure Stop Name"] + "</li>"
+										directions.innerHTML += "<li>Arrival Stop: " + data[route][step]["Arrival Stop Name"] + "</li>"
+										directions.innerHTML += "</ul><br>"
+									}
+								}
+								catch {
+									;
+								}
+							}
+							directions.innerHTML += "<br>"
+						}
+					}
+
+					let plot_btns = document.getElementsByClassName('route_plot')
+					for(let i = 0; i < plot_btns.length; i++) {
+						plot_btns[i].addEventListener("click", getPlotMarkers.bind(event, route_info["Route_" + (i+1)]))
+					}
+					
+				})
+		}
+
+
+		get_button.addEventListener("click", routePlotClick)
+
+		// end of route plotting code
+	
+
       	const getFavIDs = new Promise((resolve, reject) => {
 			setTimeout(() =>{
 				if (current_user == 0){
@@ -192,9 +291,9 @@ function initMap(){
 		async function getFavIDsAwait(){
 			const IDs = await getFavIDs;
 			//stops_import from static_stops.js
-			stops_import.forEach((stop) => {
-				addMarker(stop)
-			})
+			// stops_import.forEach((stop) => {
+			// 	addMarker(stop)
+			// })
 		}
 		getFavIDsAwait()
 
@@ -229,35 +328,35 @@ function initMap(){
                 			var rtResults = 	'<br> <p class="pink">' + data.results[0].route + ' : ' + data.results[0].duetime + '</p>'
                 		}
                 		else if (data.results.length === 2){
-                			var rtResults = 	'<br> <p class="pink">' + data.results[0].route + ' : ' + data.results[0].duetime + '</p>' 
-                								+ '<p class="pink">' + data.results[1].route + ' : ' + data.results[1].duetime + '</p>'
+                			var rtResults = 	'<br> <p class="pink">' + data.results[0].route + ' : ' + data.results[0].duetime + '</p>'  +
+                								'<p class="pink">' + data.results[1].route + ' : ' + data.results[1].duetime + '</p>'
                 		}
                 		else if (data.results.length === 3){
-                			var rtResults = 	'<br> <p class="pink">' + data.results[0].route + ' : ' + data.results[0].duetime + '</p>' 
-                								+ '<p class="pink">' + data.results[1].route + ' : ' + data.results[1].duetime + '</p>'
-                								+ '<p class="pink">' + data.results[2].route + ' : ' + data.results[2].duetime + '</p>'
+                			var rtResults = 	'<br> <p class="pink">' + data.results[0].route + ' : ' + data.results[0].duetime + '</p>' +
+                								'<p class="pink">' + data.results[1].route + ' : ' + data.results[1].duetime + '</p>' +
+                								'<p class="pink">' + data.results[2].route + ' : ' + data.results[2].duetime + '</p>' 
                 		}
                 		else if (data.results.length === 4){
-                			var rtResults = 	'<br> <p class="pink">' + data.results[0].route + ' : ' + data.results[0].duetime + '</p>' 
-                								+ '<p class="pink">' + data.results[1].route + ' : ' + data.results[1].duetime + '</p>'
-                								+ '<p class="pink">' + data.results[2].route + ' : ' + data.results[2].duetime + '</p>'
-                								+ '<p class="pink">' + data.results[3].route + ' : ' + data.results[3].duetime + '</p>'
+                			var rtResults = 	'<br> <p class="pink">' + data.results[0].route + ' : ' + data.results[0].duetime + '</p>' +
+                								'<p class="pink">' + data.results[1].route + ' : ' + data.results[1].duetime + '</p>' +
+                								'<p class="pink">' + data.results[2].route + ' : ' + data.results[2].duetime + '</p>' +
+                								'<p class="pink">' + data.results[3].route + ' : ' + data.results[3].duetime + '</p>'
                 		}
                 		else if (data.results.length === 5){
-                			var rtResults = '<br> <p class="pink">' + data.results[0].route + ' : ' + data.results[0].duetime + '</p>' 
-                								+ '<p class="pink">' + data.results[1].route + ' : ' + data.results[1].duetime + '</p>'
-                								+ '<p class="pink">' + data.results[2].route + ' : ' + data.results[2].duetime + '</p>'
-                								+ '<p class="pink">' + data.results[3].route + ' : ' + data.results[3].duetime + '</p>'
-                								+ '<p class="pink">' + data.results[4].route + ' : ' + data.results[4].duetime + '</p>'
+                			var rtResults = '<br> <p class="pink">' + data.results[0].route + ' : ' + data.results[0].duetime + '</p>' +
+                								'<p class="pink">' + data.results[1].route + ' : ' + data.results[1].duetime + '</p>' + 
+                								'<p class="pink">' + data.results[2].route + ' : ' + data.results[2].duetime + '</p>' +
+                								'<p class="pink">' + data.results[3].route + ' : ' + data.results[3].duetime + '</p>' +
+                								'<p class="pink">' + data.results[4].route + ' : ' + data.results[4].duetime + '</p>' 
                 		}
                 		//Max amount of results, may add button to show more / all later
                 		else {
-                			var rtResults = '<br> <p>' + data.results[0].route + ' : ' + data.results[0].duetime + '</p>' 
-                								+ '<p>' + data.results[1].route + ' : ' + data.results[1].duetime + '</p>'
-                								+ '<p>' + data.results[2].route + ' : ' + data.results[2].duetime + '</p>'
-                								+ '<p>' + data.results[3].route + ' : ' + data.results[3].duetime + '</p>'
-                								+ '<p>' + data.results[4].route + ' : ' + data.results[4].duetime + '</p>'
-                								+ '<p>' + data.results[5].route + ' : ' + data.results[5].duetime + '</p>'
+                			var rtResults = '<br> <p>' + data.results[0].route + ' : ' + data.results[0].duetime + '</p>' +
+                								'<p>' + data.results[1].route + ' : ' + data.results[1].duetime + '</p>' +
+                								'<p>' + data.results[2].route + ' : ' + data.results[2].duetime + '</p>' +
+                								'<p>' + data.results[3].route + ' : ' + data.results[3].duetime + '</p>' +
+                								'<p>' + data.results[4].route + ' : ' + data.results[4].duetime + '</p>' +
+                								'<p>' + data.results[5].route + ' : ' + data.results[5].duetime + '</p>'
                 		}
                 		infoWindow.setContent(
                 			stops_import[i].name + rtResults
@@ -273,6 +372,7 @@ function initMap(){
                 event.preventDefault();
                 findStop();
             }
-        });	
+		});	
+	
 }
 

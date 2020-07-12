@@ -19,10 +19,28 @@ from dir_api_resp import process_resp
 
 class RouteMapView(generics.RetrieveAPIView):
     def get(self, request):
-        url = staticfiles_storage.url('json/routemaps/{}_routemap.json'.format(
-            request.query_params.get('lineid')))
+        lineid = request.query_params.get('lineid')
+        start_stop = int(request.query_params.get('start'))
+        end_stop = int(request.query_params.get('end'))
+        routeID = request.query_params.get('routeid')
+        url = staticfiles_storage.url('json/routemaps/{}_routemap.json'.format(lineid))
         with open(settings.BASE_DIR + url) as f:
-                data = json.loads(f.read())
+                linemap = json.loads(f.read())
+        routemap = linemap[routeID]
+        on_route = False
+        data = []
+
+        for stop in routemap:
+            try:
+                if stop["id"] == start_stop:
+                    on_route = True
+                if stop["id"] == end_stop:
+                    on_route = False
+                if on_route:
+                    data.append(stop) 
+            except:
+                pass
+
         return Response(data, status=status.HTTP_200_OK)
 
 

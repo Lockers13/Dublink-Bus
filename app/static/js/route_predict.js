@@ -42,15 +42,15 @@ var startLocation = document.getElementById('startLocation');
 var endLocation = document.getElementById('endLocation');
 var results = document.getElementById('results1');
 
-submitBtn.addEventListener("click", function (event) {
-    var start = startLocation.value
-    var end = endLocation.value
-    fetch("http://localhost:8000/api/profile/12")
-    .then(response => {
-        return response.json();
-    })
-    .then(data => {
-        results.innerHTML = start + " " + end + " " + data.co2points;
-    })
-});
+// submitBtn.addEventListener("click", function (event) {
+//     var start = startLocation.value
+//     var end = endLocation.value
+//     fetch("http://localhost:8000/api/profile/12")
+//     .then(response => {
+//         return response.json();
+//     })
+//     .then(data => {
+//         results.innerHTML = start + " " + end + " " + data.co2points;
+//     })
+// });
 
