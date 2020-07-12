@@ -139,35 +139,35 @@ function initMap(){
                     			var rtResults = 	'<br> <pclass="pink">' + data.results[0].route + ' : ' + data.results[0].duetime + '</p>'
                     		}
                     		else if (data.results.length === 2){
-                    			var rtResults = 	'<br> <pclass="pink">' + data.results[0].route + ' : ' + data.results[0].duetime + '</p>' 
-                    								+ '<pclass="pink">' + data.results[1].route + ' : ' + data.results[1].duetime + '</p>'
+                    			var rtResults = 	'<br> <pclass="pink">' + data.results[0].route + ' : ' + data.results[0].duetime + '</p>' +
+                    								'<pclass="pink">' + data.results[1].route + ' : ' + data.results[1].duetime + '</p>'
                     		}
                     		else if (data.results.length === 3){
-                    			var rtResults = 	'<br> <pclass="pink">' + data.results[0].route + ' : ' + data.results[0].duetime + '</p>' 
-                    								+ '<pclass="pink">' + data.results[1].route + ' : ' + data.results[1].duetime + '</p>'
-                    								+ '<pclass="pink">' + data.results[2].route + ' : ' + data.results[2].duetime + '</p>'
+                    			var rtResults = 	'<br> <pclass="pink">' + data.results[0].route + ' : ' + data.results[0].duetime + '</p>' +
+                    								'<pclass="pink">' + data.results[1].route + ' : ' + data.results[1].duetime + '</p>' +
+                    								'<pclass="pink">' + data.results[2].route + ' : ' + data.results[2].duetime + '</p>'
                     		}
                     		else if (data.results.length === 4){
-                    			var rtResults = 	'<br> <pclass="pink">' + data.results[0].route + ' : ' + data.results[0].duetime + '</p>' 
-                    								+ '<pclass="pink">' + data.results[1].route + ' : ' + data.results[1].duetime + '</p>'
-                    								+ '<pclass="pink">' + data.results[2].route + ' : ' + data.results[2].duetime + '</p>'
-                    								+ '<pclass="pink">' + data.results[3].route + ' : ' + data.results[3].duetime + '</p>'
+                    			var rtResults = 	'<br> <pclass="pink">' + data.results[0].route + ' : ' + data.results[0].duetime + '</p>' +
+                    								'<pclass="pink">' + data.results[1].route + ' : ' + data.results[1].duetime + '</p>' +
+                    								'<pclass="pink">' + data.results[2].route + ' : ' + data.results[2].duetime + '</p>' +
+                    								'<pclass="pink">' + data.results[3].route + ' : ' + data.results[3].duetime + '</p>'
                     		}
                     		else if (data.results.length === 5){
-                    			var rtResults = '<br> <pclass="pink">' + data.results[0].route + ' : ' + data.results[0].duetime + '</p>' 
-                    								+ '<pclass="pink">' + data.results[1].route + ' : ' + data.results[1].duetime + '</p>'
-                    								+ '<pclass="pink">' + data.results[2].route + ' : ' + data.results[2].duetime + '</p>'
-                    								+ '<pclass="pink">' + data.results[3].route + ' : ' + data.results[3].duetime + '</p>'
-                    								+ '<pclass="pink">' + data.results[4].route + ' : ' + data.results[4].duetime + '</p>'
+                    			var rtResults = '<br> <pclass="pink">' + data.results[0].route + ' : ' + data.results[0].duetime + '</p>' +
+                    								'<pclass="pink">' + data.results[1].route + ' : ' + data.results[1].duetime + '</p>' +
+                    								'<pclass="pink">' + data.results[2].route + ' : ' + data.results[2].duetime + '</p>' +
+                    								'<pclass="pink">' + data.results[3].route + ' : ' + data.results[3].duetime + '</p>' +
+                    								'<pclass="pink">' + data.results[4].route + ' : ' + data.results[4].duetime + '</p>' 
                     		}
                     		//Max amount of results, may add button to show more / all later
                     		else {
-                    			var rtResults = '<br> <pclass="pink">' + data.results[0].route + ' : ' + data.results[0].duetime + '</p>' 
-                    								+ '<pclass="pink">' + data.results[1].route + ' : ' + data.results[1].duetime + '</p>'
-                    								+ '<pclass="pink">' + data.results[2].route + ' : ' + data.results[2].duetime + '</p>'
-                    								+ '<pclass="pink">' + data.results[3].route + ' : ' + data.results[3].duetime + '</p>'
-                    								+ '<pclass="pink">' + data.results[4].route + ' : ' + data.results[4].duetime + '</p>'
-                    								+ '<pclass="pink">' + data.results[5].route + ' : ' + data.results[5].duetime + '</p>'
+                    			var rtResults = '<br> <pclass="pink">' + data.results[0].route + ' : ' + data.results[0].duetime + '</p>' +
+                    								'<pclass="pink">' + data.results[1].route + ' : ' + data.results[1].duetime + '</p>' +
+                    								'<pclass="pink">' + data.results[2].route + ' : ' + data.results[2].duetime + '</p>' +
+                    								'<pclass="pink">' + data.results[3].route + ' : ' + data.results[3].duetime + '</p>' +
+                    								'<pclass="pink">' + data.results[4].route + ' : ' + data.results[4].duetime + '</p>' +
+                    								'<pclass="pink">' + data.results[5].route + ' : ' + data.results[5].duetime + '</p>'
                     		}
                     		infoWindow.setContent(
                     			contentString + rtResults
@@ -178,7 +178,7 @@ function initMap(){
             })(marker, i));
 		}
 
-		// route plotting code
+		//////// start of route plotting code
 
 		const get_button = document.getElementById('planRouteSubmit')
 		const directions = document.getElementById('results2')
@@ -260,7 +260,7 @@ function initMap(){
 
 		get_button.addEventListener("click", routePlotClick)
 
-		// end of route plotting code
+		//////////// end of route plotting code
 	
 
       	const getFavIDs = new Promise((resolve, reject) => {
