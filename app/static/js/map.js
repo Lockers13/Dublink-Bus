@@ -240,7 +240,7 @@ function initMap() {
 					
 					if (data[route]["routable"] == "b") {
 						route_info[route] = []
-						directions.innerHTML += "<h2>Route " + ++count + "</h2><button class='route_plot' id='route" + count + "' style='display:block;clear:both;'>Plot Route</button><br>"
+						directions.innerHTML += "<h2>Route " + ++count + "</h2><button class='route_plot' id='" + route + "' style='display:block;clear:both;'>Plot Route</button><br>"
 						for (let j = 0; j < step_keys.length; j++) {
 							let step = "Step_" + (j + 1)
 							try {
@@ -276,7 +276,8 @@ function initMap() {
 					try {
 						if(route_info[route_info_keys[z]].length > 0) {
 							console.log(route_info[route_info_keys[z]])
-							plot_btns[z].addEventListener("click", getPlotMarkers.bind(event, route_info[route_info_keys[z]]))
+							keyed_button = document.getElementById(route_info_keys[z])
+							keyed_button.addEventListener("click", getPlotMarkers.bind(event, route_info[route_info_keys[z]]))
 						}
 					}
 					catch (e) {
