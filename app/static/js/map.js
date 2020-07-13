@@ -193,8 +193,8 @@ function initMap(){
 				.then(function (data) {
 					clearOverlays()
 
-					for(let i = 0; i < data.length; i++) {
-						addMarker(data[i])
+					for(let j = 0; i < data.length; j++) {
+						addMarker(data[j])
 					}
 				})
 			}
