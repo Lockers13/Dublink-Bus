@@ -8,11 +8,6 @@ var markerList = []
 var polyline = []
 
 
-
-
-
-
-
 //Called from infowindow button
 function addFavStop(stopid) {
 	user = current_user
@@ -62,7 +57,7 @@ function initMap() {
 
 	//ClearOverlay clears the map for route drawing 
 	function clearOverlays() {
-		console.log(markerList)
+
 		for (var i = 0; i < markerList.length; i++) {
 			markerList[i].setMap(null);
 		}
@@ -213,13 +208,11 @@ function initMap() {
 				.then(function (data) {
 					let line_color;
 					line_color = (i % 2 == 0) ? "#1F70E0" : "#FF70E0";
-
-
-					for (let j = 0; i < data.length; j++) {
+					for (let j = 0; j < data.length; j++) {
 						if (j == 0)
 							addMarker(data[j], null, line_color)
 						else
-							addMarker(data[j], data[j - 1], line_color)
+							addMarker(data[j], data[j-1], line_color)
 					}
 				})
 		}
@@ -241,10 +234,12 @@ function initMap() {
 				let count = 0
 				let route_info = {}
 				for (let i = 0; i < route_keys.length; i++) {
+				
 					let route = route_keys[i]
 					step_keys = Object.keys(data[route])
-					route_info[route] = []
+					
 					if (data[route]["routable"] == "b") {
+						route_info[route] = []
 						directions.innerHTML += "<h2>Route " + ++count + "</h2><button class='route_plot' id='route" + count + "' style='display:block;clear:both;'>Plot Route</button><br>"
 						for (let j = 0; j < step_keys.length; j++) {
 							let step = "Step_" + (j + 1)
@@ -275,11 +270,20 @@ function initMap() {
 				}
 
 				let plot_btns = document.getElementsByClassName('route_plot')
-				for (let i = 0; i < plot_btns.length; i++) {
-					plot_btns[i].addEventListener("click", getPlotMarkers.bind(event, route_info["Route_" + (i + 1)]))
-				}
-
-			})
+				let route_info_keys = Object.keys(route_info)
+				
+				for (let z = 0; z < plot_btns.length; z++) {
+					try {
+						if(route_info[route_info_keys[z]].length > 0) {
+							console.log(route_info[route_info_keys[z]])
+							plot_btns[z].addEventListener("click", getPlotMarkers.bind(event, route_info[route_info_keys[z]]))
+						}
+					}
+					catch (e) {
+						console.log(e.message)
+					}
+					}
+				})
 	}
 
 
