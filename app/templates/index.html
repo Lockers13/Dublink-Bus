@@ -75,6 +75,8 @@
 
 
 <div id="co2Container">
+	<button id="start">Start</button>
+	<button id="stop">Stop</button>
 </div>
 
 <!-- <div style="margin-top:20px" id="getRouteContainer">
@@ -100,6 +102,11 @@
 <script type="text/javascript" src="{% static 'js/distinct_lines.js' %}"></script>
 <script type="text/javascript" src="{% static 'js/map.js' %}"></script>
 <script type="text/javascript" src="{% static 'js/initialize.js' %}"></script>
+<!--Route prediction scripts-->
+<script type="text/javascript" src="{% static 'js/route_predict.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/get_route.js' %}"></script>
+<!--Geolocation script -->
+<script type="text/javascript" src="{% static 'js/geolocation.js' %}"></script>
 <!-- Version of map script with key commented out while styling due to many refreshes -->
 <!-- <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBTqQ5XI6Z3N5j26PNXbFKUxUFfq8dnGV8&libraries=places&callback=initialize"></script> -->
 <script async defer src="https://maps.googleapis.com/maps/api/js?key=&libraries=places&callback=initialize"></script>

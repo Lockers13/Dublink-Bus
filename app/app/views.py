@@ -5,7 +5,6 @@ import datetime
 import requests
 import json
 
-
 def index(request):
 	schedule_times = []
 
