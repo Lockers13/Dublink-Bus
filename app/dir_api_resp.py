@@ -10,6 +10,7 @@ def process_resp(routes):
             
         route_key = "Route_" + str(count_route)
         data[route_key] = {}
+        other_transit = False
 
         count_step = 1
         steps = route['legs'][0]['steps']
@@ -39,6 +40,8 @@ def process_resp(routes):
 
                     if route_validation["Status code"] == 0:
                         valid_routes += 1
+                else:
+                    other_transit = True
 
             except Exception as e:
                 data[route_key][step_key]["Instructions"] = step['html_instructions']
@@ -46,8 +49,9 @@ def process_resp(routes):
             finally:
                 count_step += 1
 
-        data[route_key]["routable"] = "b" if valid_routes == bus_journeys and bus_journeys != 0 else \
-            "w" if valid_routes > 0 and bus_journeys == 0 else "n"
+        data[route_key]["routable"] = "b" if valid_routes == bus_journeys and bus_journeys != 0 \
+            and not other_transit else "w" if valid_routes > 0 and bus_journeys == 0 and not other_transit \
+            else "n"
             
         count_route += 1
 
