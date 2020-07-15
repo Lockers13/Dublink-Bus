@@ -18,3 +18,11 @@ class FavStop (models.Model):
 	def __str__(self):
 		return self.name
 
+class FavAddress (models.Model):
+	name = models.CharField(max_length = 100)
+	address = models.TextField()
+	user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+	def __str__(self):
+		return self.name
+

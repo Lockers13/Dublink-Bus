@@ -28,8 +28,9 @@
 
 <div class="upperContainer">
 	<div class="row">
+		
 		<div id="mapSectionContainer" class="col-sm-12 col-md-6">
-			<h1>MAP</h1>
+			<h1>SEE THE STOPS</h1>
 			<div class="mapForm">
 				<input type="text" name="" id="stoptextbox" placeholder="Search by stop name here (Need to add serach by stop ID too)..." class="maptextbox"/>
 			</div>
@@ -39,17 +40,21 @@
 		</div>
 
 		<div id="planRouteSectionContainter" class="col-sm-12 col-md-6">
-			<!-- <form id="predict_form">
-				{% csrf_token %}
-				{{ form|crispy }}
-				<button type="submit" class="btn btn-primary" id="predict_btn">Predict Route</button>
-			</form> -->
-			<h1> ROUTE PLANNER </h1>
+			<h1> PLAN A TRIP </h1>
 			<div class="routePlanForm">
 				<input id="startLocation" placeholder="Enter start location" type="text" class="stoptextbox"/>
 				<input id="endLocation" placeholder="Enter end location" type="text" class="stoptextbox"/>
 				{% if user.is_authenticated %}
-		        		<p>Put favourite stops here</p>
+					<h4 id="locationsHeader"> Quick Access Locations </h4>
+					<ul id="favAddressSection">
+					</ul>
+					<div id="hiddenSection">
+						<form class="addFavAddress" onsubmit="return false"> 
+							<input id="addName" class="favAddressInput" type="text" name="" placeholder="Enter name for location" maxlength = "10"> 
+							<input id="addAddress" class="favAddressInput" type="text" name="" placeholder="Enter location address"> 
+							<button class="routePlanButton" onClick=addFavAddress()> Submit </button> 
+						</form>
+					</div>	
 		        {% else %}
 			          	<p><a href="{% url 'login' %}">Log in</a> or <a href="{% url 'register' %}"> register </a> to save favourite locations </p>
 		        {% endif %}
@@ -60,6 +65,7 @@
 				<p id="results2"></p>
 			<div>
 		</div>
+		
 	</div>
 </div>
 	
@@ -84,7 +90,7 @@
 
 <!-- Adding Axios -->
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-<!--Below passing current user, used for the adding of favourite stops-->
+<!--Below passing current user, used for the adding of favourite stops/Addresses-->
 <script type="text/javascript">var context = {current_user: '{{current_user}}'};</script>
 <!--Map related scripts-->
 <script type="text/javascript" src="{% static 'js/mapStyle.js' %}"></script>
@@ -96,8 +102,10 @@
 <script type="text/javascript" src="{% static 'js/initialize.js' %}"></script>
 <!-- Version of map script with key commented out while styling due to many refreshes -->
 <!-- <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBTqQ5XI6Z3N5j26PNXbFKUxUFfq8dnGV8&libraries=places&callback=initialize"></script> -->
-<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBMnTVsjzHYZLzjrQxikSY6UiXOBCzmOXw&libraries=places&callback=initialize"></script>
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=&libraries=places&callback=initialize"></script>
 <script type="text/javascript" src="{% static 'js/mapcluster.js' %}"></script>
+<!--Favourite Address script -->
+<script type="text/javascript" src="{% static 'js/favouriteAddress.js' %}"></script>
 <!--Jquery used for autocomplete search bar -->
 <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
@@ -105,3 +113,5 @@
 
 
 {% endblock content %}
+
+

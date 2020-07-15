@@ -17,7 +17,7 @@ body {
 }
 
 h1{
-	color:var(--pink);
+  color:var(--pink);
   text-align: center;
 }
 
@@ -37,10 +37,6 @@ p{
   font-weight: 300;
   font-size: 70px;
   padding-bottom: 10px;
-}
-
-.secondaryHeading{
-  color: 
 }
 
 .element {
@@ -120,8 +116,9 @@ p{
 }
 
 .routePlanButton{
-  width: 50%;
+  width: 60%;
   height: 45px;
+  font-size: 30px;
   background-color: var(--pink);
   color: var(--white);
   text-decoration: none;
@@ -133,6 +130,103 @@ p{
   
 }
 
+
+.addFavAddress{
+  margin: 20px;
+  margin-bottom: 70px;
+}
+
+.favAddressInput{
+  text-align: center;
+  border:none;
+  background-color: var(--black);
+  border-bottom: 3px solid var(--pink);
+  color:var(--white);
+  margin-bottom: 20px;
+  width:60%;
+  text-decoration: none;
+  font-size: 28px;
+  margin-top: 20px;
+}
+
+#planRouteSubmit{
+  margin-top: 30px;
+}
+
+
+.favouriteicon{
+  float:left;
+  height: 30px;
+  width: 30px;
+}
+
+.removebtn{
+  float: right;
+  background-color: red;
+}
+
+.removeicon{
+  float: right;
+}
+
+#locationsHeader{
+  color: var(--white);
+  font-size: 20px;
+}
+
+.btn-group {
+  text-align: center;
+  background-color: var(--pink);
+  border: 3px solid var(--pink);
+  border-radius:2em;
+  color:var(--white);
+  margin-bottom: 10px;
+  width:30%;
+  text-decoration: none;
+  font-size: 18px;
+}
+
+.favAddressBtn{
+  border: 3px solid var(--pink);
+  border-radius:2em;
+  width: 80%;
+}
+
+.addFavAddressBtn{
+  text-align: center;
+  font-size: 18px;
+  border: 3px solid var(--white);
+  border-radius:2em;
+  width: 30%;
+  background-color: var(--black);
+  color: var(--white);
+}
+
+.removebtn{
+  border-radius:2em;
+}
+
+.btn-group button{
+  border: none;
+  background-color: var(--pink);
+}
+
+ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+li{
+  margin:0;
+  padding:0;
+}
+
+#hiddenSection{
+  display: none;
+}
+
+
 @media only screen and (max-width: 600px) {
   #planRouteSectionContainter{
     margin-top: 80px;
@@ -142,6 +236,39 @@ p{
     text-align: center;
     margin-top: 30px; 
   }
+
+  .test{
+    font-size: 12px;
+    width: 50%;
+  }
+
+  .favouriteicon{
+  float:left;
+  height: 20px;
+  width: 20px;
+  }
+
+  .removeicon{
+    float: right;
+    height: 20px;
+    width: 20px;
+  }
+
+  .btn-group{
+    width: 60%;
+    font-size: 14px;
+  }
+
+  .addFavAddressBtn{
+    width: 60%;
+    font-size: 14px;
+  }
+
+  .addicon{
+    margin-right: 17px;
+    margin-top: 5px;
+  }
+
 }
 
         

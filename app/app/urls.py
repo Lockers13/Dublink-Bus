@@ -16,5 +16,8 @@ urlpatterns = [
     path('api/favstop/', user_views.FavStopListCreate.as_view()),
     path('api/favstop/create/', user_views.FavStopCreateView.as_view()),
     path('api/favstop/destroy/<pk>', user_views.FavStopDeleteView.as_view()),
+    path('api/favaddress/', user_views.FavAddressListCreate.as_view()),
+    path('api/favaddress/create/', user_views.FavAddressCreateView.as_view()),
+    path('api/favaddress/destroy/<pk>', user_views.FavAddressDeleteView.as_view()),
     path('routes/', include("routes.urls")), 
 ]

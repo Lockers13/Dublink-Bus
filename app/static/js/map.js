@@ -1,4 +1,4 @@
-const current_user = context.current_user
+var current_user = context.current_user
 //FavouiteStops used for marker icon if statement
 const favouriteStops = []
 //Used for unfavourite functionality
