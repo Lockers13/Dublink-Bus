@@ -30,7 +30,7 @@ def process_resp(routes):
                     data[route_key][step_key]["Arrival Stop"] = transit_details['arrival_stop']
                     data[route_key][step_key]["Departure Stop Name"] = dep_name
                     data[route_key][step_key]["Arrival Stop Name"] = arr_name
-                    data[route_key][step_key]["Line"] = transit_details['line']['short_name']
+                    data[route_key][step_key]["Line"] = transit_details['line']['short_name'].upper()
                     data[route_key][step_key]["Num Stops"] = transit_details['num_stops']
                     route_validation = validate_route(
                         transit_details['departure_stop'],

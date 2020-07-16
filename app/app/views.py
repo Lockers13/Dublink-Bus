@@ -4,9 +4,11 @@ from routes.forms import RouteForm
 import datetime
 import requests
 import json
+import os
 
 def index(request):
 	schedule_times = []
+	api_key = os.environ.get('DIR_API_KEY')
 
 	if request.user.id:
 		current_user = request.user.id
@@ -44,7 +46,8 @@ def index(request):
 				'title': 'Dublin Bus | Home',
 				'current_user': current_user,
 				'form': form,
-				'schedule_times': schedule_times}
+				'schedule_times': schedule_times,
+				'key': api_key}
 
 
 	return render(request, 'index.html', context)
