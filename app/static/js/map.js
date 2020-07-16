@@ -46,7 +46,7 @@ function initMap() {
 	var clusterOptions = {
 		maxZoom: 15
 	};
-	//var markerCluster = new MarkerClusterer(map, [], clusterOptions);
+	var markerCluster = new MarkerClusterer(map, [], clusterOptions);
 	//Contains all the marker objects
 	var markerList = []
 	var i;
@@ -72,9 +72,8 @@ function initMap() {
 
 	//Add marker function
 	function addMarker(stop, prev_stop, line_color) {
-		if (!(prev_stop === null))
-			var prev_coords = { lat: prev_stop.lat, lng: prev_stop.long }
-
+		/*if (!(prev_stop === null))
+			var prev_coords = { lat: prev_stop.lat, lng: prev_stop.long }*/
 
 		var coords = { lat: stop.lat, lng: stop.long }
 
@@ -101,7 +100,7 @@ function initMap() {
 		})
 		markerList.push(marker)
 
-		if (!(prev_stop === null)) {
+		/*if (!(prev_stop === null)) {
 			var line = new google.maps.Polyline({
 				path: [prev_coords, coords],
 				geodesic: true,
@@ -112,23 +111,23 @@ function initMap() {
 
 			polyline.push(line)
 			line.setMap(map);
+		}*/
+
+
+		//Used for clustering, will exclude favourites so are visible outside clusters
+		if (favouriteStops.includes(stop.id)){
+			//pass
+		}else {
+			markerCluster.addMarker(marker)	
 		}
 
+		//Content for infowindow
+		if(favouriteStops.includes(stop.id)){
+			var contentString = marker.name + '<br>' + '<button id="removeFavBtn" htmlType="submit" onClick=removeFavStop(' + marker.id + ')> Unfavourite Stop </button>' 
 
-		// //Used for clustering, will exclude favourites so are visible outside clusters
-		// if (favouriteStops.includes(stop.id)){
-		// 	//pass
-		// }else {
-		// 	markerCluster.addMarker(marker)	
-		// }
-
-		// //Content for infowindow
-		// if(favouriteStops.includes(stop.id)){
-		// 	var contentString = marker.name + '<br>' + '<button id="removeFavBtn" htmlType="submit" onClick=removeFavStop(' + marker.id + ')> Unfavourite Stop </button>' 
-
-		// } else {
-		//     var contentString = marker.name + '<br>' + '<button id="favBtn" htmlType="submit" onClick=addFavStop(' + marker.id + ')> Add Stop As Favourite </button>'   	
-		// }
+		} else {
+		    var contentString = marker.name + '<br>' + '<button id="favBtn" htmlType="submit" onClick=addFavStop(' + marker.id + ')> Add Stop As Favourite </button>'   	
+		}
 
 
 		//Marker click event
@@ -321,9 +320,9 @@ function initMap() {
 	async function getFavIDsAwait() {
 		const IDs = await getFavIDs;
 		//stops_import from static_stops.js
-		// stops_import.forEach((stop) => {
-		// 	addMarker(stop)
-		// })
+		stops_import.forEach((stop) => {
+		 	addMarker(stop)
+		})
 	}
 	getFavIDsAwait()
 
@@ -404,5 +403,63 @@ function initMap() {
 		}
 	});
 
+	/* Below Timeouts are to display and upadate users position on the map */
+
+	var currentPosList = []
+	//Timeout as takes a couple of seconds for laptops, works faster using mobile phone GPS
+	setTimeout(() => {
+		//currentLocation varibale comes from geolocation.js
+		var coords = { lat: currentLocation.latitude, lng: currentLocation.longitude }
+		var icon = '../static/images/currentLocation.png'
+		var marker = new google.maps.Marker({
+			position: coords,
+			map: map,
+			icon: icon,
+			scaledSize: new google.maps.Size(1, 1),
+			name: "Current Location",
+		});
+		currentPosList.push(marker)
+		var latLng = new google.maps.LatLng(currentLocation.latitude, currentLocation.longitude);
+		map.panTo(latLng);
+		map.setZoom(16)
+	}, 2000);
+
+	//Map will display before this with markers
+	//Begin tracking location 2 seconds after have set location on map
+	//Jumps may occur, won't occur with mobile use due to GPS
+	setTimeout(() => {
+		id = navigator.geolocation.watchPosition(
+			//First arg is for success
+			data => {
+				//console.log(currentPosList);
+				currentPosList[0].setMap(null);
+				currentPosList.shift();
+				var lat = data.coords.latitude;
+				var lng = data.coords.longitude;
+				var coords = { lat: lat, lng: lng }
+				var icon = '../static/images/currentLocation.png'
+				var marker = new google.maps.Marker({
+					position: coords,
+					map: map,
+					icon: icon,
+					scaledSize: new google.maps.Size(1, 1),
+					name: "Current Location",
+				});
+				currentPosList.push(marker);
+				var latLng = new google.maps.LatLng(lat, lng);
+				map.panTo(latLng);
+				//updatedLatLng = new google.maps.LatLng(data.coords.latitude, data.coords.longitude);
+				//console.log(updatedLatLng);
+			},
+			//Second arg is for errors
+			error => console.log(error),
+			//Third arg is for options
+			{
+				enableHighAccuracy: true
+			}
+		);
+	}, 4000);
+
 }
+
 
