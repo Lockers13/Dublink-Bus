@@ -71,9 +71,10 @@ function initMap() {
 	  }
 
 	//Add marker function
-	function addMarker(stop, prev_stop, line_color) {
-		/*if (!(prev_stop === null))
-			var prev_coords = { lat: prev_stop.lat, lng: prev_stop.long }*/
+	function addMarker(stop, prev_stop, line_color, route=false) {
+
+		if (!(prev_stop === null))
+			var prev_coords = { lat: prev_stop.lat, lng: prev_stop.long }
 
 		var coords = { lat: stop.lat, lng: stop.long }
 
@@ -100,7 +101,7 @@ function initMap() {
 		})
 		markerList.push(marker)
 
-		/*if (!(prev_stop === null)) {
+		if (!(prev_stop === null)) {
 			var line = new google.maps.Polyline({
 				path: [prev_coords, coords],
 				geodesic: true,
@@ -111,14 +112,16 @@ function initMap() {
 
 			polyline.push(line)
 			line.setMap(map);
-		}*/
+		}
 
 
 		//Used for clustering, will exclude favourites so are visible outside clusters
-		if (favouriteStops.includes(stop.id)){
-			//pass
-		}else {
-			markerCluster.addMarker(marker)	
+		if (route === false){
+			if (favouriteStops.includes(stop.id)){
+				//pass
+			}else {
+				markerCluster.addMarker(marker)	
+			}
 		}
 
 		//Content for infowindow
@@ -128,7 +131,6 @@ function initMap() {
 		} else {
 		    var contentString = marker.name + '<br>' + '<button id="favBtn" htmlType="submit" onClick=addFavStop(' + marker.id + ')> Add Stop As Favourite </button>'   	
 		}
-
 
 		//Marker click event
 		google.maps.event.addListener(marker, 'click', (function (marker, i) {
@@ -190,13 +192,15 @@ function initMap() {
 		})(marker, i));
 	}
 
+
 	//////// start of route plotting code
 
 	const get_button = document.getElementById('planRouteSubmit')
 	const directions = document.getElementById('results2')
 
 	function getPlotMarkers(route_obj) {
-		clearOverlays()
+		markerCluster.clearMarkers();
+		//var markerCluster = new MarkerClusterer(map, [], clusterOptions);
 		removeLine()
 		for (let i = 0; i < route_obj.length; i++) {
 			fetch("http://localhost:8000/routes/api/routemaps?lineid=" + route_obj[i]["Line"] +
@@ -205,13 +209,14 @@ function initMap() {
 				"&routeid=" + route_obj[i]["Route ID"])
 				.then(response => response.json())
 				.then(function (data) {
+					console.log("Test2:", data)
 					let line_color;
 					line_color = (i % 2 == 0) ? "#1F70E0" : "#FF70E0";
 					for (let j = 0; j < data.length; j++) {
 						if (j == 0)
-							addMarker(data[j], null, line_color)
+							addMarker(data[j], null, line_color, route=true)
 						else
-							addMarker(data[j], data[j-1], line_color)
+							addMarker(data[j], data[j-1], line_color, route=true)
 					}
 				})
 		}
@@ -228,6 +233,7 @@ function initMap() {
 			"&end_addr=" + addr2)
 			.then(response => response.json())
 			.then(function (data) {
+				console.log(data)
 				directions.innerHTML = ""
 				let route_keys = Object.keys(data)
 				let count = 0
@@ -321,7 +327,7 @@ function initMap() {
 		const IDs = await getFavIDs;
 		//stops_import from static_stops.js
 		stops_import.forEach((stop) => {
-		 	addMarker(stop)
+		 	addMarker(stop, prev_stop=null, line_color=null, route=false)
 		})
 	}
 	getFavIDsAwait()
@@ -459,6 +465,10 @@ function initMap() {
 			}
 		);
 	}, 4000);
+
+	/*setTimeout(() =>{
+		markerCluster.clearMarkers();
+	}, 10000)*/
 
 }
 

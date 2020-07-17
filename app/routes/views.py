@@ -77,7 +77,7 @@ class RouteFindView(generics.RetrieveAPIView):
         start_addr = request.query_params.get('start_addr') + addr_suffix
         end_addr = request.query_params.get('end_addr') + addr_suffix
         api_url = "https://maps.googleapis.com/maps/api/directions/" + \
-            "json?origin={0}&destination={1}&alternatives=true&mode=transit&key={2}".format(
+            "json?origin={0}&destination={1}&alternatives=true&mode=transit&key=AIzaSyBTqQ5XI6Z3N5j26PNXbFKUxUFfq8dnGV8".format(
                 start_addr, end_addr, os.environ.get('DIR_API_KEY'))
 
         try:
