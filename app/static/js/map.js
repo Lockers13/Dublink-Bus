@@ -208,6 +208,9 @@ function initMap() {
 				.then(response => response.json())
 				.then(function (data) {
 					console.log(data)
+					alert("Your planned route will take approx: " + 
+					data["journey_info"]["journey_time"]["hours"] + " hours and " + 
+					data["journey_info"]["journey_time"]["minutes"] + " minutes")
 				})
 		}
 	}
