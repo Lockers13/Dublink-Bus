@@ -198,8 +198,23 @@ function initMap() {
 	const get_button = document.getElementById('planRouteSubmit')
 	const directions = document.getElementById('results2')
 
+	function predictRoute(route_obj) {
+		console.log(route_obj)
+		for (let i = 0; i < route_obj.length; i++) {
+			fetch("http://localhost:8000/routes/api/predict?lineid=" + route_obj[i]["Line"] +
+				"&start_stop=" + route_obj[i]["Departure Stop"].toString() +
+				"&end_stop=" + route_obj[i]["Arrival Stop"].toString() +
+				"&routeid=" + route_obj[i]["Route ID"])
+				.then(response => response.json())
+				.then(function (data) {
+					console.log(data)
+				})
+		}
+	}
+
 	function getPlotMarkers(route_obj) {
 		markerCluster.clearMarkers();
+		clearOverlays()
 		//var markerCluster = new MarkerClusterer(map, [], clusterOptions);
 		removeLine()
 		for (let i = 0; i < route_obj.length; i++) {
@@ -245,7 +260,8 @@ function initMap() {
 					
 					if (data[route]["routable"] == "b") {
 						route_info[route] = []
-						directions.innerHTML += "<h2>Route " + ++count + "</h2><button class='route_plot' id='" + route + "' style='display:block;clear:both;'>Plot Route</button><br>"
+						directions.innerHTML += "<h2>Route " + ++count + "</h2><button class='route_plot' id='" + route + "' style='display:inline-block;float:left;'>Plot Route</button>" + 
+						"<button class='route_pred' id='" + route + "_pred' style='display:inline-block;float:left;'>Predict Route</button><br><br>"
 						for (let j = 0; j < step_keys.length; j++) {
 							let step = "Step_" + (j + 1)
 							try {
@@ -276,13 +292,26 @@ function initMap() {
 
 				let plot_btns = document.getElementsByClassName('route_plot')
 				let route_info_keys = Object.keys(route_info)
+				let pred_btns = document.getElementsByClassName('route_pred')
 				
 				for (let z = 0; z < plot_btns.length; z++) {
 					try {
 						if(route_info[route_info_keys[z]].length > 0) {
-							console.log(route_info[route_info_keys[z]])
+
 							keyed_button = document.getElementById(route_info_keys[z])
 							keyed_button.addEventListener("click", getPlotMarkers.bind(event, route_info[route_info_keys[z]]))
+						}
+					}
+					catch (e) {
+						console.log(e.message)
+					}
+					}
+				for (let index = 0; index < pred_btns.length; index++) {
+					try {
+						if(route_info[route_info_keys[index]].length > 0) {
+
+							keyed_button_pred = document.getElementById(route_info_keys[index] + "_pred")
+							keyed_button_pred.addEventListener("click", predictRoute.bind(event, route_info[route_info_keys[index]]))
 						}
 					}
 					catch (e) {

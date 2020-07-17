@@ -47,14 +47,29 @@ class RouteMapView(generics.RetrieveAPIView):
 class RoutePredictView(generics.RetrieveAPIView):
 
     def get(self, request):
-        data_dir = settings.BASE_DIR + staticfiles_storage.url('models/model_applying')
-        model_pickle = os.path.join(data_dir, 'LR_{}_model.pkl'.format(request.query_params.get('lineid')))
+
+        data_dir = settings.BASE_DIR + staticfiles_storage.url('model_integration')
+        lineid = request.query_params.get('lineid')
+        routeid = request.query_params.get('routeid')
+        start_stop = request.query_params.get('start_stop')
+        end_stop = request.query_params.get('end_stop')
+
+        model_pickle = os.path.join(data_dir, 'pickle_file/XG_{}.pkl'.format(lineid))
         model = joblib.load(open(model_pickle, 'rb'))
+        direction = 0
+        with open(os.path.join(data_dir,'stop_sequence/stop_{0}.csv'.format(lineid)), 'r') as f:
+            for line in f:
+                if line.split(",")[1] == routeid:
+                    direction = line.split(",")[2]
+                    break
+        if direction == 0:
+            return Response("ERROR: cannot get direction", status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
         m_args = {
-            'lineid': request.query_params.get('lineid'),
-            'start_stop': "3400",
-            'end_stop': "3412",
-            'direction': "2",
+            'lineid': lineid,
+            'start_stop': start_stop,
+            'end_stop': end_stop,
+            'direction': direction,
             'time_secs': "60000",
             'dow': "4",
             'holiday': "0",
@@ -66,6 +81,9 @@ class RoutePredictView(generics.RetrieveAPIView):
 
         data = {}
         data["journey_info"] = get_prediction(model, m_args, data_dir)
+
+        if "error" in data["journey_info"].keys():
+            return Response("ERROR IN MODEL", status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
         return Response(data, status=status.HTTP_200_OK)
 

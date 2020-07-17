@@ -58,7 +58,7 @@ def get_prediction(model, m_args, data_dir):
     df_query_stop1 = df_query_stop1.rename({'STOPPOINTID1': 'STOPPOINTID'}, axis=1)
     df_query_stop2 = df_query_stop2.rename({'STOPPOINTID2': 'STOPPOINTID'}, axis=1)
 
-    df_timetable = pd.read_csv(os.path.join(data_dir, 'timetable_68.csv'))
+    df_timetable = pd.read_csv(os.path.join(data_dir, 'timetable_file/timetable_{0}.csv'.format(m_args['lineid'])))
 
     df_timetable = df_timetable.astype('str')
     df_query_stop1 = df_query_stop1.astype('str')
@@ -108,7 +108,7 @@ def get_prediction(model, m_args, data_dir):
     df_fill_stop1_rev = pd.get_dummies(df_fill_stop1_rev)
     df_fill_stop2_rev = pd.get_dummies(df_fill_stop2_rev)
 
-    model_columns = joblib.load(os.path.join(data_dir, 'model_columns.pkl'))
+    model_columns = joblib.load(os.path.join(data_dir, 'model_columns/columns_{0}.pkl'.format(m_args['lineid'])))
 
     for col in model_columns:
         if col not in df_fill_stop1_rev.columns:
@@ -122,19 +122,21 @@ def get_prediction(model, m_args, data_dir):
     fill_stop1_pred = model.predict(df_fill_stop1_rev)
     fill_stop2_pred = model.predict(df_fill_stop2_rev)
 
+
     for item in fill_stop1_pred:
         if item > SUBMIT_TIME:
+            departure_index = list(fill_stop1_pred).index(item)
             arrival_start_secs = item
             break
+    
+    try:
+        arrival_end_secs = list(fill_stop2_pred)[departure_index]
+        journey_info = {}
+        journey_info["arrival_startstop"] = convert_secs(arrival_start_secs)
+        journey_info["arrival_endstop"] = convert_secs(arrival_end_secs)
+        journey_info["journey_time"] = convert_secs(arrival_end_secs - arrival_start_secs)
 
-    for item in fill_stop2_pred:
-        if item > SUBMIT_TIME:
-            arrival_end_secs = item
-            break
-
-    journey_info = {}
-    journey_info["arrival_startstop"] = convert_secs(arrival_start_secs)
-    journey_info["arrival_endstop"] = convert_secs(arrival_end_secs)
-    journey_info["journey_time"] = convert_secs(arrival_end_secs - arrival_start_secs)
-
-    return journey_info
+        return journey_info
+    except:
+        journey_info["error"] = ""
+        return journey_info
