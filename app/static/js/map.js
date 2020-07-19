@@ -4,12 +4,14 @@ const favouriteStops = []
 //Used for unfavourite functionality
 const favouriteStopsPKs = []
 
+var favMarkers = []
 var markerList = []
 var polyline = []
 
 
 //Called from infowindow button
 function addFavStop(stopid) {
+	//communicate with backend
 	user = current_user
 	axios.post('http://127.0.0.1:8000/api/favstop/create/', {
 		name: "test",
@@ -19,15 +21,45 @@ function addFavStop(stopid) {
 	})
 		.then(res => console.log(res))
 		.catch(err => console.log(err));
+
+	//Adjust front end
+	var icon = {
+				url: '../static/images/favourite.png',
+				scaledSize: new google.maps.Size(12, 12)
+			};
+
+	for (var i=0; i<markerList.length; i++){
+		if(stopid === markerList[i].id){
+			markerList[i].setIcon(icon)
+			favMarkers.push(markerList[i])
+		}
+	}
 }
 
 //Called from info window button
 function removeFavStop(stopid) {
+	console.log(stopid)
+	//Communicate with backend
 	var index = favouriteStops.indexOf(stopid);
 	var primarykey = (favouriteStopsPKs[index]);
 	axios.delete(`http://127.0.0.1:8000/api/favstop/destroy/${primarykey}`)
 		.then(res => console.log(res))
 		.catch(err => console.log(err));
+
+	console.log(favouriteStops)
+
+	//Adjust front end
+	var icon = {
+				url: '../static/images/bus-stop.png',
+				scaledSize: new google.maps.Size(12, 12)
+			};
+			
+	for (var i=0; i<favMarkers.length; i++){
+		if(stopid == favMarkers[i].id){
+			favMarkers[i].setIcon(icon)
+			markerList.push(favMarker[i])
+		}
+	}
 }
 
 //Function is automatically as callback in index.html script tag for map
@@ -48,7 +80,7 @@ function initMap() {
 	};
 	var markerCluster = new MarkerClusterer(map, [], clusterOptions);
 	//Contains all the marker objects
-	var markerList = []
+	//var markerList = []
 	var i;
 	//Infowindow must be created outside of the addMarker loop
 	var infoWindow = new google.maps.InfoWindow({
@@ -99,7 +131,12 @@ function initMap() {
 			name: stop.name,
 			id: stop.id
 		})
-		markerList.push(marker)
+
+		if (favouriteStops.includes(stop.id)) {
+			favMarkers.push(marker)
+		} else {
+			markerList.push(marker)
+		}
 
 		if (!(prev_stop === null)) {
 			var line = new google.maps.Polyline({
@@ -126,62 +163,78 @@ function initMap() {
 
 		//Content for infowindow
 		if(favouriteStops.includes(stop.id)){
-			var contentString = marker.name + '<br>' + '<button id="removeFavBtn" htmlType="submit" onClick=removeFavStop(' + marker.id + ')> Unfavourite Stop </button>' 
+			var contentString = '<h6 class="windowtitle">' + marker.name + '</h6>' + '<br>' + '<button class="windowbtn" id="removeFavBtn" htmlType="submit" onClick=removeFavStop(' + marker.id + ')> Unfavourite Stop </button>' 
 
 		} else {
-		    var contentString = marker.name + '<br>' + '<button id="favBtn" htmlType="submit" onClick=addFavStop(' + marker.id + ')> Add Stop As Favourite </button>'   	
+		    var contentString = '<h6 class="windowtitle">' + marker.name + '</h6>' + '<br>' + '<button class="windowbtn" id="favBtn" htmlType="submit" onClick=addFavStop(' + marker.id + ')> Add Stop As Favourite </button>'   	
 		}
 
 		//Marker click event
 		google.maps.event.addListener(marker, 'click', (function (marker, i) {
 			return function () {
 				//Initially set to loader
-				infoWindow.setContent('<p>' + marker.name + '</p> <div class="spinner"> <div class="double-bounce1"></div> <div class="double-bounce2"></div> </div>');
+				infoWindow.setContent(contentString);
 				infoWindow.open(map, marker);
-				//Using proxyURL here as target blocks by CORS policy
-				var proxyURL = "https://thingproxy.freeboard.io/fetch/"
-				var targetURL = "https://data.smartdublin.ie/cgi-bin/rtpi/realtimebusinformation?stopid=" + marker.id + "&format=json"
-				fetch(proxyURL + targetURL)
+				map.setCenter(this.getPosition());
+				fetch("http://localhost:8000/routes/api/realtime/?stopid="+marker.id)
 					.then(response => {
 						return response.json();
 					})
 					.then(data => {
 						if (data.results.length === 0) {
-							var rtResults = '<p class="pink"> Sorry, no real time information is available </p>'
+							var rtResults = '<p class="realtimeerror"> Sorry, no real time information is available </p>'
 						}
 						else if (data.results.length === 1) {
-							var rtResults = '<br> <pclass="pink">' + data.results[0].route + ' : ' + data.results[0].duetime + '</p>'
+							var rtResults = '<table class="realtime">'+
+							'<tr> <th> Route </th> <th> Arrival Time </th> </tr>'+
+							'<tr> <td>' + data.results[0].route + '</td> <td>' + data.results[0].duetime + '</td> </tr>' +
+							'</table>'
 						}
 						else if (data.results.length === 2) {
-							var rtResults = '<br> <pclass="pink">' + data.results[0].route + ' : ' + data.results[0].duetime + '</p>' +
-								'<pclass="pink">' + data.results[1].route + ' : ' + data.results[1].duetime + '</p>'
+							var rtResults = '<table class="realtime">'+
+							'<tr> <th> Route </th> <th> Arrival Time </th> </tr>'+
+							'<tr> <td>' + data.results[0].route + '</td> <td>' + data.results[0].duetime + '</td> </tr>' +
+							'<tr> <td>' + data.results[1].route + '</td> <td>' + data.results[1].duetime + '</td> </tr>' +
+							'</table>'
 						}
 						else if (data.results.length === 3) {
-							var rtResults = '<br> <pclass="pink">' + data.results[0].route + ' : ' + data.results[0].duetime + '</p>' +
-								'<pclass="pink">' + data.results[1].route + ' : ' + data.results[1].duetime + '</p>' +
-								'<pclass="pink">' + data.results[2].route + ' : ' + data.results[2].duetime + '</p>'
+							var rtResults = '<table class="realtime">'+
+							'<tr> <th> Route </th> <th> Arrival Time </th> </tr>'+
+							'<tr> <td>' + data.results[0].route + '</td> <td>' + data.results[0].duetime + '</td> </tr>' +
+							'<tr> <td>' + data.results[1].route + '</td> <td>' + data.results[1].duetime + '</td> </tr>' +
+							'<tr> <td>' + data.results[2].route + '</td> <td>' + data.results[2].duetime + '</td> </tr>' +
+							'</table>'
 						}
 						else if (data.results.length === 4) {
-							var rtResults = '<br> <pclass="pink">' + data.results[0].route + ' : ' + data.results[0].duetime + '</p>' +
-								'<pclass="pink">' + data.results[1].route + ' : ' + data.results[1].duetime + '</p>' +
-								'<pclass="pink">' + data.results[2].route + ' : ' + data.results[2].duetime + '</p>' +
-								'<pclass="pink">' + data.results[3].route + ' : ' + data.results[3].duetime + '</p>'
+							var rtResults = '<table class="realtime">'+
+							'<tr> <th> Route </th> <th> Arrival Time </th> </tr>'+
+							'<tr> <td>' + data.results[0].route + '</td> <td>' + data.results[0].duetime + '</td> </tr>' +
+							'<tr> <td>' + data.results[1].route + '</td> <td>' + data.results[1].duetime + '</td> </tr>' +
+							'<tr> <td>' + data.results[2].route + '</td> <td>' + data.results[2].duetime + '</td> </tr>' +
+							'<tr> <td>' + data.results[3].route + '</td> <td>' + data.results[3].duetime + '</td> </tr>' +
+							'</table>'
 						}
 						else if (data.results.length === 5) {
-							var rtResults = '<br> <pclass="pink">' + data.results[0].route + ' : ' + data.results[0].duetime + '</p>' +
-								'<pclass="pink">' + data.results[1].route + ' : ' + data.results[1].duetime + '</p>' +
-								'<pclass="pink">' + data.results[2].route + ' : ' + data.results[2].duetime + '</p>' +
-								'<pclass="pink">' + data.results[3].route + ' : ' + data.results[3].duetime + '</p>' +
-								'<pclass="pink">' + data.results[4].route + ' : ' + data.results[4].duetime + '</p>'
+							var rtResults = '<table class="realtime">'+
+							'<tr> <th> Route </th> <th> Arrival Time </th> </tr>'+
+							'<tr> <td>' + data.results[0].route + '</td> <td>' + data.results[0].duetime + '</td> </tr>' +
+							'<tr> <td>' + data.results[1].route + '</td> <td>' + data.results[1].duetime + '</td> </tr>' +
+							'<tr> <td>' + data.results[2].route + '</td> <td>' + data.results[2].duetime + '</td> </tr>' +
+							'<tr> <td>' + data.results[3].route + '</td> <td>' + data.results[3].duetime + '</td> </tr>' +
+							'<tr> <td>' + data.results[4].route + '</td> <td>' + data.results[4].duetime + '</td> </tr>' +
+							'</table>'
 						}
 						//Max amount of results, may add button to show more / all later
 						else {
-							var rtResults = '<br> <pclass="pink">' + data.results[0].route + ' : ' + data.results[0].duetime + '</p>' +
-								'<pclass="pink">' + data.results[1].route + ' : ' + data.results[1].duetime + '</p>' +
-								'<pclass="pink">' + data.results[2].route + ' : ' + data.results[2].duetime + '</p>' +
-								'<pclass="pink">' + data.results[3].route + ' : ' + data.results[3].duetime + '</p>' +
-								'<pclass="pink">' + data.results[4].route + ' : ' + data.results[4].duetime + '</p>' +
-								'<pclass="pink">' + data.results[5].route + ' : ' + data.results[5].duetime + '</p>'
+							var rtResults = '<table class="realtime">'+
+							'<tr> <th> Route </th> <th> Arrival Time </th> </tr>'+
+							'<tr> <td>' + data.results[0].route + '</td> <td>' + data.results[0].duetime + '</td> </tr>' +
+							'<tr> <td>' + data.results[1].route + '</td> <td>' + data.results[1].duetime + '</td> </tr>' +
+							'<tr> <td>' + data.results[2].route + '</td> <td>' + data.results[2].duetime + '</td> </tr>' +
+							'<tr> <td>' + data.results[3].route + '</td> <td>' + data.results[3].duetime + '</td> </tr>' +
+							'<tr> <td>' + data.results[4].route + '</td> <td>' + data.results[4].duetime + '</td> </tr>' +
+							'<tr> <td>' + data.results[5].route + '</td> <td>' + data.results[5].duetime + '</td> </tr>' +
+							'</table>'
 						}
 						infoWindow.setContent(
 							contentString + rtResults
@@ -227,7 +280,6 @@ function initMap() {
 				"&routeid=" + route_obj[i]["Route ID"])
 				.then(response => response.json())
 				.then(function (data) {
-					console.log("Test2:", data)
 					let line_color;
 					line_color = (i % 2 == 0) ? "#1F70E0" : "#FF70E0";
 					for (let j = 0; j < data.length; j++) {
@@ -236,6 +288,9 @@ function initMap() {
 						else
 							addMarker(data[j], data[j-1], line_color, route=true)
 					}
+					var latLng = new google.maps.LatLng(data[0].lat, data[0].long);
+					map.panTo(latLng);
+					map.setZoom(13);
 				})
 		}
 
@@ -370,63 +425,88 @@ function initMap() {
 		var station = inputBox.value;
 		for (i = 0; i < stops_import.length; i++) {
 			if (station === stops_import[i].name) {
+
+				if(favouriteStops.includes(stops_import[i].id)){
+				var contentString = '<h6 class="windowtitle">' + stops_import[i].name + '</h6>' + '<br>' + '<button class="windowbtn" id="removeFavBtn" htmlType="submit" onClick=removeFavStop(' + stops_import[i].id + ')> Unfavourite Stop </button>' 
+				} else {
+		    	var contentString = '<h6 class="windowtitle">' + stops_import[i].name + '</h6>' + '<br>' + '<button class="windowbtn" id="favBtn" htmlType="submit" onClick=addFavStop(' + stops_import[i].id + ')> Add Stop As Favourite </button>'   	
+				}
+
+
 				var latLng = new google.maps.LatLng(stops_import[i].lat, stops_import[i].long);
 				map.panTo(latLng);
 				//Need to add in fetch for real time, loader, buttons etc.
-				var loader = '<div class="spinner"><div class="double-bounce1"></div><div class="double-bounce2"></div></div>'
-				infoWindow.setContent('<p>' + stops_import[i].name + '</p>' + loader);
+				infoWindow.setContent(contentString);
 				setTimeout(function () {
 					//Zoom in
 					map.setZoom(16);
 				}, 1000)
 				infoWindow.open(map, markerList[i]);
 				//Will fix the repetition of this code later
-				var proxyURL = "https://thingproxy.freeboard.io/fetch/"
-				var targetURL = "https://data.smartdublin.ie/cgi-bin/rtpi/realtimebusinformation?stopid=" + markerList[i].id + "&format=json"
-				fetch(proxyURL + targetURL)
+				//var proxyURL = "https://thingproxy.freeboard.io/fetch/"
+				//var targetURL = "https://data.smartdublin.ie/cgi-bin/rtpi/realtimebusinformation?stopid=" + markerList[i].id + "&format=json"
+				fetch("http://localhost:8000/routes/api/realtime/?stopid="+markerList[i].id)
 					.then(response => {
 						return response.json();
 					})
 					.then(data => {
 						if (data.results.length === 0) {
-							var rtResults = '<p class="pink"> Sorry, no real time information is available </p>'
+							var rtResults = '<p class="realtimeerror"> Sorry, no real time information is available </p>'
 						}
 						else if (data.results.length === 1) {
-							var rtResults = '<br> <p class="pink">' + data.results[0].route + ' : ' + data.results[0].duetime + '</p>'
+							var rtResults = '<table class="realtime">'+
+							'<tr> <th> Route </th> <th> Arrival Time </th> </tr>'+
+							'<tr> <td>' + data.results[0].route + '</td> <td>' + data.results[0].duetime + '</td> </tr>' +
+							'</table>'
 						}
 						else if (data.results.length === 2) {
-							var rtResults = '<br> <p class="pink">' + data.results[0].route + ' : ' + data.results[0].duetime + '</p>' +
-								'<p class="pink">' + data.results[1].route + ' : ' + data.results[1].duetime + '</p>'
+							var rtResults = '<table class="realtime">'+
+							'<tr> <th> Route </th> <th> Arrival Time </th> </tr>'+
+							'<tr> <td>' + data.results[0].route + '</td> <td>' + data.results[0].duetime + '</td> </tr>' +
+							'<tr> <td>' + data.results[1].route + '</td> <td>' + data.results[1].duetime + '</td> </tr>' +
+							'</table>'
 						}
 						else if (data.results.length === 3) {
-							var rtResults = '<br> <p class="pink">' + data.results[0].route + ' : ' + data.results[0].duetime + '</p>' +
-								'<p class="pink">' + data.results[1].route + ' : ' + data.results[1].duetime + '</p>' +
-								'<p class="pink">' + data.results[2].route + ' : ' + data.results[2].duetime + '</p>'
+							var rtResults = '<table class="realtime">'+
+							'<tr> <th> Route </th> <th> Arrival Time </th> </tr>'+
+							'<tr> <td>' + data.results[0].route + '</td> <td>' + data.results[0].duetime + '</td> </tr>' +
+							'<tr> <td>' + data.results[1].route + '</td> <td>' + data.results[1].duetime + '</td> </tr>' +
+							'<tr> <td>' + data.results[2].route + '</td> <td>' + data.results[2].duetime + '</td> </tr>' +
+							'</table>'
 						}
 						else if (data.results.length === 4) {
-							var rtResults = '<br> <p class="pink">' + data.results[0].route + ' : ' + data.results[0].duetime + '</p>' +
-								'<p class="pink">' + data.results[1].route + ' : ' + data.results[1].duetime + '</p>' +
-								'<p class="pink">' + data.results[2].route + ' : ' + data.results[2].duetime + '</p>' +
-								'<p class="pink">' + data.results[3].route + ' : ' + data.results[3].duetime + '</p>'
+							var rtResults = '<table class="realtime">'+
+							'<tr> <th> Route </th> <th> Arrival Time </th> </tr>'+
+							'<tr> <td>' + data.results[0].route + '</td> <td>' + data.results[0].duetime + '</td> </tr>' +
+							'<tr> <td>' + data.results[1].route + '</td> <td>' + data.results[1].duetime + '</td> </tr>' +
+							'<tr> <td>' + data.results[2].route + '</td> <td>' + data.results[2].duetime + '</td> </tr>' +
+							'<tr> <td>' + data.results[3].route + '</td> <td>' + data.results[3].duetime + '</td> </tr>' +
+							'</table>'
 						}
 						else if (data.results.length === 5) {
-							var rtResults = '<br> <p class="pink">' + data.results[0].route + ' : ' + data.results[0].duetime + '</p>' +
-								'<p class="pink">' + data.results[1].route + ' : ' + data.results[1].duetime + '</p>' +
-								'<p class="pink">' + data.results[2].route + ' : ' + data.results[2].duetime + '</p>' +
-								'<p class="pink">' + data.results[3].route + ' : ' + data.results[3].duetime + '</p>' +
-								'<p class="pink">' + data.results[4].route + ' : ' + data.results[4].duetime + '</p>'
+							var rtResults = '<table class="realtime">'+
+							'<tr> <th> Route </th> <th> Arrival Time </th> </tr>'+
+							'<tr> <td>' + data.results[0].route + '</td> <td>' + data.results[0].duetime + '</td> </tr>' +
+							'<tr> <td>' + data.results[1].route + '</td> <td>' + data.results[1].duetime + '</td> </tr>' +
+							'<tr> <td>' + data.results[2].route + '</td> <td>' + data.results[2].duetime + '</td> </tr>' +
+							'<tr> <td>' + data.results[3].route + '</td> <td>' + data.results[3].duetime + '</td> </tr>' +
+							'<tr> <td>' + data.results[4].route + '</td> <td>' + data.results[4].duetime + '</td> </tr>' +
+							'</table>'
 						}
 						//Max amount of results, may add button to show more / all later
 						else {
-							var rtResults = '<br> <p>' + data.results[0].route + ' : ' + data.results[0].duetime + '</p>' +
-								'<p>' + data.results[1].route + ' : ' + data.results[1].duetime + '</p>' +
-								'<p>' + data.results[2].route + ' : ' + data.results[2].duetime + '</p>' +
-								'<p>' + data.results[3].route + ' : ' + data.results[3].duetime + '</p>' +
-								'<p>' + data.results[4].route + ' : ' + data.results[4].duetime + '</p>' +
-								'<p>' + data.results[5].route + ' : ' + data.results[5].duetime + '</p>'
+							var rtResults = '<table class="realtime">'+
+							'<tr> <th> Route </th> <th> Arrival Time </th> </tr>'+
+							'<tr> <td>' + data.results[0].route + '</td> <td>' + data.results[0].duetime + '</td> </tr>' +
+							'<tr> <td>' + data.results[1].route + '</td> <td>' + data.results[1].duetime + '</td> </tr>' +
+							'<tr> <td>' + data.results[2].route + '</td> <td>' + data.results[2].duetime + '</td> </tr>' +
+							'<tr> <td>' + data.results[3].route + '</td> <td>' + data.results[3].duetime + '</td> </tr>' +
+							'<tr> <td>' + data.results[4].route + '</td> <td>' + data.results[4].duetime + '</td> </tr>' +
+							'<tr> <td>' + data.results[5].route + '</td> <td>' + data.results[5].duetime + '</td> </tr>' +
+							'</table>'
 						}
 						infoWindow.setContent(
-							stops_import[i].name + rtResults
+							contentString + rtResults
 						)
 					})
 				break;
@@ -497,10 +577,6 @@ function initMap() {
 			}
 		);
 	}, 4000);
-
-	/*setTimeout(() =>{
-		markerCluster.clearMarkers();
-	}, 10000)*/
 
 }
 

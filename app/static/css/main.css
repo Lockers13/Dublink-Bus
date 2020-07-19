@@ -550,3 +550,54 @@ li{
   top:0;
 }
 
+
+/*Styling for real time information*/
+
+.realtime{
+  color:var(--black);
+  text-align: center;
+  margin-top: 10px;
+  margin-bottom: 5px;
+  margin-left: 10%;
+}
+
+h6{
+  margin-top: 3px;
+  margin-bottom: -5px;
+  text-align: center;
+}
+
+tr:nth-child(even) {
+  background-color: #dddddd;
+}
+
+.realtimeerror{
+  color: var(--black);
+  text-align: center;
+  margin-top: 10px;
+  margin-bottom: 5px;
+}
+
+.windowbtn{
+  text-align: center;
+  font-size: 12px;
+  border: 3px solid var(--white);
+  border-radius:2em;
+  width: 80%;
+  background-color: var(--pink);
+  color: var(--white);
+  margin-top: -10px;
+  align-self: center;
+  margin-left: 10%;
+}
+
+.windowtitle{
+  margin-top: 5px;
+}
+
+.windowCenter{
+  background-color: blue;
+  align-content: center;
+}
+
+
