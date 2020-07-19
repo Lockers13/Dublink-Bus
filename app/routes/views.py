@@ -98,3 +98,23 @@ class RouteFindView(generics.RetrieveAPIView):
         data = process_resp(routes)
 
         return Response(data, status=status.HTTP_200_OK)
+
+
+class RealTimeInfoView(generics.RetrieveAPIView):
+    def get(self, request):
+
+        stopid = request.query_params.get('stopid')
+
+        print("StopID searched for is:", stopid)
+
+        api_url = "https://data.smartdublin.ie/cgi-bin/rtpi/realtimebusinformation?stopid=" + stopid + "&format=json"
+
+        try:
+            res = requests.get(api_url)
+        except Exception as e:
+            error_data = "ERROR, problem with Real Time API"
+            return Response(error_data, status=status.HTTP_503_SERVICE_UNAVAILABLE)
+
+        json_resp = json.loads(res.text)
+
+        return Response(json_resp, status=status.HTTP_200_OK)
