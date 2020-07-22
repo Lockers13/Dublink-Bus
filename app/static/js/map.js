@@ -38,15 +38,12 @@ function addFavStop(stopid) {
 
 //Called from info window button
 function removeFavStop(stopid) {
-	console.log(stopid)
 	//Communicate with backend
 	var index = favouriteStops.indexOf(stopid);
 	var primarykey = (favouriteStopsPKs[index]);
 	axios.delete(`http://127.0.0.1:8000/api/favstop/destroy/${primarykey}`)
 		.then(res => console.log(res))
 		.catch(err => console.log(err));
-
-	console.log(favouriteStops)
 
 	//Adjust front end
 	var icon = {
@@ -57,8 +54,20 @@ function removeFavStop(stopid) {
 	for (var i=0; i<favMarkers.length; i++){
 		if(stopid == favMarkers[i].id){
 			favMarkers[i].setIcon(icon)
-			markerList.push(favMarker[i])
+			markerList.push(favMarkers[i])
 		}
+	}
+}
+
+function favStopButton(stopid){
+	var button = document.getElementById('favBtn')
+	if (button.innerHTML===" Add Stop As Favourite "){
+		addFavStop(stopid)
+		button.innerHTML = " Unfavourite Stop ";
+	}
+	else if (button.innerHTML===" Unfavourite Stop "){
+		removeFavStop(stopid)
+		button.innerHTML = " Add Stop As Favourite ";
 	}
 }
 
@@ -163,10 +172,10 @@ function initMap() {
 
 		//Content for infowindow
 		if(favouriteStops.includes(stop.id)){
-			var contentString = '<h6 class="windowtitle">' + marker.name + '</h6>' + '<br>' + '<button class="windowbtn" id="removeFavBtn" htmlType="submit" onClick=removeFavStop(' + marker.id + ')> Unfavourite Stop </button>' 
+			var contentString = '<h6 class="windowtitle">' + marker.name + '</h6>' + '<br>' + '<button class="windowbtn" id="favBtn" htmlType="submit" onClick=removeFavStop(' + marker.id + ')> Unfavourite Stop </button>' 
 
 		} else {
-		    var contentString = '<h6 class="windowtitle">' + marker.name + '</h6>' + '<br>' + '<button class="windowbtn" id="favBtn" htmlType="submit" onClick=addFavStop(' + marker.id + ')> Add Stop As Favourite </button>'   	
+		    var contentString = '<h6 class="windowtitle">' + marker.name + '</h6>' + '<br>' + '<button class="windowbtn" id="favBtn" htmlType="submit" onClick=favStopButton(' + marker.id + ')> Add Stop As Favourite </button>'   	
 		}
 
 		//Marker click event
@@ -252,7 +261,14 @@ function initMap() {
 	const directions = document.getElementById('results2')
 
 	function predictRoute(route_obj) {
-		console.log(route_obj)
+		//Chosen day comes from route_predict.js, will be 0 - 6(Mon - Sun)
+		console.log(chosenDay);
+		//Turn time input into seconds since midnight
+		var hours = parseInt(document.getElementById('time').value.substring(0,2), 10);
+		var minutes = parseInt(document.getElementById('time').value.substring(3,5), 10);
+		var seconds = ((hours * 3600) + (minutes * 60));
+		console.log(seconds)
+
 		for (let i = 0; i < route_obj.length; i++) {
 			fetch("http://localhost:8000/routes/api/predict?lineid=" + route_obj[i]["Line"] +
 				"&start_stop=" + route_obj[i]["Departure Stop"].toString() +

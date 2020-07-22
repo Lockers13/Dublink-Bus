@@ -54,3 +54,73 @@ var results = document.getElementById('results1');
 //     })
 // });
 
+
+var weekdays = ["MON","TUE","WEN","THU","FRI","SAT","SUN"];
+var weekdayNums = [];
+//Need to create list of next five days as weather forecast is for five days
+var fiveDays = [];
+//Chosen day is what is passed to the model
+var chosenDay;
+var count = 0;
+
+
+function getDays () {
+    //Using moment.js lib
+    let days = [];
+    let months = [];
+    let daysRequired = 5
+    for (let i = 0; i <= daysRequired; i++) {
+      days.push( moment().add(i, 'days').format('Do') )
+      months.push( moment().add(i, 'days').format('MMMM') )
+    }
+
+    var date = new Date();
+    day = date.getDay()
+    chosenDay = day-1;
+    for (i = day-1; count < 5; i++){
+
+        //Have to go back to Monday after Sunday
+        if (i == 7){
+            i = 0;
+        }
+        //Need to increase each time incase next day is in new month
+        date.setDate(date.getDate() + i);
+        var dateNum = date.getDate();
+        count += 1;
+        fiveDays.push(weekdays[i]);
+        weekdayNums.push(i);
+    }
+    let daySelect = document.getElementById('daySelect');
+    let innerHTML = "";
+    for(var j =0; j < weekdayNums.length; j++){
+        if( j === 0) {
+            innerHTML += "<div class='dayBox'> <button id="+weekdayNums[j]+" class='dayButton dayCurrent' value="+weekdayNums[j]+" onClick=selectDay("+weekdayNums[j]+")> <h6>"+ fiveDays[j] +"</h6> <p>"+days[j]+"</p> <p class='dayMonth'>"+months[j].substring(0,3).toUpperCase() +"</p> </button> </div>"
+        } else {
+        innerHTML += "<div class='dayBox'> <button id="+weekdayNums[j]+" class='dayButton' value="+weekdayNums[j]+" onClick=selectDay("+weekdayNums[j]+")> <h6>"+ fiveDays[j] +"</h6> <p>"+days[j]+"</p> <p class='dayMonth'>"+ months[j].substring(0,3).toUpperCase() +"</p> </button> </div>"
+        }
+        //console.log(weekdayNums[j], fiveDays[j]);
+        daySelect.innerHTML= innerHTML;
+    }
+}
+
+getDays();
+
+function selectDay (value) {
+    document.getElementById(value).style.backgroundColor = "red";
+    chosenDay = value;
+    for(let i = 0; i<weekdayNums.length; i++){
+        if (weekdayNums[i] != value) {
+            document.getElementById(weekdayNums[i]).style.backgroundColor = "#202346";
+        }
+        else if(weekdayNums[i] === value){
+            document.getElementById(value).style.backgroundColor = "#F86379";
+        }
+    }
+}
+
+
+
+
+
+
+

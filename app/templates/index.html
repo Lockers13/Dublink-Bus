@@ -44,6 +44,12 @@
 			<div class="routePlanForm">
 				<input id="startLocation" placeholder="Enter start location" type="text" class="stoptextbox"/>
 				<input id="endLocation" placeholder="Enter end location" type="text" class="stoptextbox"/>
+				<div id="daySelect">
+				</div>
+				<div class="timeSelect">
+					<!-- <input class="timeBox" type="time" value="13:30"/> -->
+					<input id="time" class="timeBox" type="time" value="13:30"/>
+				</div>
 				{% if user.is_authenticated %}
 					<h4 id="locationsHeader"> Quick Access Locations </h4>
 					<ul id="favAddressSection">
@@ -95,6 +101,8 @@
 <script type="text/javascript">var context = {current_user: '{{current_user}}'};</script>
 <!--Geolocation script -->
 <script type="text/javascript" src="{% static 'js/geolocation.js' %}"></script>
+<!-- Library to get accurate date and times for route planning -->
+<script type="text/javascript" src="{% static 'js/moment.min.js' %}"></script>
 <!--Map related scripts-->
 <script type="text/javascript" src="{% static 'js/mapStyle.js' %}"></script>
 <script type="text/javascript" src="{% static 'js/route_predict.js' %}"></script>
