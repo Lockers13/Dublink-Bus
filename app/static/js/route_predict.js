@@ -104,8 +104,6 @@ function getDays () {
         //console.log(weekdayNums[j], fiveDays[j]);
         daySelect.innerHTML= innerHTML;
     }
-    console.log(dates)
-    console.log(weekdayNums)
 }
 
 getDays();
