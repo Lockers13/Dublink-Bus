@@ -15,7 +15,8 @@ from predict_route import get_prediction
 import sys
 import requests
 from dir_api_resp import process_resp
-
+from sqlalchemy import create_engine, event
+import pymysql
 
 class RouteMapView(generics.RetrieveAPIView):
     def get(self, request):
@@ -48,7 +49,7 @@ class RoutePredictView(generics.RetrieveAPIView):
 
     def get(self, request):
 
-        data_dir = settings.BASE_DIR + staticfiles_storage.url('model_integration')
+        data_dir = '/Users/lconroy/comp_msc/dublink_bus/model_integration'
         lineid = request.query_params.get('lineid')
         routeid = request.query_params.get('routeid')
         start_stop = request.query_params.get('start_stop')
@@ -140,3 +141,36 @@ class RealTimeInfoView(generics.RetrieveAPIView):
         json_resp = json.loads(res.text)
 
         return Response(json_resp, status=status.HTTP_200_OK)
+
+class WeatherRetrieveView(generics.RetrieveAPIView):
+    def get(self, request):
+         # change os.environ.get('DB_PWD') if API returns "error problem with DB cnx"
+        try:
+            cnx = create_engine('mysql+pymysql://root:' + os.environ.get('DB_PWD') + '@localhost:3307/dublin_bus') 
+        except:
+            error_data = "ERROR, problem with DB cnx"
+            return Response(error_data, status=status.HTTP_503_SERVICE_UNAVAILABLE)
+
+        with cnx.connect() as connection:
+            hourly_weather = connection.execute("SELECT * FROM hourly_weather")
+            daily_weather = connection.execute("SELECT * FROM daily_weather")
+        
+
+        return Response({"hourly_weather": hourly_weather,
+                        "daily_weather": daily_weather}, status=status.HTTP_200_OK)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
