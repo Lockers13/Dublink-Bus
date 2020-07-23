@@ -163,8 +163,8 @@ class WeatherRetrieveView(generics.RetrieveAPIView):
             except Exception as e:
                 print("Hourly error:", str(e))
             try:
-                stmt2 = text("SELECT * FROM daily_weather WHERE datetime = = :dt")
-                stmt2 = stmt1.bindparams(dt=str(datetimestr.split(" ")[0] + " 12:00:00"))
+                stmt2 = text("SELECT * FROM daily_weather WHERE datetime = :dt")
+                stmt2 = stmt2.bindparams(dt=str(datetimestr.split(" ")[0] + " 12:00:00"))
                 daily_weather = connection.execute(stmt2).fetchall()
             except Exception as e:
                 print("Daily error:", str(e))
