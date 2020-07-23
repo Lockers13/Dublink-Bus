@@ -262,69 +262,42 @@ function initMap() {
 
 	function predictRoute(route_obj) {
 		//Dates and dates index coming from route_predict.js
-		var chosenDate = dates[datesIndex];
-		//Chosen day comes from route_predict.js, will be 0 - 6(Mon - Sun)
-		console.log(chosenDay);
-		//Turn time input into seconds since midnight
-		var hours = parseInt(document.getElementById('time').value.substring(0,2), 10);
-		var minutes = parseInt(document.getElementById('time').value.substring(3,5), 10);
-		var seconds = ((hours * 3600) + (minutes * 60));
-		console.log(seconds)
-		//Need to get hours to be either 00,03,06,09,12,18,21 for weather data of every 3 hours
-		if(hours < 03){
-			hours = " 00:00:00"
-		}
-		else if (hours < 06){
-			hours = " 03:00:00"
-		}
-		else if (hours < 09){
-			hours = " 06:00:00"
-		}
-		else if (hours < 12){
-			hours = " 09:00:00"
-		}
-		else if (hours < 15){
-			hours = " 12:00:00"
-		}
-		else if (hours < 18){
-			hours = " 15:00:00"
-		}
-		else if (hours < 21){
-			hours = " 18:00:00"
-		}
-		else if (hours <= 23){
-			hours = " 21:00:00"
-		}
-		var weatherString = chosenDate.toString() + hours
-		var temp;
-		var weatherDescription;
-		for(var k = 0; k<weatherList.length; k++){
-			console.log("weatherString: ", weatherString)
-			console.log("dt_text: ", weatherList[k].dt_txt)
-			console.log(typeof(weatherString))
-			console.log(typeof(weatherList[k].dt_txt))
-			if(weatherList[k].dt_txt == weatherString){
-				temp = weatherList[k].main.temp
-				weatherDescription = weatherList[k].weather[0].main
-			}
-		}
-		console.log(temp)
-		console.log(weatherDescription)
-		
+		let chosenDate = dates[datesIndex];
 
-		for (let i = 0; i < route_obj.length; i++) {
-			fetch("http://localhost:8000/routes/api/predict?lineid=" + route_obj[i]["Line"] +
-				"&start_stop=" + route_obj[i]["Departure Stop"].toString() +
-				"&end_stop=" + route_obj[i]["Arrival Stop"].toString() +
-				"&routeid=" + route_obj[i]["Route ID"])
-				.then(response => response.json())
-				.then(function (data) {
-					console.log(data)
-					alert("Your planned route will take approx: " + 
-					data["journey_info"]["journey_time"]["hours"] + " hours and " + 
-					data["journey_info"]["journey_time"]["minutes"] + " minutes")
-				})
-		}
+		let hours = parseInt(document.getElementById('time').value.substring(0,2), 10);
+		var minutes = parseInt(document.getElementById('time').value.substring(3,5), 10);
+		// get seconds since midnight for model
+		var seconds = ((hours * 3600) + (minutes * 60))
+
+		let datetimestr = chosenDate + " " + hours + ":00:00"
+
+		fetch('http://localhost:8000/routes/api/get_weather?datetime=' + datetimestr)
+		.then(response => response.json())
+		.then(function (data) {
+			console.log(data)
+			});
+		return
+		
+		// //Chosen day comes from route_predict.js, will be 0 - 6(Mon - Sun)
+		// console.log(chosenDay);
+		// //Turn time input into seconds since midnight
+		
+		// console.log(seconds)
+		// //Need to get hours to be either 00,03,06,09,12,18,21 for weather data of every 3 hours
+
+		// for (let i = 0; i < route_obj.length; i++) {
+		// 	fetch("http://localhost:8000/routes/api/predict?lineid=" + route_obj[i]["Line"] +
+		// 		"&start_stop=" + route_obj[i]["Departure Stop"].toString() +
+		// 		"&end_stop=" + route_obj[i]["Arrival Stop"].toString() +
+		// 		"&routeid=" + route_obj[i]["Route ID"])
+		// 		.then(response => response.json())
+		// 		.then(function (data) {
+		// 			console.log(data)
+		// 			alert("Your planned route will take approx: " + 
+		// 			data["journey_info"]["journey_time"]["hours"] + " hours and " + 
+		// 			data["journey_info"]["journey_time"]["minutes"] + " minutes")
+		// 		})
+		// }
 	}
 
 	function getPlotMarkers(route_obj) {

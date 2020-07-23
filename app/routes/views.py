@@ -17,6 +17,7 @@ import requests
 from dir_api_resp import process_resp
 from sqlalchemy import create_engine, event
 import pymysql
+import datetime
 
 class RouteMapView(generics.RetrieveAPIView):
     def get(self, request):
@@ -144,6 +145,9 @@ class RealTimeInfoView(generics.RetrieveAPIView):
 
 class WeatherRetrieveView(generics.RetrieveAPIView):
     def get(self, request):
+
+        datetimestr = request.query_params.get('datetime')
+        print(datetimestr)
          # change os.environ.get('DB_PWD') if API returns "error problem with DB cnx"
         try:
             cnx = create_engine('mysql+pymysql://root:' + os.environ.get('DB_PWD') + '@localhost:3307/dublin_bus') 
@@ -152,12 +156,17 @@ class WeatherRetrieveView(generics.RetrieveAPIView):
             return Response(error_data, status=status.HTTP_503_SERVICE_UNAVAILABLE)
 
         with cnx.connect() as connection:
-            hourly_weather = connection.execute("SELECT * FROM hourly_weather")
-            daily_weather = connection.execute("SELECT * FROM daily_weather")
+            try:
+                hourly_weather = connection.execute("SELECT * FROM hourly_weather WHERE datetime = \"{0}\"".format(datetimestr))
+            except Exception as e:
+                print("Hourly error:", str(e))
+            try:
+                daily_weather = connection.execute("SELECT * FROM daily_weather WHERE datetime = \"{0}\"".format(
+                    datetimestr.split(" ")[0] + " 12:00:00"))
+            except Exception as e:
+                print("Daily error:", str(e))
         
-
-        return Response({"hourly_weather": hourly_weather,
-                        "daily_weather": daily_weather}, status=status.HTTP_200_OK)
+        return Response({"hourly_weather": hourly_weather, "daily_weather": daily_weather}, status=status.HTTP_200_OK)
 
 
 
