@@ -62,6 +62,8 @@ var fiveDays = [];
 //Chosen day is what is passed to the model
 var chosenDay;
 var count = 0;
+var datesIndex = 0;
+var dates = [];
 
 
 function getDays () {
@@ -72,6 +74,7 @@ function getDays () {
     for (let i = 0; i <= daysRequired; i++) {
       days.push( moment().add(i, 'days').format('Do') )
       months.push( moment().add(i, 'days').format('MMMM') )
+      dates.push( moment().add(i, 'days').format().substring(0,10) )
     }
 
     var date = new Date();
@@ -101,13 +104,15 @@ function getDays () {
         //console.log(weekdayNums[j], fiveDays[j]);
         daySelect.innerHTML= innerHTML;
     }
+    console.log(dates)
+    console.log(weekdayNums)
 }
 
 getDays();
 
 function selectDay (value) {
-    document.getElementById(value).style.backgroundColor = "red";
     chosenDay = value;
+    datesIndex = weekdayNums.indexOf(chosenDay);
     for(let i = 0; i<weekdayNums.length; i++){
         if (weekdayNums[i] != value) {
             document.getElementById(weekdayNums[i]).style.backgroundColor = "#202346";

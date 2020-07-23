@@ -71,6 +71,12 @@
 				<p id="results2"></p>
 			<div>
 		</div>
+	<!--Must have missed a few div tags somewhere, keep these in -->
+	</div>
+	</div>
+	</div>
+	</div>
+
 		
 	</div>
 </div>
@@ -79,10 +85,48 @@
 	<p id="journey_info"></p>
 </div> -->
 
+<div class="lowerContainer">
+	<div class="row">
+		<div class="col-lg-12 col-md-12 col-sm-12">
+			<div id="takeatrip" class="takeTripSection">
+				<h1 class="tripTitle"> TAKE A TRIP </h1>
+				<div id="tripmessage" class="message">
+					<p>Oh No! Looks like you don't have any trips planned. To plan a trip use the route prediction tool above and select 'TAKE A TRIP' to get live updates on your journey and see additional journey information such as the environmental impact of your journey.</p>
+					<p>Please Note: Location tracking must be enabled for this </p>
+				</div>
+				<div class="container">
+					<div class="row">
+						<div class="col-sm-12 col-md-6">
+							<div id="selectedTrip">
+								<h3>Upcoming Stops</h4>
+								<div id="upcomingStops">
+								</div>
+							</div>
+						</div>
+						<div class="col-sm-12 col-md-6">
+							<div id="tripInfo">
+								<h3>Trip Information</h4>
+								<p>Estimated Arrival Time: </p>
+								<p>Time Until Arrival: </p>
+								<p>Stops Until Destination: </p>
+								<p>Distance to Destination: </p>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<div id="startJourney">
+		<button id="start">Start Journey</button>
+	</div>
+	<div id="endJourney">
+		<button id="end">End Journey</button>
+	</div>
 
-<div id="startJourney">
-	<button id="start">Start</button>
 </div>
+
 
 <!-- <div style="margin-top:20px" id="getRouteContainer">
 	<form id="route_get_form">
@@ -128,6 +172,8 @@
 <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <script type="text/javascript" src="{% static 'js/searchBar.js' %}"></script>
+<!--Fetch weather data, last as will likely be used last--> 
+<script type="text/javascript" src="{% static 'js/weather.js' %}"></script>
 
 
 {% endblock content %}

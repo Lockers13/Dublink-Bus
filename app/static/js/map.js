@@ -261,6 +261,8 @@ function initMap() {
 	const directions = document.getElementById('results2')
 
 	function predictRoute(route_obj) {
+		//Dates and dates index coming from route_predict.js
+		var chosenDate = dates[datesIndex];
 		//Chosen day comes from route_predict.js, will be 0 - 6(Mon - Sun)
 		console.log(chosenDay);
 		//Turn time input into seconds since midnight
@@ -268,6 +270,47 @@ function initMap() {
 		var minutes = parseInt(document.getElementById('time').value.substring(3,5), 10);
 		var seconds = ((hours * 3600) + (minutes * 60));
 		console.log(seconds)
+		//Need to get hours to be either 00,03,06,09,12,18,21 for weather data of every 3 hours
+		if(hours < 03){
+			hours = " 00:00:00"
+		}
+		else if (hours < 06){
+			hours = " 03:00:00"
+		}
+		else if (hours < 09){
+			hours = " 06:00:00"
+		}
+		else if (hours < 12){
+			hours = " 09:00:00"
+		}
+		else if (hours < 15){
+			hours = " 12:00:00"
+		}
+		else if (hours < 18){
+			hours = " 15:00:00"
+		}
+		else if (hours < 21){
+			hours = " 18:00:00"
+		}
+		else if (hours <= 23){
+			hours = " 21:00:00"
+		}
+		var weatherString = chosenDate.toString() + hours
+		var temp;
+		var weatherDescription;
+		for(var k = 0; k<weatherList.length; k++){
+			console.log("weatherString: ", weatherString)
+			console.log("dt_text: ", weatherList[k].dt_txt)
+			console.log(typeof(weatherString))
+			console.log(typeof(weatherList[k].dt_txt))
+			if(weatherList[k].dt_txt == weatherString){
+				temp = weatherList[k].main.temp
+				weatherDescription = weatherList[k].weather[0].main
+			}
+		}
+		console.log(temp)
+		console.log(weatherDescription)
+		
 
 		for (let i = 0; i < route_obj.length; i++) {
 			fetch("http://localhost:8000/routes/api/predict?lineid=" + route_obj[i]["Line"] +
@@ -296,6 +339,7 @@ function initMap() {
 				"&routeid=" + route_obj[i]["Route ID"])
 				.then(response => response.json())
 				.then(function (data) {
+					console.log(data);
 					let line_color;
 					line_color = (i % 2 == 0) ? "#1F70E0" : "#FF70E0";
 					for (let j = 0; j < data.length; j++) {
@@ -335,7 +379,7 @@ function initMap() {
 					if (data[route]["routable"] == "b") {
 						route_info[route] = []
 						directions.innerHTML += "<h2>Route " + ++count + "</h2><button class='route_plot' id='" + route + "' style='display:inline-block;float:left;'>Plot Route</button>" + 
-						"<button class='route_pred' id='" + route + "_pred' style='display:inline-block;float:left;'>Predict Route</button><br><br>"
+						"<button class='route_pred' id='" + route + "_pred' style='display:inline-block;float:left;'>Predict Route</button><a href='#takeatrip'><button>Take A Trip</button></a><br><br>"
 						for (let j = 0; j < step_keys.length; j++) {
 							let step = "Step_" + (j + 1)
 							try {
