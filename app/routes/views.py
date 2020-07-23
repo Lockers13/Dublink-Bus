@@ -17,7 +17,7 @@ import requests
 from dir_api_resp import process_resp
 from sqlalchemy import create_engine, event
 import pymysql
-import datetime
+from sqlalchemy.sql import text
 
 class RouteMapView(generics.RetrieveAPIView):
     def get(self, request):
@@ -157,12 +157,15 @@ class WeatherRetrieveView(generics.RetrieveAPIView):
 
         with cnx.connect() as connection:
             try:
-                hourly_weather = connection.execute("SELECT * FROM hourly_weather WHERE datetime = \"{0}\"".format(datetimestr))
+                stmt1 = text("SELECT * FROM hourly_weather WHERE datetime = :dt")
+                stmt1 = stmt1.bindparams(dt=str(datetimestr))
+                hourly_weather = connection.execute(stmt1).fetchall()
             except Exception as e:
                 print("Hourly error:", str(e))
             try:
-                daily_weather = connection.execute("SELECT * FROM daily_weather WHERE datetime = \"{0}\"".format(
-                    datetimestr.split(" ")[0] + " 12:00:00"))
+                stmt2 = text("SELECT * FROM daily_weather WHERE datetime = = :dt")
+                stmt2 = stmt1.bindparams(dt=str(datetimestr.split(" ")[0] + " 12:00:00"))
+                daily_weather = connection.execute(stmt2).fetchall()
             except Exception as e:
                 print("Daily error:", str(e))
         
