@@ -304,16 +304,9 @@ function initMap() {
 			
 		})
 	
-
-		
-		
-
-
-
 		
 		// Chosen day comes from route_predict.js, will be 0 - 6(Mon - Sun)
-		console.log(chosenDay);
-		return
+
 		// //Turn time input into seconds since midnight
 		
 		// console.log(seconds)
