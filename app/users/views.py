@@ -57,7 +57,8 @@ class FavStopListCreate(generics.ListAPIView):
     #Only want to ever get stops for current user
     def get_queryset(self):
         user = self.request.user
-        return FavStop.objects.filter(user=user)
+        if user.is_authenticated:
+            return FavStop.objects.filter(user=user)
     serializer_class = FavStopSerializer
 
 class FavStopDetailView(generics.RetrieveAPIView):
@@ -82,7 +83,8 @@ class FavAddressListCreate(generics.ListAPIView):
     #Only want to ever get stops for current user
     def get_queryset(self):
         user = self.request.user
-        return FavAddress.objects.filter(user=user)
+        if user.is_authenticated:
+            return FavAddress.objects.filter(user=user)
     serializer_class = FavAddressSerializer
 
 class FavAddressDetailView(generics.RetrieveAPIView):
