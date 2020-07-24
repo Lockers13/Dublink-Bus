@@ -55,6 +55,11 @@ class RoutePredictView(generics.RetrieveAPIView):
         routeid = request.query_params.get('routeid')
         start_stop = request.query_params.get('start_stop')
         end_stop = request.query_params.get('end_stop')
+        time_secs = request.query_params.get('time_secs')
+        dow = request.query_params.get('dow')
+        rain = request.query_params.get('rain')
+        temp = request.query_params.get('temp')
+
         try:
             model_pickle = os.path.join(data_dir, 'pickle_file/XG_{}.pkl'.format(lineid))
             model = joblib.load(open(model_pickle, 'rb'))
@@ -74,11 +79,11 @@ class RoutePredictView(generics.RetrieveAPIView):
             'start_stop': start_stop,
             'end_stop': end_stop,
             'direction': direction,
-            'time_secs': "60000",
-            'dow': "4",
+            'time_secs': time_secs,
+            'dow': dow,
             'holiday': "0",
-            'rain': "0.0",
-            'temp': "9.5",
+            'rain': rain,
+            'temp': temp,
             'vp': "10.6",
             'rh': "89.0"
         }
