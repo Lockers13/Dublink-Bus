@@ -65,10 +65,9 @@
 			          	<p><a href="{% url 'login' %}">Log in</a> or <a href="{% url 'register' %}"> register </a> to save favourite locations </p>
 		        {% endif %}
 		        <button class="routePlanButton" id="planRouteSubmit">Search</button>
-			</div>
-			<div class="RoutePlanResults">
-				<p id="results1"></p>
-				<p id="results2"></p>
+			</div><br><br>
+			<div class="RoutePlanResults" style="overflow-y:scroll;height:400px;color:white;">
+				<span id="results2"></span>
 			<div>
 		</div>
 	<!--Must have missed a few div tags somewhere, keep these in -->

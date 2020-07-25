@@ -263,7 +263,7 @@ function initMap() {
 	function predictRoute(route_obj) {
 		//Dates and dates index coming from route_predict.js
 		let chosenDate = dates[datesIndex];
-		let weather_data = {}
+		let weather_data = {"spec": ""}
 
 		let hours = parseInt(document.getElementById('time').value.substring(0,2), 10);
 		let minutes = parseInt(document.getElementById('time').value.substring(3,5), 10);
@@ -277,12 +277,15 @@ function initMap() {
 		.then(function (data) {
 			if(data["hourly_weather"].length != 0) {
 				weather_data["weather"] = data["hourly_weather"][0]
+				weather_data["spec"] = "hourly"
 			}
-			else
+			else {
 				weather_data["weather"] = data["daily_weather"][0]
+			}
+
 			})
 		.then(function () {
-			let temp = weather_data["weather"]['temp']
+			let temp = (weather_data["spec"] == "hourly")? weather_data["weather"]['temp']: weather_data["weather"]['day_temp'];
 			let rain = weather_data["weather"]['rainfall']
 			for (let i = 0; i < route_obj.length; i++) {
 				fetch("http://localhost:8000/routes/api/predict?lineid=" + route_obj[i]["Line"] +
@@ -381,7 +384,7 @@ function initMap() {
 										"Arrival Stop": data[route][step]["Route Validation"]["End stop"],
 										"Route ID": data[route][step]["Route Validation"]["Route ID"]
 									})
-									directions.innerHTML += "<ul style'margin-left:200px;'>"
+									directions.innerHTML += "<br><ul style'margin-left:200px;'>"
 									directions.innerHTML += "<li>Line: " + data[route][step]["Line"] + "</li>"
 									directions.innerHTML += "<li>Departure Stop: " + data[route][step]["Departure Stop Name"] + "</li>"
 									directions.innerHTML += "<li>Arrival Stop: " + data[route][step]["Arrival Stop Name"] + "</li>"
