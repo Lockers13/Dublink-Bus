@@ -362,6 +362,7 @@ function initMap() {
 				let route_keys = Object.keys(data)
 				let count = 0
 				let route_info = {}
+				let route_flag = false
 				for (let i = 0; i < route_keys.length; i++) {
 				
 					let route = route_keys[i]
@@ -377,6 +378,7 @@ function initMap() {
 								directions.innerHTML += "-> " + data[route][step]["Instructions"] + "<br>"
 
 								if (Object.keys(data[route][step]).length > 1) {
+									route_flag = true
 
 									route_info[route].push({
 										"Line": data[route][step]["Line"],
@@ -398,6 +400,8 @@ function initMap() {
 						directions.innerHTML += "<br>"
 					}
 				}
+				if(!route_flag)
+					directions.innerHTML += "<br>Sorry, we could not find any data for the specified route.<br>Please try again...!"
 
 				let plot_btns = document.getElementsByClassName('route_plot')
 				let route_info_keys = Object.keys(route_info)
