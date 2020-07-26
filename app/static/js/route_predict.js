@@ -58,7 +58,7 @@ var results = document.getElementById('results1');
 var weekdays = ["MON","TUE","WEN","THU","FRI","SAT","SUN"];
 var weekdayNums = [];
 //Need to create list of next five days as weather forecast is for five days
-var fiveDays = [];
+//var fiveDays = [];
 //Chosen day is what is passed to the model
 var chosenDay;
 var count = 0;
@@ -70,11 +70,13 @@ function getDays () {
     //Using moment.js lib
     let days = [];
     let months = [];
+    let fiveDays = [];
     let daysRequired = 5
     for (let i = 0; i <= daysRequired; i++) {
       days.push( moment().add(i, 'days').format('Do') )
       months.push( moment().add(i, 'days').format('MMMM') )
       dates.push( moment().add(i, 'days').format().substring(0,10) )
+      fiveDays.push( moment().add(i, 'days').format('dddd').substring(0,3).toUpperCase() )
     }
 
     var date = new Date();
@@ -90,18 +92,22 @@ function getDays () {
         date.setDate(date.getDate() + i);
         var dateNum = date.getDate();
         count += 1;
-        fiveDays.push(weekdays[i]);
         weekdayNums.push(i);
     }
+
     let daySelect = document.getElementById('daySelect');
     let innerHTML = "";
+    chosenDay = weekdayNums[0];
+    //Quick fix for weekday number of sunday being -1
+    if (chosenDay === -1){
+        chosenDay = 6
+    }
     for(var j =0; j < weekdayNums.length; j++){
         if( j === 0) {
             innerHTML += "<div class='dayBox'> <button id="+weekdayNums[j]+" class='dayButton dayCurrent' value="+weekdayNums[j]+" onClick=selectDay("+weekdayNums[j]+")> <h6>"+ fiveDays[j] +"</h6> <p>"+days[j]+"</p> <p class='dayMonth'>"+months[j].substring(0,3).toUpperCase() +"</p> </button> </div>"
         } else {
         innerHTML += "<div class='dayBox'> <button id="+weekdayNums[j]+" class='dayButton' value="+weekdayNums[j]+" onClick=selectDay("+weekdayNums[j]+")> <h6>"+ fiveDays[j] +"</h6> <p>"+days[j]+"</p> <p class='dayMonth'>"+ months[j].substring(0,3).toUpperCase() +"</p> </button> </div>"
         }
-        //console.log(weekdayNums[j], fiveDays[j]);
         daySelect.innerHTML= innerHTML;
     }
 }
@@ -110,6 +116,10 @@ getDays();
 
 function selectDay (value) {
     chosenDay = value;
+    //Quick fix for error when selecting sunday
+    if (chosenDay === -1){
+        chosenDay = 6
+    }
     datesIndex = weekdayNums.indexOf(chosenDay);
     for(let i = 0; i<weekdayNums.length; i++){
         if (weekdayNums[i] != value) {

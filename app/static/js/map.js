@@ -262,6 +262,7 @@ function initMap() {
 
 	function predictRoute(route_obj) {
 		//Dates and dates index coming from route_predict.js
+<<<<<<< HEAD
 		let chosenDate = dates[datesIndex];
 		let weather_data = {"spec": ""}
 
@@ -306,15 +307,6 @@ function initMap() {
 			}
 			
 		})
-	
-		
-		// Chosen day comes from route_predict.js, will be 0 - 6(Mon - Sun)
-
-		// //Turn time input into seconds since midnight
-		
-		// console.log(seconds)
-		// //Need to get hours to be either 00,03,06,09,12,18,21 for weather data of every 3 hours
-
 		
 	}
 

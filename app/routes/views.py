@@ -50,7 +50,8 @@ class RoutePredictView(generics.RetrieveAPIView):
 
     def get(self, request):
 
-        data_dir = '/Users/lconroy/comp_msc/dublink_bus/model_integration'
+
+        data_dir = 'C:\\Users\\rbyrn\\Desktop\\dublinbus\\app\\model_integration'
         lineid = request.query_params.get('lineid')
         routeid = request.query_params.get('routeid')
         start_stop = request.query_params.get('start_stop')
