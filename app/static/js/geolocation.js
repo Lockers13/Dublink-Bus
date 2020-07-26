@@ -49,7 +49,6 @@ function validateCO2Points(){
 
 function startJourney(stopList){
 	//Variables for models are dayNum, seconds, currentTemp and currentWeatherDescription
-
 	//Information needed for the model predictions
 	let day = new Date();
 	//Day should be Mon - Sun ( 0- 6 ) hence the - 1
@@ -60,8 +59,9 @@ function startJourney(stopList){
 	let currentTemp = weatherList[0].main.temp
 	let currentWeatherDescription = weatherList[0].weather[0].main
 
-
-	
+	//Current time used to display time left until arrival
+	let currentTime = moment().format('HH:mm');
+	console.log(currentTime);
 
 	//nextStopList containes all remaining stops, first stop popped off once has been
 	let nextStopList = []
@@ -84,11 +84,6 @@ function startJourney(stopList){
 			   	//This gets the users current locations, once off to ensure they are within the correct distance of start stop
   				navigator.geolocation.getCurrentPosition((position) => {
   					console.log(position)
-
-  								//////////////////Want to run the model here/////////////
-								////////////// The data from this will update the estimated arrival time and time until arrival //////////////
-
-								///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
   					//This ensures that the user is within at least 250 meters of stop, 250 gives us room for error
   					if(distanceToStop(position.coords.latitude, position.coords.longitude, data[0].lat, data[0].long) < 10000){
@@ -117,6 +112,15 @@ function startJourney(stopList){
   							}
   						}
   						upcomingStops.innerHTML = innerHTML;
+
+  						//Run the predictive model here, the updated time will therefore take a second longer to display
+  						fetch("http://localhost:8000/routes/api/predict/?lineid=14&start=4336&end=1072&routeid=14_16")
+  						.then(response => {
+  							return response.json()
+  						})
+  						.then(data => {
+  							console.log(data)
+  						})
 
   					//Error handling if user is too far from a stop
   					} else {

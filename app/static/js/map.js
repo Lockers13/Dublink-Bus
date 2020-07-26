@@ -299,17 +299,11 @@ function initMap() {
 		var temp;
 		var weatherDescription;
 		for(var k = 0; k<weatherList.length; k++){
-			console.log("weatherString: ", weatherString)
-			console.log("dt_text: ", weatherList[k].dt_txt)
-			console.log(typeof(weatherString))
-			console.log(typeof(weatherList[k].dt_txt))
 			if(weatherList[k].dt_txt == weatherString){
 				temp = weatherList[k].main.temp
 				weatherDescription = weatherList[k].weather[0].main
 			}
 		}
-		console.log(temp)
-		console.log(weatherDescription)
 		
 
 		for (let i = 0; i < route_obj.length; i++) {

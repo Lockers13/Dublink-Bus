@@ -780,4 +780,89 @@ footer img{
 }
 
 
+/* Login page Styling */
+
+.loginForm{
+  width: 100%;
+  margin-bottom: 300px;
+  color: var(--white);
+}
+
+.loginTitle{
+  text-align: center;
+  color: var(--pink);
+  font-size: 48px;
+}
+
+.buttonCenter{
+  text-align: center;
+  margin-top: 20px;
+}
+
+.loginButton{
+  background-color: var(--pink);
+}
+
+.loginButton:hover {
+  background-color: var(--pink);
+}
+
+.textinput{
+  text-align: center;
+  border:none;
+  background-color: var(--black);
+  border-bottom: 3px solid var(--pink);
+  color:var(--white);
+  margin-bottom: 20px;
+  text-decoration: none;
+  font-size: 28px;
+  margin-top: 10px;
+}
+
+@media only screen and (max-width: 600px) {
+  .loginForm{
+    margin-bottom: 100px;
+  }
+}
+
+@media only screen and (max-width: 800px) {
+  .loginForm{
+    margin-bottom: 100px;
+  }
+}
+
+
+/* Logout page Styling */
+
+.logoutTitle{
+  text-align: center;
+  color: var(--pink);
+  font-size: 48px;
+}
+
+.logoutContainer{
+  margin-bottom: 400px;
+}
+
+.loginAgain{
+  text-align: center;
+  margin-top: 100px;
+  font-size: 40px;
+}
+
+@media only screen and (max-width: 600px) {
+  .logoutContainer{
+    margin-bottom: 100px;
+  }
+}
+
+@media only screen and (max-width: 800px) {
+  .logoutContainer{
+    margin-bottom: 100px;
+  }
+}
+
+
+
+
 
