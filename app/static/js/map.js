@@ -2,7 +2,7 @@ var current_user = context.current_user
 //FavouiteStops used for marker icon if statement
 const favouriteStops = []
 //Used for unfavourite functionality
-const favouriteStopsPKs = []
+var favouriteStopsPKs = []
 
 var favMarkers = []
 var markerList = []
@@ -11,16 +11,38 @@ var polyline = []
 
 //Called from infowindow button
 function addFavStop(stopid) {
-	//communicate with backend
-	user = current_user
-	axios.post('http://127.0.0.1:8000/api/favstop/create/', {
-		name: "test",
-		stopid: stopid,
-		user: user,
-		current_user: user
-	})
-		.then(res => console.log(res))
-		.catch(err => console.log(err));
+
+	const addNewFav = new Promise((resolve, reject) => {
+		user = current_user
+		axios.post('http://127.0.0.1:8000/api/favstop/create/', {
+			name: stopid,
+			stopid: stopid,
+			user: user,
+			current_user: user
+		})
+		.then(res => resolve(res))
+		.catch(err => reject(err))
+	});
+
+	async function getFavStops() {
+		favouriteStopsPKs = []
+		setTimeout(()=>{
+			fetch("api/favstop/")
+			.then(response => {
+				return response.json();
+			})
+			.then(data => {
+				data.forEach((stop) => {
+					favouriteStopsPKs.push(stop.id)
+				});
+			})
+			.catch(error => {
+				console.log(error)
+			})
+		},3000)
+		//Increase this number if want to be a delay effect between map load and stops load 	
+	}
+	getFavStops()
 
 	//Adjust front end
 	var icon = {
@@ -32,22 +54,21 @@ function addFavStop(stopid) {
 		if(stopid === markerList[i].id){
 			markerList[i].setIcon(icon)
 			favMarkers.push(markerList[i])
+			favouriteStops.push(markerList[i].id)
 		}
 	}
+
 }
 
 //Called from info window button
 function removeFavStop(stopid) {
 	//Communicate with backend
-	console.log("Searching for: ", stopid)
-	console.log("In this list: ", favouriteStops)
-	console.log("To get this: ", favouriteStopsPKs)
 	var index = favouriteStops.indexOf(stopid);
 	var primarykey = (favouriteStopsPKs[index]);
+	console.log("Primary key is: ", primarykey);
 	axios.delete(`http://127.0.0.1:8000/api/favstop/destroy/${primarykey}`)
-		.then(res => console.log(res))
-		.catch(err => console.log(err));
-
+		.then(res => console.log("Success", res))
+		.catch(err => console.log("Error", err))
 	//Adjust front end
 	var icon = {
 				url: '../static/images/bus-stop.png',
@@ -55,20 +76,26 @@ function removeFavStop(stopid) {
 			};
 			
 	for (var i=0; i<favMarkers.length; i++){
-		if(stopid == favMarkers[i].id){
+		if(stopid === favMarkers[i].id){
 			favMarkers[i].setIcon(icon)
 			markerList.push(favMarkers[i])
+		}
+		else{
+			console.log("No match")
 		}
 	}
 }
 
 function favStopButton(stopid){
+	console.log("Favourite button has been clicked")
+	
 	var button = document.getElementById('favBtn')
 	if (button.innerHTML===" Add Stop As Favourite "){
 		addFavStop(stopid)
 		button.innerHTML = " Unfavourite Stop ";
 	}
 	else if (button.innerHTML===" Unfavourite Stop "){
+		console.log("Unfavourite button of fav has been clicked")
 		removeFavStop(stopid)
 		button.innerHTML = " Add Stop As Favourite ";
 	}
@@ -115,7 +142,7 @@ function initMap() {
 	  }
 
 	//Add marker function
-	function addMarker(stop, prev_stop, line_color, route=false) {
+	function addMarker(stop, prev_stop, line_color, route=false, favourite=false) {
 
 		if (!(prev_stop === null))
 			var prev_coords = { lat: prev_stop.lat, lng: prev_stop.long }
@@ -123,10 +150,17 @@ function initMap() {
 		var coords = { lat: stop.lat, lng: stop.long }
 
 		//Style for the icon
-		var icon = {
-			url: '../static/images/bus-stop.png',
-			scaledSize: new google.maps.Size(12, 12)
-		};
+		if (favourite === false){
+			var icon = {
+				url: '../static/images/bus-stop.png',
+				scaledSize: new google.maps.Size(12, 12)
+			};
+		} else {
+			var icon = {
+				url: '../static/images/favourite.png',
+				scaledSize: new google.maps.Size(12, 12)
+			};
+		}
 		//Style for marker
 		var marker = new google.maps.Marker({
 			position: coords,
@@ -134,10 +168,15 @@ function initMap() {
 			icon: icon,
 			scaledSize: new google.maps.Size(1, 1),
 			name: stop.name,
-			id: stop.id
+			id: stop.id, 
+			latlng: coords
 		})
 
-		markerList.push(marker)
+		if (favourite === false){
+			markerList.push(marker)
+		} else {
+			favMarkers.push(marker)
+		}
 
 		if (!(prev_stop === null)) {
 			var line = new google.maps.Polyline({
@@ -163,8 +202,8 @@ function initMap() {
 		}*/
 
 		//Content for infowindow
-		if(favouriteStops.includes(stop.id)){
-			var contentString = '<h6 class="windowtitle">' + marker.name + '</h6>' + '<br>' + '<button class="windowbtn" id="favBtn" htmlType="submit" onClick=removeFavStop(' + marker.id + ')> Unfavourite Stop </button>' 
+		if(favourite === true){
+			var contentString = '<h6 class="windowtitle">' + marker.name + '</h6>' + '<br>' + '<button class="windowbtn" id="favBtn" htmlType="submit" onClick=favStopButton(' + marker.id + ')> Unfavourite Stop </button>' 
 		} else {
 	    	var contentString = '<h6 class="windowtitle">' + marker.name + '</h6>' + '<br>' + '<button class="windowbtn" id="favBtn" htmlType="submit" onClick=favStopButton(' + marker.id + ')> Add Stop As Favourite </button>' 
 	    }	
@@ -427,7 +466,7 @@ function initMap() {
 	const getFavIDs = new Promise((resolve, reject) => {
 		setTimeout(() => {
 			stops_import.forEach((stop) => {
-		 	addMarker(stop, prev_stop=null, line_color=null, route=false)
+		 		addMarker(stop, prev_stop=null, line_color=null, route=false, favourite=false)
 			})
 			resolve(null)
 			//Increase this number if want to be a delay effect between map load and stops load 	
@@ -449,7 +488,6 @@ function initMap() {
 						favouriteStops.push(stop.stopid)
 						favouriteStopsPKs.push(stop.id)
 					});
-					console.log(favouriteStops)
 				})
 				.catch(error => {
 					console.log(error)
@@ -465,7 +503,14 @@ function initMap() {
 			};
 			for(var j =0; j < markerList.length; j++){
 				if(favouriteStops.includes(markerList[j].id)){
-					markerList[j].setIcon(icon);
+					markerList[j].setMap(null);
+					favouriteStop = {
+						id:markerList[j].id, 
+						lat:markerList[j].latlng.lat,
+						long:markerList[j].latlng.lng,
+						name:markerList[j].name
+					}
+					addMarker(favouriteStop, prev_stop=null, line_color=null, route=false, favourite=true)
 					favMarkers.push(markerList[j])
 					markerList.splice(j,1)
 				}
