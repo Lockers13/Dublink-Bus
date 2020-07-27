@@ -2,7 +2,7 @@ var current_user = context.current_user
 //FavouiteStops used for marker icon if statement
 const favouriteStops = []
 //Used for unfavourite functionality
-const favouriteStopsPKs = []
+var favouriteStopsPKs = []
 
 var favMarkers = []
 var markerList = []
@@ -11,16 +11,38 @@ var polyline = []
 
 //Called from infowindow button
 function addFavStop(stopid) {
-	//communicate with backend
-	user = current_user
-	axios.post('http://127.0.0.1:8000/api/favstop/create/', {
-		name: "test",
-		stopid: stopid,
-		user: user,
-		current_user: user
-	})
-		.then(res => console.log(res))
-		.catch(err => console.log(err));
+
+	const addNewFav = new Promise((resolve, reject) => {
+		user = current_user
+		axios.post('http://127.0.0.1:8000/api/favstop/create/', {
+			name: stopid,
+			stopid: stopid,
+			user: user,
+			current_user: user
+		})
+		.then(res => resolve(res))
+		.catch(err => reject(err))
+	});
+
+	async function getFavStops() {
+		favouriteStopsPKs = []
+		setTimeout(()=>{
+			fetch("api/favstop/")
+			.then(response => {
+				return response.json();
+			})
+			.then(data => {
+				data.forEach((stop) => {
+					favouriteStopsPKs.push(stop.id)
+				});
+			})
+			.catch(error => {
+				console.log(error)
+			})
+		},3000)
+		//Increase this number if want to be a delay effect between map load and stops load 	
+	}
+	getFavStops()
 
 	//Adjust front end
 	var icon = {
@@ -32,8 +54,10 @@ function addFavStop(stopid) {
 		if(stopid === markerList[i].id){
 			markerList[i].setIcon(icon)
 			favMarkers.push(markerList[i])
+			favouriteStops.push(markerList[i].id)
 		}
 	}
+
 }
 
 //Called from info window button
@@ -41,10 +65,10 @@ function removeFavStop(stopid) {
 	//Communicate with backend
 	var index = favouriteStops.indexOf(stopid);
 	var primarykey = (favouriteStopsPKs[index]);
+	console.log("Primary key is: ", primarykey);
 	axios.delete(`http://127.0.0.1:8000/api/favstop/destroy/${primarykey}`)
-		.then(res => console.log(res))
-		.catch(err => console.log(err));
-
+		.then(res => console.log("Success", res))
+		.catch(err => console.log("Error", err))
 	//Adjust front end
 	var icon = {
 				url: '../static/images/bus-stop.png',
@@ -52,20 +76,26 @@ function removeFavStop(stopid) {
 			};
 			
 	for (var i=0; i<favMarkers.length; i++){
-		if(stopid == favMarkers[i].id){
+		if(stopid === favMarkers[i].id){
 			favMarkers[i].setIcon(icon)
 			markerList.push(favMarkers[i])
+		}
+		else{
+			console.log("No match")
 		}
 	}
 }
 
 function favStopButton(stopid){
+	console.log("Favourite button has been clicked")
+	
 	var button = document.getElementById('favBtn')
 	if (button.innerHTML===" Add Stop As Favourite "){
 		addFavStop(stopid)
 		button.innerHTML = " Unfavourite Stop ";
 	}
 	else if (button.innerHTML===" Unfavourite Stop "){
+		console.log("Unfavourite button of fav has been clicked")
 		removeFavStop(stopid)
 		button.innerHTML = " Add Stop As Favourite ";
 	}
@@ -75,7 +105,7 @@ function favStopButton(stopid){
 function initMap() {
 	//Map options
 	var options = {
-		zoom: 13,
+		zoom: 16,
 		center: { lat: 53.3477, lng: -6.2800 },
 		styles: mapStyle,
 		disableDefaultUI: true
@@ -87,7 +117,7 @@ function initMap() {
 	var clusterOptions = {
 		maxZoom: 15
 	};
-	var markerCluster = new MarkerClusterer(map, [], clusterOptions);
+	/*var markerCluster = new MarkerClusterer(map, [], clusterOptions);*/
 	//Contains all the marker objects
 	//var markerList = []
 	var i;
@@ -112,7 +142,7 @@ function initMap() {
 	  }
 
 	//Add marker function
-	function addMarker(stop, prev_stop, line_color, route=false) {
+	function addMarker(stop, prev_stop, line_color, route=false, favourite=false) {
 
 		if (!(prev_stop === null))
 			var prev_coords = { lat: prev_stop.lat, lng: prev_stop.long }
@@ -120,14 +150,14 @@ function initMap() {
 		var coords = { lat: stop.lat, lng: stop.long }
 
 		//Style for the icon
-		if (favouriteStops.includes(stop.id)) {
+		if (favourite === false){
 			var icon = {
-				url: '../static/images/favourite.png',
+				url: '../static/images/bus-stop.png',
 				scaledSize: new google.maps.Size(12, 12)
 			};
 		} else {
 			var icon = {
-				url: '../static/images/bus-stop.png',
+				url: '../static/images/favourite.png',
 				scaledSize: new google.maps.Size(12, 12)
 			};
 		}
@@ -138,13 +168,14 @@ function initMap() {
 			icon: icon,
 			scaledSize: new google.maps.Size(1, 1),
 			name: stop.name,
-			id: stop.id
+			id: stop.id, 
+			latlng: coords
 		})
 
-		if (favouriteStops.includes(stop.id)) {
-			favMarkers.push(marker)
-		} else {
+		if (favourite === false){
 			markerList.push(marker)
+		} else {
+			favMarkers.push(marker)
 		}
 
 		if (!(prev_stop === null)) {
@@ -162,21 +193,21 @@ function initMap() {
 
 
 		//Used for clustering, will exclude favourites so are visible outside clusters
-		if (route === false){
+		/*if (route === false){
 			if (favouriteStops.includes(stop.id)){
 				//pass
 			}else {
 				markerCluster.addMarker(marker)	
 			}
-		}
+		}*/
 
 		//Content for infowindow
-		if(favouriteStops.includes(stop.id)){
-			var contentString = '<h6 class="windowtitle">' + marker.name + '</h6>' + '<br>' + '<button class="windowbtn" id="favBtn" htmlType="submit" onClick=removeFavStop(' + marker.id + ')> Unfavourite Stop </button>' 
-
+		if(favourite === true){
+			var contentString = '<h6 class="windowtitle">' + marker.name + '</h6>' + '<br>' + '<button class="windowbtn" id="favBtn" htmlType="submit" onClick=favStopButton(' + marker.id + ')> Unfavourite Stop </button>' 
 		} else {
-		    var contentString = '<h6 class="windowtitle">' + marker.name + '</h6>' + '<br>' + '<button class="windowbtn" id="favBtn" htmlType="submit" onClick=favStopButton(' + marker.id + ')> Add Stop As Favourite </button>'   	
-		}
+	    	var contentString = '<h6 class="windowtitle">' + marker.name + '</h6>' + '<br>' + '<button class="windowbtn" id="favBtn" htmlType="submit" onClick=favStopButton(' + marker.id + ')> Add Stop As Favourite </button>' 
+	    }	
+		
 
 		//Marker click event
 		google.maps.event.addListener(marker, 'click', (function (marker, i) {
@@ -262,7 +293,7 @@ function initMap() {
 
 	function predictRoute(route_obj) {
 		//Dates and dates index coming from route_predict.js
-<<<<<<< HEAD
+
 		let chosenDate = dates[datesIndex];
 		let weather_data = {"spec": ""}
 
@@ -434,6 +465,17 @@ function initMap() {
 
 	const getFavIDs = new Promise((resolve, reject) => {
 		setTimeout(() => {
+			stops_import.forEach((stop) => {
+		 		addMarker(stop, prev_stop=null, line_color=null, route=false, favourite=false)
+			})
+			resolve(null)
+			//Increase this number if want to be a delay effect between map load and stops load 	
+		}, 1)
+	});
+
+	//runs after the map has been populated
+	async function getFavIDsAwait() {
+		setTimeout(() => {
 			if (current_user == 0) {
 				resolve(favouriteStops)
 			}
@@ -446,23 +488,39 @@ function initMap() {
 						favouriteStops.push(stop.stopid)
 						favouriteStopsPKs.push(stop.id)
 					});
-					resolve(favouriteStops)
 				})
 				.catch(error => {
-					reject(console.log(error))
+					console.log(error)
 				})
 			//Increase this number if want to be a delay effect between map load and stops load 	
 		}, 1)
-	});
 
-	//This function must wait until the for each loop above has resolved to run.
-	//This function actually populates the map with the markers in the foreach loop
-	async function getFavIDsAwait() {
-		const IDs = await getFavIDs;
-		//stops_import from static_stops.js
-		stops_import.forEach((stop) => {
-		 	addMarker(stop, prev_stop=null, line_color=null, route=false)
-		})
+		//Runs 2 seconds after to give favStops time to populate
+		setTimeout(() =>{
+			var icon = {
+				url: '../static/images/favourite.png',
+				scaledSize: new google.maps.Size(12, 12)
+			};
+			for(var j =0; j < markerList.length; j++){
+				if(favouriteStops.includes(markerList[j].id)){
+					markerList[j].setMap(null);
+					favouriteStop = {
+						id:markerList[j].id, 
+						lat:markerList[j].latlng.lat,
+						long:markerList[j].latlng.lng,
+						name:markerList[j].name
+					}
+					addMarker(favouriteStop, prev_stop=null, line_color=null, route=false, favourite=true)
+					favMarkers.push(markerList[j])
+					markerList.splice(j,1)
+				}
+			}
+			//Make clusters here
+			var markerCluster = new MarkerClusterer(map, [], clusterOptions);
+			for(var k=0;k<markerList.length; k++){
+				markerCluster.addMarker(markerList[k])
+			}
+		},2000)
 	}
 	getFavIDsAwait()
 

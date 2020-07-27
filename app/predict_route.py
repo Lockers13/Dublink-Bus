@@ -59,7 +59,8 @@ def get_prediction(model, m_args, data_dir):
     df_query_stop2 = df_query_stop2.rename({'STOPPOINTID2': 'STOPPOINTID'}, axis=1)
 
     try:
-        df_timetable = pd.read_csv(os.path.join(data_dir, 'timetable_file/timetable_{0}.csv'.format(m_args['lineid'])))
+        #df_timetable = pd.read_csv(os.path.join(data_dir, 'timetable_file/timetable_{0}.csv'.format(m_args['lineid'])))
+        df_timetable = pd.read_csv(os.path.join(data_dir, 'timetable_file\\timetable_{0}.csv'.format(m_args['lineid'])))
     except:
         journey_info["error"] = "file structure error"
         return journey_info
@@ -113,7 +114,8 @@ def get_prediction(model, m_args, data_dir):
     df_fill_stop2_rev = pd.get_dummies(df_fill_stop2_rev)
 
     try:
-        model_columns = joblib.load(os.path.join(data_dir, 'model_columns/columns_{0}.pkl'.format(m_args['lineid'])))
+        #model_columns = joblib.load(os.path.join(data_dir, 'model_columns/columns_{0}.pkl'.format(m_args['lineid'])))
+        model_columns = joblib.load(os.path.join(data_dir, 'model_columns\\columns_{0}.pkl'.format(m_args['lineid'])))
     except:
         journey_info["error"] = "file structure error"
         return journey_info

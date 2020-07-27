@@ -50,7 +50,6 @@ class RoutePredictView(generics.RetrieveAPIView):
 
     def get(self, request):
 
-
         data_dir = 'C:\\Users\\rbyrn\\Desktop\\dublinbus\\app\\model_integration'
         lineid = request.query_params.get('lineid')
         routeid = request.query_params.get('routeid')
@@ -62,7 +61,9 @@ class RoutePredictView(generics.RetrieveAPIView):
         temp = request.query_params.get('temp')
 
         try:
-            model_pickle = os.path.join(data_dir, 'pickle_file/XG_{}.pkl'.format(lineid))
+            #model_pickle = os.path.join(data_dir, 'pickle_file/XG_{}.pkl'.format(lineid))
+            model_pickle = os.path.join(data_dir, 'pickle_file\\XG_{}.pkl'.format(lineid))
+            print(model_pickle)
             model = joblib.load(open(model_pickle, 'rb'))
         except:
             return Response("ERROR: incorrect file structure", status=status.HTTP_500_INTERNAL_SERVER_ERROR)
@@ -156,7 +157,7 @@ class WeatherRetrieveView(generics.RetrieveAPIView):
         print(datetimestr)
          # change os.environ.get('DB_PWD') if API returns "error problem with DB cnx"
         try:
-            cnx = create_engine('mysql+pymysql://root:' + os.environ.get('DB_PWD') + '@localhost:3307/dublin_bus') 
+            cnx = create_engine('mysql+pymysql://root:fake_james99@localhost:3307/dublin_bus') 
         except:
             error_data = "ERROR, problem with DB cnx"
             return Response(error_data, status=status.HTTP_503_SERVICE_UNAVAILABLE)

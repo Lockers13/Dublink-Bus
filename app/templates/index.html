@@ -66,7 +66,7 @@
 		        {% endif %}
 		        <button class="routePlanButton" id="planRouteSubmit">Search</button>
 			</div><br><br>
-			<div class="RoutePlanResults" style="overflow-y:scroll;height:400px;color:white;">
+			<div class="RoutePlanResults">
 				<span id="results2"></span>
 			<div>
 		</div>
@@ -105,10 +105,10 @@
 						<div class="col-sm-12 col-md-6">
 							<div id="tripInfo">
 								<h3>Trip Information</h4>
-								<p>Estimated Arrival Time: <span id="estimatedArrival" ></span> </p>
-								<p>Time Until Arrival: <span id="timeLeft" ></span> </p>
-								<p>Stops Until Destination: <span id="stopsLeft" ></span> </p>
-								<p>Distance to Destination: <span id="distanceLeft" ></span> </p>
+								<p>Estimated Arrival Time: <span class="pinkspan" id="estimatedArrival" ></span> </p>
+								<p>Time Until Arrival: <span class="pinkspan" id="timeLeft" ></span> </p>
+								<p>Stops Until Destination: <span class="pinkspan" id="stopsLeft" ></span> </p>
+								<p>Distance to Destination: <span class="pinkspan" id="distanceLeft" ></span> </p>
 							</div>
 						</div>
 					</div>
@@ -142,10 +142,10 @@
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 <!--Below passing current user, used for the adding of favourite stops/Addresses-->
 <script type="text/javascript">var context = {current_user: '{{current_user}}'};</script>
-<!--Geolocation script -->
-<script type="text/javascript" src="{% static 'js/geolocation.js' %}"></script>
 <!-- Library to get accurate date and times for route planning -->
 <script type="text/javascript" src="{% static 'js/moment.min.js' %}"></script>
+<!--Geolocation script -->
+<script type="text/javascript" src="{% static 'js/geolocation.js' %}"></script>
 <!--Map related scripts-->
 <script type="text/javascript" src="{% static 'js/mapStyle.js' %}"></script>
 <script type="text/javascript" src="{% static 'js/route_predict.js' %}"></script>
