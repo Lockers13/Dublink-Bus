@@ -39,6 +39,9 @@ function addFavStop(stopid) {
 //Called from info window button
 function removeFavStop(stopid) {
 	//Communicate with backend
+	console.log("Searching for: ", stopid)
+	console.log("In this list: ", favouriteStops)
+	console.log("To get this: ", favouriteStopsPKs)
 	var index = favouriteStops.indexOf(stopid);
 	var primarykey = (favouriteStopsPKs[index]);
 	axios.delete(`http://127.0.0.1:8000/api/favstop/destroy/${primarykey}`)
@@ -75,7 +78,7 @@ function favStopButton(stopid){
 function initMap() {
 	//Map options
 	var options = {
-		zoom: 13,
+		zoom: 16,
 		center: { lat: 53.3477, lng: -6.2800 },
 		styles: mapStyle,
 		disableDefaultUI: true
@@ -87,7 +90,7 @@ function initMap() {
 	var clusterOptions = {
 		maxZoom: 15
 	};
-	var markerCluster = new MarkerClusterer(map, [], clusterOptions);
+	/*var markerCluster = new MarkerClusterer(map, [], clusterOptions);*/
 	//Contains all the marker objects
 	//var markerList = []
 	var i;
@@ -151,21 +154,21 @@ function initMap() {
 
 
 		//Used for clustering, will exclude favourites so are visible outside clusters
-		if (route === false){
+		/*if (route === false){
 			if (favouriteStops.includes(stop.id)){
 				//pass
 			}else {
 				markerCluster.addMarker(marker)	
 			}
-		}
+		}*/
 
 		//Content for infowindow
 		if(favouriteStops.includes(stop.id)){
 			var contentString = '<h6 class="windowtitle">' + marker.name + '</h6>' + '<br>' + '<button class="windowbtn" id="favBtn" htmlType="submit" onClick=removeFavStop(' + marker.id + ')> Unfavourite Stop </button>' 
-
 		} else {
-		    var contentString = '<h6 class="windowtitle">' + marker.name + '</h6>' + '<br>' + '<button class="windowbtn" id="favBtn" htmlType="submit" onClick=favStopButton(' + marker.id + ')> Add Stop As Favourite </button>'   	
-		}
+	    	var contentString = '<h6 class="windowtitle">' + marker.name + '</h6>' + '<br>' + '<button class="windowbtn" id="favBtn" htmlType="submit" onClick=favStopButton(' + marker.id + ')> Add Stop As Favourite </button>' 
+	    }	
+		
 
 		//Marker click event
 		google.maps.event.addListener(marker, 'click', (function (marker, i) {
@@ -462,12 +465,16 @@ function initMap() {
 			};
 			for(var j =0; j < markerList.length; j++){
 				if(favouriteStops.includes(markerList[j].id)){
-					markerList[j].icon = icon;
-					markerList.splice(j-1,1)
+					markerList[j].setIcon(icon);
+					favMarkers.push(markerList[j])
+					markerList.splice(j,1)
 				}
 			}
 			//Make clusters here
-			
+			var markerCluster = new MarkerClusterer(map, [], clusterOptions);
+			for(var k=0;k<markerList.length; k++){
+				markerCluster.addMarker(markerList[k])
+			}
 		},2000)
 	}
 	getFavIDsAwait()
