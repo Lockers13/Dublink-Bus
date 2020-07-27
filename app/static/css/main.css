@@ -734,8 +734,12 @@ tr:nth-child(even) {
 
 #tripInfo p{
   color: var(--black);
-  text-align: left;
-  margin-left: 40px;
+  /*text-align: left;*/
+ /* margin-left: 40px;*/
+}
+
+.pinkspan{
+  color:var(--pink);
 }
 
 #endJourney{

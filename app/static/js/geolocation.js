@@ -47,22 +47,40 @@ function validateCO2Points(){
 	//pass
 }
 
-function startJourney(stopList){
-	//Variables for models are dayNum, seconds, currentTemp and currentWeatherDescription
-	//Information needed for the model predictions
+//Variables for models are dayNum, seconds, currentTemp and currentWeatherDescription
+//Information needed for the model predictions
+let day = new Date();
+//Day should be Mon - Sun ( 0- 6 ) hence the - 1
+let dayNum = day.getDay() - 1;
+//Change sunday from 0 to 6
+if (dayNum = -1){
+	dayNum = 6
+}
+let hours = day.getHours()
+let mins = day.getMinutes()
+let seconds = ((hours * 3600) + (mins * 60))
+let date = moment().format().substring(0,10);
+let temp;
+let weatherCond;
+//Get weather for the models
+/*fetch("http://localhost:8000/routes/api/get_weather/?datetime=" + date + "%20" + hours + ":00:00")
+.then(response => {
+	return response.json()
+})
+.then(data => {
+	temp = data.hourly_weather[0].temp
+	//Not too sure if desc or main is needed
+	//console.log(data.hourly_weather[0].desc)
+	weatherCond = data.hourly_weather[0].main
+})*/
+
+//Temp hardcoded for the moment
+temp = 14.67 
+
+//Route should be the object created from the getRoute function
+function startJourney(route){
 	let day = new Date();
-	//Day should be Mon - Sun ( 0- 6 ) hence the - 1
-	let dayNum = day.getDay() - 1;
-	let hours = day.getHours()
-	let mins = day.getMinutes()
-	let seconds = ((hours * 3600) + (mins * 60))
-	let currentTemp = weatherList[0].main.temp
-	let currentWeatherDescription = weatherList[0].weather[0].main
-
-	//Current time used to display time left until arrival
-	let currentTime = moment().format('HH:mm');
-	console.log(currentTime);
-
+	
 	//nextStopList containes all remaining stops, first stop popped off once has been
 	let nextStopList = []
 	let upcomingStops = document.getElementById('upcomingStops');
@@ -83,11 +101,12 @@ function startJourney(stopList){
 			   	
 			   	//This gets the users current locations, once off to ensure they are within the correct distance of start stop
   				navigator.geolocation.getCurrentPosition((position) => {
-  					console.log(position)
+  					console.log("Position: ", position)
 
   					//This ensures that the user is within at least 250 meters of stop, 250 gives us room for error
   					if(distanceToStop(position.coords.latitude, position.coords.longitude, data[0].lat, data[0].long) < 10000){
   						//Display the upcoming stops and information
+  						console.log("Should be changing visibility")
   						document.getElementById('tripmessage').style.display="none";
 						document.getElementById('selectedTrip').style.display='block';
 						document.getElementById('tripInfo').style.display='block';
@@ -97,7 +116,6 @@ function startJourney(stopList){
 						let distancetoend = distanceToStop(data[0].lat, data[0].long, data[index].lat, data[index].long)
 						let roundedDistance = (distancetoend / 1000).toFixed(2)
 						distanceLeft.innerHTML = roundedDistance + " KM"
-  						console.log(data)
   						//Loop over and display data
   						for(let j =0; j< data.length; j++){
   							if(j === 0){
@@ -112,15 +130,27 @@ function startJourney(stopList){
   							}
   						}
   						upcomingStops.innerHTML = innerHTML;
+  						timeLeft.innerHTML = "Loading";
+  						estimatedArrival.innerHTML = "Loading";
 
   						//Run the predictive model here, the updated time will therefore take a second longer to display
-  						fetch("http://localhost:8000/routes/api/predict/?lineid=14&start=4336&end=1072&routeid=14_16")
+  						/*fetch("http://localhost:8000/routes/api/predict/?lineid=14&start_stop=4336&end_stop=1072&routeid=14_16&time_secs=48600&temp=17.27&rain=0.16&dow=0")
   						.then(response => {
   							return response.json()
   						})
   						.then(data => {
-  							console.log(data)
-  						})
+  							console.log(data.journey_info.arrival_endstop.minutes.length)
+  							if(data.journey_info.arrival_endstop.minutes.length < 2){
+  								estimatedArrival.innerHTML =  data.journey_info.arrival_endstop.hours + ": 0" + data.journey_info.arrival_endstop.minutes
+  							} else {
+  								estimatedArrival.innerHTML =  data.journey_info.arrival_endstop.hours + ":" + data.journey_info.arrival_endstop.minutes
+  							} 
+  							if (data.journey_info.journey_time.hours > 0){
+  								timeLeft.innerHTML = data.journey_info.journey_time.hours + " H " + data.journey_info.journey_time.minutes + " M"
+  							} else {
+  								timeLeft.innerHTML = data.journey_info.journey_time.minutes + " Minutes"
+  							}
+  						})*/
 
   					//Error handling if user is too far from a stop
   					} else {
@@ -143,6 +173,28 @@ function startJourney(stopList){
   				return null
 			}
 
+
+
+			//Fetch the most up to date prediction for the arrival times
+			fetch("http://localhost:8000/routes/api/predict/?lineid=14&start_stop=4336&end_stop=1072&routeid=14_16&time_secs="+seconds+"&temp="+temp+"&rain=0.16&dow="+dayNum)
+			.then(response => {
+				return response.json()
+			})
+			.then(data => {
+				console.log(data)
+				let minutes = [0,1,2,3,4,5,6,7,8,9]
+				if(minutes.includes(data.journey_info.arrival_endstop.minutes)){
+					estimatedArrival.innerHTML =  data.journey_info.arrival_endstop.hours + " : 0" + data.journey_info.arrival_endstop.minutes
+				} else {
+					estimatedArrival.innerHTML =  data.journey_info.arrival_endstop.hours + ":" + data.journey_info.arrival_endstop.minutes
+				} 
+				if (data.journey_info.journey_time.hours > 0){
+					timeLeft.innerHTML = data.journey_info.journey_time.hours + " H " + data.journey_info.journey_time.minutes + " M"
+				} else {
+					timeLeft.innerHTML = data.journey_info.journey_time.minutes + " Minutes"
+				}
+			})
+
 			console.log("nextstoplist: ", nextStopList);
 			
 			//The actualt constant tracking of a user takes place here
@@ -156,13 +208,6 @@ function startJourney(stopList){
 					//Check the distance to the next stop
 					if (distanceToStop(data.coords.latitude, data.coords.longitude, nextStopList[0].lat, nextStopList[0].long) < 100){
 						console.log("Reached next stop")
-						//////////////////Want to run the model here/////////////
-						////////////// The data from this will update the estimated arrival time and time until arrival //////////////
-						//Need to update time for the updated model prediction, weather will be same
-						hours = day.getHours()
-						mins = day.getMinutes()
-						seconds = ((hours * 3600) + (mins * 60))
-						////////////////////////////////////////////////////////////////////////////////////
 						innerHTML = "";
 						for(let k =0; k< nextStopList.length; k++){
   							if(k === 1){
@@ -176,9 +221,30 @@ function startJourney(stopList){
   						stopsLeft.innerHTML = nextStopList.length;
   						let index = nextStopList.length - 1;
   						distancetoend = distanceToStop(nextStopList[0].lat, nextStopList[0].long, nextStopList[index].lat, nextStopList[index].long)
-  						console.log(distancetoend)
   						roundedDistance = (distancetoend / 1000).toFixed(2)
   						distanceLeft.innerHTML = roundedDistance + "km"
+  						timeLeft.innerHTML = "Loading"
+  						estimatedArrival.innerHTML = "Loading"
+  						hours = day.getHours()
+						mins = day.getMinutes()
+						seconds = ((hours * 3600) + (mins * 60))
+  						fetch("http://localhost:8000/routes/api/predict/?lineid=14&start_stop="+nextStopList[0].id+"&end_stop="+nextStopList[index].id+"&routeid=14_16&time_secs="+seconds+"&temp="+temp+"&rain=0.16&dow="+dayNum)
+  						.then(response => {
+  							return response.json()
+  						})
+  						.then(data => {
+  							let minutes = [0,1,2,3,4,5,6,7,8,9]
+							if(minutes.includes(data.journey_info.arrival_endstop.minutes)){
+								estimatedArrival.innerHTML =  data.journey_info.arrival_endstop.hours + " : 0" + data.journey_info.arrival_endstop.minutes
+							} else {
+								estimatedArrival.innerHTML =  data.journey_info.arrival_endstop.hours + ":" + data.journey_info.arrival_endstop.minutes
+							} 
+							if (data.journey_info.journey_time.hours > 0){
+								timeLeft.innerHTML = data.journey_info.journey_time.hours + " H " + data.journey_info.journey_time.minutes + " M"
+							} else {
+								timeLeft.innerHTML = data.journey_info.journey_time.minutes + " Minutes"
+							}
+  						})
   						nextStopList.shift()
   						console.log("List after shift: ", nextStopList)
 					}

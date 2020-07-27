@@ -120,17 +120,10 @@ function initMap() {
 		var coords = { lat: stop.lat, lng: stop.long }
 
 		//Style for the icon
-		if (favouriteStops.includes(stop.id)) {
-			var icon = {
-				url: '../static/images/favourite.png',
-				scaledSize: new google.maps.Size(12, 12)
-			};
-		} else {
-			var icon = {
-				url: '../static/images/bus-stop.png',
-				scaledSize: new google.maps.Size(12, 12)
-			};
-		}
+		var icon = {
+			url: '../static/images/bus-stop.png',
+			scaledSize: new google.maps.Size(12, 12)
+		};
 		//Style for marker
 		var marker = new google.maps.Marker({
 			position: coords,
@@ -141,11 +134,7 @@ function initMap() {
 			id: stop.id
 		})
 
-		if (favouriteStops.includes(stop.id)) {
-			favMarkers.push(marker)
-		} else {
-			markerList.push(marker)
-		}
+		markerList.push(marker)
 
 		if (!(prev_stop === null)) {
 			var line = new google.maps.Polyline({
@@ -262,7 +251,7 @@ function initMap() {
 
 	function predictRoute(route_obj) {
 		//Dates and dates index coming from route_predict.js
-<<<<<<< HEAD
+
 		let chosenDate = dates[datesIndex];
 		let weather_data = {"spec": ""}
 
@@ -434,6 +423,17 @@ function initMap() {
 
 	const getFavIDs = new Promise((resolve, reject) => {
 		setTimeout(() => {
+			stops_import.forEach((stop) => {
+		 	addMarker(stop, prev_stop=null, line_color=null, route=false)
+			})
+			resolve(null)
+			//Increase this number if want to be a delay effect between map load and stops load 	
+		}, 1)
+	});
+
+	//runs after the map has been populated
+	async function getFavIDsAwait() {
+		setTimeout(() => {
 			if (current_user == 0) {
 				resolve(favouriteStops)
 			}
@@ -446,23 +446,29 @@ function initMap() {
 						favouriteStops.push(stop.stopid)
 						favouriteStopsPKs.push(stop.id)
 					});
-					resolve(favouriteStops)
+					console.log(favouriteStops)
 				})
 				.catch(error => {
-					reject(console.log(error))
+					console.log(error)
 				})
 			//Increase this number if want to be a delay effect between map load and stops load 	
 		}, 1)
-	});
 
-	//This function must wait until the for each loop above has resolved to run.
-	//This function actually populates the map with the markers in the foreach loop
-	async function getFavIDsAwait() {
-		const IDs = await getFavIDs;
-		//stops_import from static_stops.js
-		stops_import.forEach((stop) => {
-		 	addMarker(stop, prev_stop=null, line_color=null, route=false)
-		})
+		//Runs 2 seconds after to give favStops time to populate
+		setTimeout(() =>{
+			var icon = {
+				url: '../static/images/favourite.png',
+				scaledSize: new google.maps.Size(12, 12)
+			};
+			for(var j =0; j < markerList.length; j++){
+				if(favouriteStops.includes(markerList[j].id)){
+					markerList[j].icon = icon;
+					markerList.splice(j-1,1)
+				}
+			}
+			//Make clusters here
+			
+		},2000)
 	}
 	getFavIDsAwait()
 
