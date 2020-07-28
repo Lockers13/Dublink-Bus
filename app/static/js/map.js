@@ -7,6 +7,7 @@ var favouriteStopsPKs = []
 var favMarkers = []
 var markerList = []
 var polyline = []
+let markerClusterGlob = []
 
 
 //Called from infowindow button
@@ -342,7 +343,7 @@ function initMap() {
 	}
 
 	function getPlotMarkers(route_obj) {
-		markerCluster.clearMarkers();
+		markerClusterGlob[0].clearMarkers();
 		clearOverlays()
 		//var markerCluster = new MarkerClusterer(map, [], clusterOptions);
 		removeLine()
@@ -517,6 +518,7 @@ function initMap() {
 			}
 			//Make clusters here
 			var markerCluster = new MarkerClusterer(map, [], clusterOptions);
+			markerClusterGlob.push(markerCluster)
 			for(var k=0;k<markerList.length; k++){
 				markerCluster.addMarker(markerList[k])
 			}

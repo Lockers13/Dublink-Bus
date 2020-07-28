@@ -26,7 +26,7 @@ class RouteMapView(generics.RetrieveAPIView):
         end_stop = int(request.query_params.get('end'))
         routeID = request.query_params.get('routeid')
         url = staticfiles_storage.url('json/routemaps/{}_routemap.json'.format(lineid))
-        with open(os.path.join(settings.BASE_DIR, url), 'r') as f:
+        with open(settings.BASE_DIR + url, 'r') as f:
                 linemap = json.loads(f.read())
         routemap = linemap[routeID]
         on_route = False
