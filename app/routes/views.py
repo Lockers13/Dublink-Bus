@@ -20,6 +20,8 @@ import pymysql
 from sqlalchemy.sql import text
 
 class RouteMapView(generics.RetrieveAPIView):
+    queryset = ''
+
     def get(self, request):
         lineid = request.query_params.get('lineid')
         start_stop = int(request.query_params.get('start'))
