@@ -19,5 +19,8 @@ urlpatterns = [
     path('api/favaddress/', user_views.FavAddressListCreate.as_view()),
     path('api/favaddress/create/', user_views.FavAddressCreateView.as_view()),
     path('api/favaddress/destroy/<pk>', user_views.FavAddressDeleteView.as_view()),
+    path('api/plannedjourney/', user_views.PlannedJourneyListCreate.as_view()),
+    path('api/plannedjourney/create/', user_views.PlannedJourneyCreateView.as_view()),
+    path('api/plannedjourney/destroy/<pk>', user_views.PlannedJourneyDeleteView.as_view()),
     path('routes/', include("routes.urls")), 
 ]

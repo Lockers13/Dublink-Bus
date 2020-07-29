@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Profile, FavStop, FavAddress
+from .models import Profile, FavStop, FavAddress, PlannedJourney
 
 class ProfileSerializer(serializers.ModelSerializer):
 	class Meta:
@@ -48,5 +48,5 @@ class PlannedJourneySerializer(serializers.ModelSerializer):
 
 	class Meta:
 		model = FavAddress
-		fields = ('id', 'name','address','user','current_user')
+		fields = ('id', 'name','routeObject','user','current_user')
 

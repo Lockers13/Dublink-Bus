@@ -3,8 +3,8 @@ from django.contrib import messages
 from .forms import UserRegisterForm, UserUpdateForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from .models import Profile, FavStop, FavAddress
-from .serializers import ProfileSerializer, FavStopSerializer, FavAddressSerializer
+from .models import Profile, FavStop, FavAddress, PlannedJourney
+from .serializers import ProfileSerializer, FavStopSerializer, FavAddressSerializer, PlannedJourneySerializer
 from rest_framework import generics
 from rest_framework.views import APIView
 
@@ -100,3 +100,29 @@ class FavAddressCreateView(generics.CreateAPIView):
 class FavAddressDeleteView(generics.DestroyAPIView):
     queryset = FavAddress.objects.all()
     serializer_class = FavAddressSerializer
+
+
+#Same technique for plannedJourneys as FavAddresses
+
+class PlannedJourneyListCreate(generics.ListAPIView):
+    #This view has been modified so no primary key is necessary in the url
+    #Only want to ever get stops for current user
+    def get_queryset(self):
+        user = self.request.user
+        if user.is_authenticated:
+            return PlannedJourney.objects.filter(user=user)
+    serializer_class = PlannedJourneySerializer
+
+class PlannedJourneyDetailView(generics.RetrieveAPIView):
+    queryset = PlannedJourney.objects.all()
+    serializer_class = PlannedJourneySerializer
+
+#Allows us to create new favourite stops
+class PlannedJourneyCreateView(generics.CreateAPIView):
+    queryset = PlannedJourney.objects.all()
+    serializer_class = PlannedJourneySerializer
+
+#Will be used to unfavorite a stops
+class PlannedJourneyDeleteView(generics.DestroyAPIView):
+    queryset = PlannedJourney.objects.all()
+    serializer_class = PlannedJourneySerializer
