@@ -35,3 +35,18 @@ class FavAddressSerializer(serializers.ModelSerializer):
 		model = FavAddress
 		fields = ('id', 'name','address','user','current_user')
 
+
+class PlannedJourneySerializer(serializers.ModelSerializer):
+	
+	current_user = serializers.SerializerMethodField('_user')
+
+    # Use this method for the custom field
+	def _user(self, obj):
+		request = getattr(self.context, 'request', None)
+		if request:
+			return request.user
+
+	class Meta:
+		model = FavAddress
+		fields = ('id', 'name','address','user','current_user')
+

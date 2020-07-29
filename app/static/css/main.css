@@ -354,9 +354,9 @@ li{
   border-bottom: 3px solid var(--pink);
   color:var(--white);
   margin-bottom: 20px;
-  width:60%;
+  width:70%;
   text-decoration: none;
-  font-size: 24px;
+  font-size: 20px;
   margin-top: 10px;
 }
 
@@ -765,6 +765,14 @@ tr:nth-child(even) {
     color: var(--black);
     font-size: 18px;
   }
+
+  #upcomingStops{
+    margin-bottom: 30px;
+  }
+
+  #tripInfo{
+    margin-top: 25px;
+  }
 }
 
 
@@ -865,8 +873,6 @@ footer img{
     margin-bottom: 100px;
   }
 }
-
-
 
 
 

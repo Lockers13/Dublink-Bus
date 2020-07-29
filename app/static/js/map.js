@@ -528,8 +528,13 @@ function initMap() {
 	const inputBox = document.getElementById('stoptextbox');
 	function findStop() {
 		var station = inputBox.value;
+		var split = station.split(" (")
+		var stop = split[0]
+		var stopidString = split[1].substring( split[1].lastIndexOf(":") + 1, split[1].lastIndexOf(" "));
+		var stopid = parseInt(stopidString, 10);
+		console.log(stopid)
 		for (i = 0; i < stops_import.length; i++) {
-			if (station === stops_import[i].name) {
+			if (stop === stops_import[i].name && stopid === stops_import[i].id) {
 
 				if(favouriteStops.includes(stops_import[i].id)){
 				var contentString = '<h6 class="windowtitle">' + stops_import[i].name + '</h6>' + '<br>' + '<button class="windowbtn" id="removeFavBtn" htmlType="submit" onClick=removeFavStop(' + stops_import[i].id + ')> Unfavourite Stop </button>' 

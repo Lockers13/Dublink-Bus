@@ -19,7 +19,6 @@ const stop = document.querySelector("#stop");
 var id;
 
 start.addEventListener("click", () =>{
-	console.log("Clicked")
 	startJourney()
 
 });
@@ -53,9 +52,10 @@ let day = new Date();
 //Day should be Mon - Sun ( 0- 6 ) hence the - 1
 let dayNum = day.getDay() - 1;
 //Change sunday from 0 to 6
-if (dayNum = -1){
+if (dayNum === -1){
 	dayNum = 6
 }
+console.log(dayNum)
 let hours = day.getHours()
 let mins = day.getMinutes()
 let seconds = ((hours * 3600) + (mins * 60))
@@ -69,7 +69,7 @@ let weatherCond;
 })
 .then(data => {
 	temp = data.hourly_weather[0].temp
-	//Not too sure if desc or main is needed
+	//Not too sure if desc or main will be needed for the final model
 	//console.log(data.hourly_weather[0].desc)
 	weatherCond = data.hourly_weather[0].main
 })*/
@@ -84,7 +84,7 @@ function startJourney(route){
 	//nextStopList containes all remaining stops, first stop popped off once has been
 	let nextStopList = []
 	let upcomingStops = document.getElementById('upcomingStops');
-	let estimatedArrival = document.getElementById('estimatedArrival');
+	//let estimatedArrival = document.getElementById('estimatedArrival');
 	let timeLeft = document.getElementById('timeLeft');
 	let stopsLeft = document.getElementById('stopsLeft');
 	let distanceLeft = document.getElementById('distanceLeft');
@@ -131,26 +131,26 @@ function startJourney(route){
   						}
   						upcomingStops.innerHTML = innerHTML;
   						timeLeft.innerHTML = "Loading";
-  						estimatedArrival.innerHTML = "Loading";
+  						//estimatedArrival.innerHTML = "Loading";
 
   						//Run the predictive model here, the updated time will therefore take a second longer to display
-  						/*fetch("http://localhost:8000/routes/api/predict/?lineid=14&start_stop=4336&end_stop=1072&routeid=14_16&time_secs=48600&temp=17.27&rain=0.16&dow=0")
+  						fetch("http://localhost:8000/routes/api/predict/?lineid=14&start_stop=4336&end_stop=1072&routeid=14_16&time_secs=48600&temp=17.27&rain=0.16&dow=0")
   						.then(response => {
   							return response.json()
   						})
   						.then(data => {
   							console.log(data.journey_info.arrival_endstop.minutes.length)
   							if(data.journey_info.arrival_endstop.minutes.length < 2){
-  								estimatedArrival.innerHTML =  data.journey_info.arrival_endstop.hours + ": 0" + data.journey_info.arrival_endstop.minutes
+  								//estimatedArrival.innerHTML =  data.journey_info.arrival_endstop.hours + ": 0" + data.journey_info.arrival_endstop.minutes
   							} else {
-  								estimatedArrival.innerHTML =  data.journey_info.arrival_endstop.hours + ":" + data.journey_info.arrival_endstop.minutes
+  								//estimatedArrival.innerHTML =  data.journey_info.arrival_endstop.hours + ":" + data.journey_info.arrival_endstop.minutes
   							} 
   							if (data.journey_info.journey_time.hours > 0){
   								timeLeft.innerHTML = data.journey_info.journey_time.hours + " H " + data.journey_info.journey_time.minutes + " M"
   							} else {
   								timeLeft.innerHTML = data.journey_info.journey_time.minutes + " Minutes"
   							}
-  						})*/
+  						})
 
   					//Error handling if user is too far from a stop
   					} else {
@@ -184,9 +184,9 @@ function startJourney(route){
 				console.log(data)
 				let minutes = [0,1,2,3,4,5,6,7,8,9]
 				if(minutes.includes(data.journey_info.arrival_endstop.minutes)){
-					estimatedArrival.innerHTML =  data.journey_info.arrival_endstop.hours + " : 0" + data.journey_info.arrival_endstop.minutes
+					//estimatedArrival.innerHTML =  data.journey_info.arrival_endstop.hours + " : 0" + data.journey_info.arrival_endstop.minutes
 				} else {
-					estimatedArrival.innerHTML =  data.journey_info.arrival_endstop.hours + ":" + data.journey_info.arrival_endstop.minutes
+					//estimatedArrival.innerHTML =  data.journey_info.arrival_endstop.hours + ":" + data.journey_info.arrival_endstop.minutes
 				} 
 				if (data.journey_info.journey_time.hours > 0){
 					timeLeft.innerHTML = data.journey_info.journey_time.hours + " H " + data.journey_info.journey_time.minutes + " M"
@@ -205,7 +205,8 @@ function startJourney(route){
 				id = navigator.geolocation.watchPosition(
 				data => {
 					console.log("Tracking");
-					//Check the distance to the next stop
+					
+					//Functionality for reaching the next stop on the list
 					if (distanceToStop(data.coords.latitude, data.coords.longitude, nextStopList[0].lat, nextStopList[0].long) < 100){
 						console.log("Reached next stop")
 						innerHTML = "";
@@ -224,7 +225,7 @@ function startJourney(route){
   						roundedDistance = (distancetoend / 1000).toFixed(2)
   						distanceLeft.innerHTML = roundedDistance + "km"
   						timeLeft.innerHTML = "Loading"
-  						estimatedArrival.innerHTML = "Loading"
+  						//estimatedArrival.innerHTML = "Loading"
   						hours = day.getHours()
 						mins = day.getMinutes()
 						seconds = ((hours * 3600) + (mins * 60))
@@ -235,9 +236,9 @@ function startJourney(route){
   						.then(data => {
   							let minutes = [0,1,2,3,4,5,6,7,8,9]
 							if(minutes.includes(data.journey_info.arrival_endstop.minutes)){
-								estimatedArrival.innerHTML =  data.journey_info.arrival_endstop.hours + " : 0" + data.journey_info.arrival_endstop.minutes
+								//estimatedArrival.innerHTML =  data.journey_info.arrival_endstop.hours + " : 0" + data.journey_info.arrival_endstop.minutes
 							} else {
-								estimatedArrival.innerHTML =  data.journey_info.arrival_endstop.hours + ":" + data.journey_info.arrival_endstop.minutes
+								//estimatedArrival.innerHTML =  data.journey_info.arrival_endstop.hours + ":" + data.journey_info.arrival_endstop.minutes
 							} 
 							if (data.journey_info.journey_time.hours > 0){
 								timeLeft.innerHTML = data.journey_info.journey_time.hours + " H " + data.journey_info.journey_time.minutes + " M"
@@ -247,6 +248,14 @@ function startJourney(route){
   						})
   						nextStopList.shift()
   						console.log("List after shift: ", nextStopList)
+					}
+
+					//Functionality for getting close to the destination stop
+						//Curently checks if final stop is within 1 km of destination and 
+					if (distanceToStop(data.coords.latitude, data.coords.longitude, nextStopList[index].lat, nextStopList[index].long) < 1000 
+						&& nextStopList.length < 4){
+						document.getElementByID('timeLeftP').innerHTML = "<h6 class='pinkspan'> YOUR STOP IS APPROACHING </h6>"
+
 					}
 				},
 				//Second arg is for errors
