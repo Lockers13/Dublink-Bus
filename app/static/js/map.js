@@ -7,6 +7,7 @@ var favouriteStopsPKs = []
 var favMarkers = []
 var markerList = []
 var polyline = []
+let markerClusterList = []
 
 
 //Called from infowindow button
@@ -342,7 +343,7 @@ function initMap() {
 	}
 
 	function getPlotMarkers(route_obj) {
-		markerCluster.clearMarkers();
+		markerClusterList[0].clearMarkers();
 		clearOverlays()
 		//var markerCluster = new MarkerClusterer(map, [], clusterOptions);
 		removeLine()
@@ -370,6 +371,25 @@ function initMap() {
 
 	}
 
+	function takeTrip(route_obj) {
+		console.log(JSON.stringify(route_obj))
+
+	}
+
+	function bind_buttons(btn_array, id_suffix, route_info, route_info_keys, func) {
+		for (let index = 0; index < btn_array.length; index++) {
+			try {
+				if(route_info[route_info_keys[index]].length > 0) {
+					keyed_button = document.getElementById(route_info_keys[index] + id_suffix)
+					keyed_button.addEventListener("click", func.bind(event, route_info[route_info_keys[index]]))
+				}
+			}
+			catch (e) {
+				console.log(e.message)
+			}
+			}
+	}
+
 	function routeViewClick(event) {
 		let addr1 = document.getElementById('startLocation').value
 		let addr2 = document.getElementById('endLocation').value
@@ -394,7 +414,8 @@ function initMap() {
 					if (data[route]["routable"] == "b") {
 						route_info[route] = []
 						directions.innerHTML += "<h2>Route " + ++count + "</h2><button class='route_plot' id='" + route + "' style='display:inline-block;float:left;'>Plot Route</button>" + 
-						"<button class='route_pred' id='" + route + "_pred' style='display:inline-block;float:left;'>Predict Route</button><a href='#takeatrip'><button>Take A Trip</button></a><br><br>"
+						"<button class='route_pred' id='" + route + "_pred' style='display:inline-block;float:left;'>Predict Route</button>" +
+						"<button class='trip_take' id='" + route + "_trip' style='display:inline-block;float:left;'>Take A Trip</button><br><br>"
 						for (let j = 0; j < step_keys.length; j++) {
 							let step = "Step_" + (j + 1)
 							try {
@@ -426,34 +447,17 @@ function initMap() {
 				if(!route_flag)
 					directions.innerHTML += "<br>Sorry, we could not find any data for the specified route.<br>Please try again...!"
 
-				let plot_btns = document.getElementsByClassName('route_plot')
-				let route_info_keys = Object.keys(route_info)
-				let pred_btns = document.getElementsByClassName('route_pred')
 				
-				for (let z = 0; z < plot_btns.length; z++) {
-					try {
-						if(route_info[route_info_keys[z]].length > 0) {
+				let route_info_keys = Object.keys(route_info)
 
-							keyed_button = document.getElementById(route_info_keys[z])
-							keyed_button.addEventListener("click", getPlotMarkers.bind(event, route_info[route_info_keys[z]]))
-						}
-					}
-					catch (e) {
-						console.log(e.message)
-					}
-					}
-				for (let index = 0; index < pred_btns.length; index++) {
-					try {
-						if(route_info[route_info_keys[index]].length > 0) {
-
-							keyed_button_pred = document.getElementById(route_info_keys[index] + "_pred")
-							keyed_button_pred.addEventListener("click", predictRoute.bind(event, route_info[route_info_keys[index]]))
-						}
-					}
-					catch (e) {
-						console.log(e.message)
-					}
-					}
+				let plot_btns = document.getElementsByClassName('route_plot')
+				let pred_btns = document.getElementsByClassName('route_pred')
+				let trip_btns = document.getElementsByClassName('trip_take')
+				
+				bind_buttons(plot_btns, "", route_info, route_info_keys, getPlotMarkers)
+				bind_buttons(pred_btns, "_pred", route_info, route_info_keys, predictRoute)
+				bind_buttons(trip_btns, "_trip", route_info, route_info_keys, takeTrip)
+				
 				})
 	}
 
@@ -517,6 +521,7 @@ function initMap() {
 			}
 			//Make clusters here
 			var markerCluster = new MarkerClusterer(map, [], clusterOptions);
+			markerClusterList.push(markerCluster)
 			for(var k=0;k<markerList.length; k++){
 				markerCluster.addMarker(markerList[k])
 			}
