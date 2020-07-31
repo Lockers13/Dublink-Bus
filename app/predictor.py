@@ -56,17 +56,14 @@ def get_prediction(model, m_args, data_dir):
     route_list = []
 
     for index, row in df_sequence.iterrows():
-        stop_list = row['sequence']
+        stop_list = row['sequence'].strip('][').split(', ')
         if (STOPOINTID1 in stop_list) and (STOPOINTID2 in stop_list) and (stop_list.index(STOPOINTID1) < stop_list.index(STOPOINTID2)):
             route_list.append(index)
 
     df_route_list = df_sequence.iloc[route_list].apply(lambda x: x.reset_index(drop=True))
 
-    try:
-        DIRECTION = df_route_list.loc[0]['DIRECTION']
-    except:
-        pass
-        
+
+    DIRECTION = df_route_list.loc[0]['DIRECTION']
 
     df_query = df_query.drop(['SUBMIT_TIME'],axis=1)
 
