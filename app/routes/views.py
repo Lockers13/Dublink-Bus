@@ -11,7 +11,7 @@ from django.contrib.staticfiles.storage import staticfiles_storage
 from django.conf import settings
 import pandas as pd
 import joblib 
-from predict_route import get_prediction
+from predictor import get_prediction
 import sys
 import requests
 from dir_api_resp import process_resp
@@ -51,10 +51,9 @@ class RouteMapView(generics.RetrieveAPIView):
 class RoutePredictView(generics.RetrieveAPIView):
 
     def get(self, request):
-        #data_dir = '/Users/lconroy/comp_msc/dublink_bus/model_integration'
-        data_dir = 'C:\\Users\\rbyrn\\Desktop\\dublinbus\\app\\model_integration'
-        #data_dir = '/Users/lconroy/comp_msc/dublink_bus/model_integration'
-        data_dir = 'C:\\Users\\rbyrn\\Desktop\\dublinbus\\app\\model_integration'
+        data_dir = '/Users/lconroy/comp_msc/dublink_bus/model_int_new'
+        #data_dir = 'C:\\Users\\rbyrn\\Desktop\\dublinbus\\app\\model_integration'
+
         lineid = request.query_params.get('lineid')
         routeid = request.query_params.get('routeid')
         start_stop = request.query_params.get('start_stop')
@@ -65,9 +64,8 @@ class RoutePredictView(generics.RetrieveAPIView):
         temp = request.query_params.get('temp')
 
         try:
-            model_pickle = os.path.join(data_dir, 'pickle_file/XG_{}.pkl'.format(lineid))
+            model_pickle = os.path.join(data_dir, 'pickle_file_XG/XG_{}.pkl'.format(lineid))
             #model_pickle = os.path.join(data_dir, 'pickle_file\\XG_{}.pkl'.format(lineid))
-            print(model_pickle)
             model = joblib.load(open(model_pickle, 'rb'))
         except:
             return Response("ERROR: incorrect file structure", status=status.HTTP_500_INTERNAL_SERVER_ERROR)
@@ -88,10 +86,13 @@ class RoutePredictView(generics.RetrieveAPIView):
             'time_secs': time_secs,
             'dow': dow,
             'holiday': "0",
-            'rain': rain,
             'temp': temp,
-            'vp': "10.6",
-            'rh': "89.0"
+            'feels_like': "2.69",
+            'pressure': "10.6",
+            'humidity': "89.0",
+            'wind_speed': "2.6",
+            'clouds_all': "65",
+            'weather_id': "310"
         }
 
         data = {}
