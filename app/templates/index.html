@@ -105,8 +105,12 @@
 					<button class="gotitbutton"> Got it! </button>
 				</div>
 				<div id="tripmessage" class="message">
-					<p><span class="pinkspan">PLEASE NOTE:</span> Location tracking must be enabled to see this feature </p>
-					<p>Oh No! Looks like you don't have any trips planned. To plan a trip use the route prediction tool above and select 'TAKE A TRIP' to get live updates on your journey times based on our most up to date predictions and see additional journey information.</p>
+					<p class="pleasenote"><span class="pinkspan">PLEASE NOTE:</span> Location tracking must be enabled to see this feature </p>
+					{% if user.is_authenticated %}
+	                	<p>Oh No! Looks like you don't have any trips planned. To plan a trip use the route prediction tool above and select 'TAKE A TRIP' to get live updates on your journey times based on our most up to date predictions and see additional journey information.</p>
+                   {% else %}
+                    	<p class="notsignedin"><a href="{% url 'register' %}">Sign up</a> or <a href="{% url 'login' %}">log in</a> to see additional stop information</p>
+                    {% endif %}
 				</div>
 				<div id="tripcomplete">
 					<img id="tripcompleteimage" src="{% static 'images/tripcomplete.png' %}"/>
@@ -196,3 +200,7 @@
 {% endblock content %}
 
 
+<p>
+	<button id="starttripbtn" onClick=startJourney(routes[' + i + ''])>'+startStation+' to '+endStation+' </button>
+	<button id="removetripbtn" onClick=removeTrip('+tripID+')> X </button>
+</p>

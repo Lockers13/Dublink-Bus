@@ -65,9 +65,9 @@ async function getJourneyAwait(){
     			var endStation = stops_import[q].name
     		}
     	}
-    	innerHTML += '<div class="plannedtripcontainer"><p><button id="starttripbtn" onClick=startJourney(routes[' + i + '])>'+startStation+' to '+endStation+' </button><button id="removetripbtn" onClick=removeTrip('+tripID+')> X </button></p></div>'
+    	innerHTML += '<p class="plannedtripcontainer"><button id="starttripbtn" onClick=startJourney(routes[' + i + '])>'+startStation+' to '+endStation+' </button><button id="removetripbtn" onClick=removeTrip('+tripID+')> X </button></p>'
     }
-    document.getElementById('tripmessage').style.display='block';
+    document.getElementById('tripmessage').style.display='grid';
     document.getElementById('tripmessage').innerHTML = innerHTML;
   }
 }
@@ -178,7 +178,7 @@ function startJourney(route){
 			   	
 			   	//This gets the users current locations, once off to ensure they are within the correct distance of start stop
   					document.getElementById('gettingLocation').style.display="none";
-  					document.getElementById('tripmessage').style.display='block';
+  					document.getElementById('tripmessage').style.display='grid';
 
   					if (distanceToStop(currentLat, currentLong, data[0].lat, data[0].long) > 100000){
   						console.log("Too far from first stop")

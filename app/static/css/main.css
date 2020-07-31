@@ -819,11 +819,13 @@ tr:nth-child(even) {
 }
 
 .plannedtripcontainer{
-  width: 80%;
   align-content: center;
   text-align: center;
-  margin-left: 10%;
+  width: 60%;
+  margin-left: 20%;
+  margin-top: 10px;
 }
+
 
 #removetripbtn{
   float: right;
@@ -839,6 +841,14 @@ tr:nth-child(even) {
   background-color: var(--pink);
   border-radius:2em;
   float: left;
+}
+
+.notsignedin{
+  text-align: center;
+}
+
+.pleasenote{
+  text-align: center;
 }
 
 
@@ -885,6 +895,11 @@ tr:nth-child(even) {
   border-radius:2em;
   font-weight: bold;
   width: 10%;
+  }
+
+  .plannedtripcontainer{
+    width: 100%;
+    margin-left: 0px;
   }
 }
 
