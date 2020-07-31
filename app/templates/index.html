@@ -89,9 +89,30 @@
 		<div class="col-lg-12 col-md-12 col-sm-12">
 			<div id="takeatrip" class="takeTripSection">
 				<h1 class="tripTitle"> CURRENT JOURNEY INFO </h1>
+				<div class="locationmessage" id="gettingLocation">
+					<p class="locationmessage"> Hang in there with us, we are just getting your current location <p>
+					<p>
+						<div class="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+					</p>
+				</div>
+				<div id="cantfindlocation">
+					<img id="cantfindimage" src="{% static 'images/searching.png' %}"/>
+					<p>Where are you?? Looks like we can't find your location. Please make sure location tracking is allowed and use your device outdoors for best results. Refreshing the page a couple of times can help if you are indoors</p>
+					<button class="gotitbutton"> Got it! </button>
+				</div>
+				<div id="toofar">
+					<p>Sorry, looks like you are too far from the starting stop to begin this trip. Please start the trip within 100 meters of the starting stop or create a new trip</p>
+					<button class="gotitbutton"> Got it! </button>
+				</div>
 				<div id="tripmessage" class="message">
+					<p><span class="pinkspan">PLEASE NOTE:</span> Location tracking must be enabled to see this feature </p>
 					<p>Oh No! Looks like you don't have any trips planned. To plan a trip use the route prediction tool above and select 'TAKE A TRIP' to get live updates on your journey times based on our most up to date predictions and see additional journey information.</p>
-					<p>Please Note: Location tracking must be enabled for this </p>
+				</div>
+				<div id="tripcomplete">
+					<!-- <img id="tripcompleteimage" src="{% static 'images/tripcomplete.png' %}"/>
+					<p>Wooo, you made it to your stop. Save your trip for another time or remove it from your saved trips</p>
+					<button id="removeTrip"> Remove Trip! </button>
+					<button id="keepTrip"> Save For Next Time! </button> -->
 				</div>
 				<div class="container">
 					<div class="row">
@@ -116,10 +137,7 @@
 			</div>
 		</div>
 	</div>
-	
-	<div id="startJourney">
-		<button id="start">Start Journey</button>
-	</div>
+
 	<div id="endJourney">
 		<button id="end">End Journey</button>
 	</div>

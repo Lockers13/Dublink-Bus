@@ -1,31 +1,85 @@
+var current_user = context.current_user;
 let currentLocation;
+let locationFound = false;
+let permissionDenied = false;
 
 if('geolocation' in navigator) {
  //This simply gets the users location when the pages loads
  //Used for displaying users current location on page load
   navigator.geolocation.getCurrentPosition((position) => {
   		currentLocation = (position.coords);
-	});
-} else {
-  //pass
+  		currentLat = currentLocation.latitude;
+  		currentLong = currentLocation.longitude;
+  		locationFound = true;
+	},
+	function(error) {
+    if (error.code == error.PERMISSION_DENIED)
+    	permissionDenied = true;
+  	});
 }
 
-//This will be used to stop watching the users location
-//navigator.geolocation.clearWatch(watchID);
+const getJourney = () => new Promise((resolve, reject) => {
+    if (current_user == 0){
+        resolve(null);
+    }
+	fetch("api/plannedjourney/")
+	.then(response => {
+	    return response.json();
+	})
+	.then(data => {
+		routes = []
+		for (var i =0; i < data.length; i++){
+			var id = data[i].id
+            var route = JSON.parse(data[i].routeObject)
+            route[0]['savedTripID'] = id
+            routes.push(route[0]);
+        }
+       	resolve(routes);
+		/*var route = JSON.parse(data[0].routeObject);
+		console.log(route)*/
+		//Pass this route variable in as the onClick for start journey arguement
+
+	})
+	.catch(error => {
+	    reject(error);
+	});
+}, 1);
 
 
-const start = document.querySelector("#start");
-const stop = document.querySelector("#stop");
-var id;
+async function getJourneyAwait(){
+  const routes = await getJourney();
+  if(permissionDenied === true){
+  	return;
+  }
+  //Needs to be in this scope
+  window.routes = routes
+  var innerHTML = " "; 
+  if(!(routes === null)) {
+    for (var i = 0; i < routes.length; i++){
+    	var line = routes[i].Line
+    	var tripID = routes[i].savedTripID
+    	console.log(tripID)
+    	innerHTML += '<p class="red" id="toofar'+tripID+'"></p><p> Route ' + i+1 + ': <button onClick=startJourney(routes[' + i + '])>Start Trip</button></p>'
+    }
+    document.getElementById('tripmessage').style.display='block';
+    document.getElementById('tripmessage').innerHTML = innerHTML;
+  }
+}
 
-start.addEventListener("click", () =>{
-	startJourney()
-
-});
+getJourneyAwait()
 
 /*stop.addEventListener("click", () =>{
 	navigator.geolocation.clearWatch(id);
 });*/
+
+let gotitbuttons = document.getElementsByClassName("gotitbutton")
+for (let i =0; i<gotitbuttons.length; i++){
+	gotitbuttons[i].addEventListener("click", () =>{
+		document.getElementById('cantfindlocation').style.display='none';
+		document.getElementById('toofar').style.display = "none";
+		getJourneyAwait();
+	});
+}
 
 function distanceToStop(currentLat, currentLon, destinationLat, destinationLon){
 	//Took this formula from "https://www.movable-type.co.uk/scripts/latlong.html"
@@ -55,7 +109,6 @@ let dayNum = day.getDay() - 1;
 if (dayNum === -1){
 	dayNum = 6
 }
-console.log(dayNum)
 let hours = day.getHours()
 let mins = day.getMinutes()
 let seconds = ((hours * 3600) + (mins * 60))
@@ -79,6 +132,26 @@ temp = 14.67
 
 //Route should be the object created from the getRoute function
 function startJourney(route){
+	if(locationFound === false){
+		document.getElementById('tripmessage').style.display="none";
+		document.getElementById('cantfindlocation').style.display='block';
+		return;
+	}
+
+
+	//Switches to true if location is found so timeout error s not shown
+	document.getElementById('tripmessage').style.display="none";
+	document.getElementById('gettingLocation').style.display="block";
+
+	let lineid = route.Line
+	let startStop = route['Departure Stop']
+	let endStop = route['Arrival Stop']
+	let routeID = route['Route ID']
+	let savedTripID = route['savedTripID']
+	//ID WILL BE USED TO DELETE THE JOURNEY ONCE THE JOUREY HAS BEEN COMPLETE
+
+
+
 	let day = new Date();
 	
 	//nextStopList containes all remaining stops, first stop popped off once has been
@@ -91,7 +164,7 @@ function startJourney(route){
 	let innerHTML = "";
 
 	//Do the fetching of the stop info first
-	fetch("http://localhost:8000/routes/api/routemaps/?lineid=14&start=4336&end=1072&routeid=14_16")
+	fetch("http://localhost:8000/routes/api/routemaps/?lineid="+lineid+"&start="+startStop+"&end="+endStop+"&routeid="+routeID)
 		.then(response => {
 			return response.json();
 		})
@@ -100,11 +173,21 @@ function startJourney(route){
 			if('geolocation' in navigator) {
 			   	
 			   	//This gets the users current locations, once off to ensure they are within the correct distance of start stop
-  				navigator.geolocation.getCurrentPosition((position) => {
-  					console.log("Position: ", position)
+  				
+  					document.getElementById('gettingLocation').style.display="none";
+  					document.getElementById('tripmessage').style.display='block';
+
+  					if (distanceToStop(currentLat, currentLong, data[0].lat, data[0].long) > 10000){
+  						console.log("Too far from first stop")
+  						document.getElementById('toofar').style.display = "block";
+  						document.getElementById('tripmessage').style.display = 'none';
+  						//Want to end functon in this case
+  						return;
+  						console.log("Still running")
+  					}
 
   					//This ensures that the user is within at least 250 meters of stop, 250 gives us room for error
-  					if(distanceToStop(position.coords.latitude, position.coords.longitude, data[0].lat, data[0].long) < 10000){
+  					else{
   						//Display the upcoming stops and information
   						console.log("Should be changing visibility")
   						document.getElementById('tripmessage').style.display="none";
@@ -134,7 +217,7 @@ function startJourney(route){
   						//estimatedArrival.innerHTML = "Loading";
 
   						//Run the predictive model here, the updated time will therefore take a second longer to display
-  						fetch("http://localhost:8000/routes/api/predict/?lineid=14&start_stop=4336&end_stop=1072&routeid=14_16&time_secs=48600&temp=17.27&rain=0.16&dow=0")
+  						fetch("http://localhost:8000/routes/api/predict/?lineid="+lineid+"&start_stop="+startStop+"&end_stop="+endStop+"&routeid="+routeID+"&time_secs="+seconds+"&temp="+temp+"&rain=0.16&dow="+dayNum)
   						.then(response => {
   							return response.json()
   						})
@@ -151,20 +234,7 @@ function startJourney(route){
   								timeLeft.innerHTML = data.journey_info.journey_time.minutes + " Minutes"
   							}
   						})
-
-  					//Error handling if user is too far from a stop
-  					} else {
-  						document.getElementById('tripmessage').innerHTML = "Sorry, looks like you are too far from the starting stop to begin this trip. Please start the trip within 100 meters of the starting stop or create a new trip"
-  						//Want to end functon in this case
-  						return null
-  					}
-				});
-				//Second arg is for errors
-				error => console.log(error),
-				//Third arg is for options, hgh accuracy is slower but should be fast enough on mobile devices
-				{
-				enableHighAccuracy: true
-				}
+  					} 
 
 			//Error handling if geolocation is not working
 			} else {
@@ -176,7 +246,7 @@ function startJourney(route){
 
 
 			//Fetch the most up to date prediction for the arrival times
-			fetch("http://localhost:8000/routes/api/predict/?lineid=14&start_stop=4336&end_stop=1072&routeid=14_16&time_secs="+seconds+"&temp="+temp+"&rain=0.16&dow="+dayNum)
+			fetch("http://localhost:8000/routes/api/predict/?lineid="+lineid+"&start_stop="+startStop+"&end_stop="+endStop+"&routeid="+routeID+"&time_secs="+seconds+"&temp="+temp+"&rain=0.16&dow="+dayNum)
 			.then(response => {
 				return response.json()
 			})
@@ -257,6 +327,19 @@ function startJourney(route){
 						document.getElementByID('timeLeftP').innerHTML = "<h6 class='pinkspan'> YOUR STOP IS APPROACHING </h6>"
 
 					}
+
+					//Functionality for reaching destination
+						//Curently checks if final stop is within 300 m of destination and only 2 stops left icase last 2 are very close
+					if (distanceToStop(data.coords.latitude, data.coords.longitude, nextStopList[index].lat, nextStopList[index].long) < 100000
+						&& nextStopList.length < 10000){
+						document.getElementById('selectedTrip').style.display='none';
+						document.getElementById('tripInfo').style.display='none';
+						document.getElementById('end').style.display='none';
+						let completeinnerHTML = "";
+						completeinnerHTML += '<img id="tripcompleteimage" src="{% static "images/tripcomplete.png" %}"/><p>Wooo, you made it to your stop. Save your trip for another time or remove it from your saved trips</p> <button id="removeTrip"> Remove Trip! </button><button id="keepTrip"> Save For Next Time! </button>'
+						document.getElementById('tripcomplete')
+
+					}
 				},
 				//Second arg is for errors
 				error => console.log(error),
@@ -268,20 +351,12 @@ function startJourney(route){
 	})
 }
 
-
-	///// Run model after each stop //////
-	///// Run model from next stop every 5 minutes as a fail safe //////
-
-	//Track distance
-
-	//If gets close enough to destination
-		//Notify of stop coming up
-		//End tracking
-		//Calculate CO2 points -- Do need to validate that is connected to dublin bus wifi?
-
-	//If end journey clicked
-		//End tracking
-		//Calculate CO2 points
+document.getElementById('end').addEventListener('click', () =>{
+	document.getElementById('selectedTrip').style.display='none';
+	document.getElementById('tripInfo').style.display='none';
+	document.getElementById('end').style.display='none';
+	getJourneyAwait();
+})
 
 
 

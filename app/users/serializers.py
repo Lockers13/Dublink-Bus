@@ -47,6 +47,6 @@ class PlannedJourneySerializer(serializers.ModelSerializer):
 			return request.user
 
 	class Meta:
-		model = FavAddress
+		model = PlannedJourney
 		fields = ('id', 'name','routeObject','user','current_user')
 

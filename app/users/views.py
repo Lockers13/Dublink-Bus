@@ -117,12 +117,10 @@ class PlannedJourneyDetailView(generics.RetrieveAPIView):
     queryset = PlannedJourney.objects.all()
     serializer_class = PlannedJourneySerializer
 
-#Allows us to create new favourite stops
 class PlannedJourneyCreateView(generics.CreateAPIView):
     queryset = PlannedJourney.objects.all()
     serializer_class = PlannedJourneySerializer
 
-#Will be used to unfavorite a stops
 class PlannedJourneyDeleteView(generics.DestroyAPIView):
     queryset = PlannedJourney.objects.all()
     serializer_class = PlannedJourneySerializer

@@ -49,8 +49,8 @@ class RouteMapView(generics.RetrieveAPIView):
 class RoutePredictView(generics.RetrieveAPIView):
 
     def get(self, request):
-        data_dir = '/Users/lconroy/comp_msc/dublink_bus/model_integration'
-        #data_dir = 'C:\\Users\\rbyrn\\Desktop\\dublinbus\\app\\model_integration'
+        #data_dir = '/Users/lconroy/comp_msc/dublink_bus/model_integration'
+        data_dir = 'C:\\Users\\rbyrn\\Desktop\\dublinbus\\app\\model_integration'
         lineid = request.query_params.get('lineid')
         routeid = request.query_params.get('routeid')
         start_stop = request.query_params.get('start_stop')
@@ -61,8 +61,8 @@ class RoutePredictView(generics.RetrieveAPIView):
         temp = request.query_params.get('temp')
 
         try:
-            model_pickle = os.path.join(data_dir, 'pickle_file/XG_{}.pkl'.format(lineid))
-            #model_pickle = os.path.join(data_dir, 'pickle_file\\XG_{}.pkl'.format(lineid))
+            #model_pickle = os.path.join(data_dir, 'pickle_file/XG_{}.pkl'.format(lineid))
+            model_pickle = os.path.join(data_dir, 'pickle_file\\XG_{}.pkl'.format(lineid))
             print(model_pickle)
             model = joblib.load(open(model_pickle, 'rb'))
         except:

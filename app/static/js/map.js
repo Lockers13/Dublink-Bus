@@ -373,7 +373,16 @@ function initMap() {
 
 	function takeTrip(route_obj) {
 		console.log(JSON.stringify(route_obj))
-
+		user = current_user
+    	name = "Test"
+    	routeObject = JSON.stringify(route_obj)
+    	axios.post('http://127.0.0.1:8000/api/plannedjourney/create/', {
+      	name : name,
+      	routeObject : routeObject,
+      	user : user
+    	})
+    	.then(res => console.log(res))
+    	.catch(err => console.log(err))
 	}
 
 	function bind_buttons(btn_array, id_suffix, route_info, route_info_keys, func) {
