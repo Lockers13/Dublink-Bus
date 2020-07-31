@@ -20,13 +20,15 @@ import pymysql
 from sqlalchemy.sql import text
 
 class RouteMapView(generics.RetrieveAPIView):
+    queryset = ''
+
     def get(self, request):
         lineid = request.query_params.get('lineid')
         start_stop = int(request.query_params.get('start'))
         end_stop = int(request.query_params.get('end'))
         routeID = request.query_params.get('routeid')
         url = staticfiles_storage.url('json/routemaps/{}_routemap.json'.format(lineid))
-        with open(settings.BASE_DIR + url) as f:
+        with open(settings.BASE_DIR + url, 'r') as f:
                 linemap = json.loads(f.read())
         routemap = linemap[routeID]
         on_route = False
@@ -51,6 +53,8 @@ class RoutePredictView(generics.RetrieveAPIView):
     def get(self, request):
         #data_dir = '/Users/lconroy/comp_msc/dublink_bus/model_integration'
         data_dir = 'C:\\Users\\rbyrn\\Desktop\\dublinbus\\app\\model_integration'
+        #data_dir = '/Users/lconroy/comp_msc/dublink_bus/model_integration'
+        data_dir = 'C:\\Users\\rbyrn\\Desktop\\dublinbus\\app\\model_integration'
         lineid = request.query_params.get('lineid')
         routeid = request.query_params.get('routeid')
         start_stop = request.query_params.get('start_stop')
@@ -61,8 +65,8 @@ class RoutePredictView(generics.RetrieveAPIView):
         temp = request.query_params.get('temp')
 
         try:
-            #model_pickle = os.path.join(data_dir, 'pickle_file/XG_{}.pkl'.format(lineid))
-            model_pickle = os.path.join(data_dir, 'pickle_file\\XG_{}.pkl'.format(lineid))
+            model_pickle = os.path.join(data_dir, 'pickle_file/XG_{}.pkl'.format(lineid))
+            #model_pickle = os.path.join(data_dir, 'pickle_file\\XG_{}.pkl'.format(lineid))
             print(model_pickle)
             model = joblib.load(open(model_pickle, 'rb'))
         except:
@@ -102,7 +106,21 @@ class RoutePredictView(generics.RetrieveAPIView):
 
 
 class RouteFindView(generics.RetrieveAPIView):
-    def get(self, request):
+    def get(self, request):   
+        def bin_duplicates(data):
+            route_bin = []
+            seen_routes = []
+
+            for route in data:
+                sorted_route_string = sorted(json.dumps(data[route]))
+                if sorted_route_string in seen_routes:
+                    route_bin.append(route)
+                seen_routes.append(sorted_route_string)
+
+            for route in route_bin:
+                del data[route]
+            
+            return data
 
         addr_suffix = ",Dublin,Ireland"
         start_addr = request.query_params.get('start_addr') + addr_suffix
@@ -127,6 +145,8 @@ class RouteFindView(generics.RetrieveAPIView):
             return Response(error_data, status=status.HTTP_503_SERVICE_UNAVAILABLE)
 
         data = process_resp(routes)
+
+        data = bin_duplicates(data)
 
         return Response(data, status=status.HTTP_200_OK)
 

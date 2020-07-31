@@ -1,0 +1,4 @@
+To visualize the .prof views in the subfolders contained within this folder, open a terminal session, navigate to the current directory and
+run : snakeviz {directory}/{profile_view}.prof
+
+Note - run: pip install SnakeViz, if not installed already.
