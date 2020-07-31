@@ -101,7 +101,7 @@
 					<button class="gotitbutton"> Got it! </button>
 				</div>
 				<div id="toofar">
-					<p>Sorry, looks like you are too far from the starting stop to begin this trip. Please start the trip within 100 meters of the starting stop or create a new trip</p>
+					<p>Sorry, looks like you are too far from the starting stop to begin this trip. Please see your location on the map and start the trip within 100 meters of the starting stop or create a new trip</p>
 					<button class="gotitbutton"> Got it! </button>
 				</div>
 				<div id="tripmessage" class="message">
@@ -109,10 +109,9 @@
 					<p>Oh No! Looks like you don't have any trips planned. To plan a trip use the route prediction tool above and select 'TAKE A TRIP' to get live updates on your journey times based on our most up to date predictions and see additional journey information.</p>
 				</div>
 				<div id="tripcomplete">
-					<!-- <img id="tripcompleteimage" src="{% static 'images/tripcomplete.png' %}"/>
-					<p>Wooo, you made it to your stop. Save your trip for another time or remove it from your saved trips</p>
-					<button id="removeTrip"> Remove Trip! </button>
-					<button id="keepTrip"> Save For Next Time! </button> -->
+					<img id="tripcompleteimage" src="{% static 'images/tripcomplete.png' %}"/>
+					<div id="tripcompletecontent">
+					</div>
 				</div>
 				<div class="container">
 					<div class="row">
@@ -160,6 +159,8 @@
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 <!--Below passing current user, used for the adding of favourite stops/Addresses-->
 <script type="text/javascript">var context = {current_user: '{{current_user}}'};</script>
+<!--Static stops used for both geolocation and map, only static content -->
+<script type="text/javascript" src="{% static 'js/static_stops.js' %}"></script>
 <!-- Library to get accurate date and times for route planning -->
 <script type="text/javascript" src="{% static 'js/moment.min.js' %}"></script>
 <!--Geolocation script -->
@@ -168,7 +169,6 @@
 <script type="text/javascript" src="{% static 'js/mapStyle.js' %}"></script>
 <script type="text/javascript" src="{% static 'js/route_predict.js' %}"></script>
 <script type="text/javascript" src="{% static 'js/get_route.js' %}"></script>
-<script type="text/javascript" src="{% static 'js/static_stops.js' %}"></script>
 <script type="text/javascript" src="{% static 'js/distinct_lines.js' %}"></script>
 <script type="text/javascript" src="{% static 'js/map.js' %}"></script>
 <script type="text/javascript" src="{% static 'js/initialize.js' %}"></script>

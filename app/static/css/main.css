@@ -813,6 +813,32 @@ tr:nth-child(even) {
   margin-top: 30px
   margin-bottom: 20px;
   height: 100px;
+  display: none;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.plannedtripcontainer{
+  width: 80%;
+  align-content: center;
+  text-align: center;
+  margin-left: 10%;
+}
+
+#removetripbtn{
+  float: right;
+  border: 3px solid var(--pink);
+  background-color: var(--pink);
+  border-radius:2em;
+  font-weight: bold;
+  width: 5%;
+}
+
+#starttripbtn{
+  border: 3px solid var(--pink);
+  background-color: var(--pink);
+  border-radius:2em;
+  float: left;
 }
 
 
@@ -850,6 +876,15 @@ tr:nth-child(even) {
 
   #tripcomplete image{
     margin-bottom: 30px;
+  }
+
+  #removetripbtn{
+  float: right;
+  border: 3px solid var(--pink);
+  background-color: var(--pink);
+  border-radius:2em;
+  font-weight: bold;
+  width: 10%;
   }
 }
 

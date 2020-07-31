@@ -32,7 +32,7 @@
 	        <div>
 	          <ul>
 	          	{% if user.is_authenticated %}
-	        		<p class="nav-item nav-link" href="#">CO2 Points: {{ user.profile.co2points }}</p>
+	        		<!-- <p class="nav-item nav-link" href="#">CO2 Points: {{ user.profile.co2points }}</p> -->
 	        		<h1>Welcome, {{ user.username }}</h1>
 	        		<a class="nav-item nav-link" href="{% url 'logout' %}"><h3>Logout</h3></a>
 	        	{% else %}
