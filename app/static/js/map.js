@@ -318,8 +318,19 @@ function initMap() {
 
 			})
 		.then(function () {
-			let temp = (weather_data["spec"] == "hourly")? weather_data["weather"]['temp']: weather_data["weather"]['day_temp'];
-			let rain = weather_data["weather"]['rainfall']
+			let temp, rain, clouds, feels_like;
+			if(weather_data["spec"] == "hourly") {
+				temp = weather_data["weather"]['temp']
+				rain = weather_data["weather"]['rainfall']
+				clouds = weather_data["weather"]['clouds']
+				feels_like = weather_data["weather"]['feels_like']
+			}
+			else {
+				temp = weather_data["weather"]['day_temp']
+				rain = weather_data["weather"]['rainfall']
+				clouds = weather_data["weather"]['clouds']
+				feels_like = weather_data["weather"]['day_feels_like']
+			}
 			for (let i = 0; i < route_obj.length; i++) {
 				fetch("http://localhost:8000/routes/api/predict?lineid=" + route_obj[i]["Line"] +
 					"&start_stop=" + route_obj[i]["Departure Stop"].toString() +
@@ -328,6 +339,8 @@ function initMap() {
 					"&time_secs=" + seconds +
 					"&temp=" + temp + 
 					"&rain=" + rain +
+					"&clouds=" + clouds +
+					"&feels_like=" + feels_like +
 					"&dow=" + chosenDay)
 					.then(response => response.json())
 					.then(function (data) {

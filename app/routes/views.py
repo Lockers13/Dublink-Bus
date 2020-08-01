@@ -62,6 +62,8 @@ class RoutePredictView(generics.RetrieveAPIView):
         dow = request.query_params.get('dow')
         rain = request.query_params.get('rain')
         temp = request.query_params.get('temp')
+        clouds = request.query_params.get('clouds')
+        feels_like = request.query_params.get('feels_like')
 
         try:
             model_pickle = os.path.join(data_dir, 'pickle_file_XG/XG_{}.pkl'.format(lineid))
@@ -87,11 +89,11 @@ class RoutePredictView(generics.RetrieveAPIView):
             'dow': dow,
             'holiday': "0",
             'temp': temp,
-            'feels_like': "2.69",
+            'feels_like': feels_like,
             'pressure': "10.6",
             'humidity': "89.0",
             'wind_speed': "2.6",
-            'clouds_all': "65",
+            'clouds_all': clouds,
             'weather_id': "310"
         }
 
