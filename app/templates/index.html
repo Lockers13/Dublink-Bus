@@ -49,7 +49,6 @@
 				<div id="daySelect">
 				</div>
 				<div class="timeSelect">
-					<!-- <input class="timeBox" type="time" value="13:30"/> -->
 					<p id="timeError"><img class="errorImage" src="{% static 'images/error.png' %}"/>Times in the past are not allowed</p>
 					<input id="time" class="timeBox" type="time" value="13:30"/>
 				</div>
@@ -59,9 +58,11 @@
 					</ul>
 					<div id="hiddenSection">
 						<form class="addFavAddress" onsubmit="return false"> 
+							<p id="favNameError"><img class="errorImage" src="{% static 'images/error.png' %}"/>Error: Please enter a name for location</p>
 							<input id="addName" class="favAddressInput" type="text" name="" placeholder="Enter name for location" maxlength = "10"> 
+							<p id="favLocError"><img class="errorImage" src="{% static 'images/error.png' %}"/>Error: Please enter a location</p>
 							<input id="addAddress" class="favAddressInput" type="text" name="" placeholder="Enter location address"> 
-							<button class="routePlanButton" onClick=addFavAddress()> Submit </button> 
+							<button id="favAddressSubmitBtn" class="routePlanButton" onClick=addFavAddress()> Submit </button> 
 						</form>
 					</div>	
 		        {% else %}

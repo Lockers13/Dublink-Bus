@@ -8,10 +8,14 @@ function showForm (){
 }
 
 function addFavAddress(){
-    document.getElementById('hiddenSection').style.display= 'none';
     user = current_user
     name = document.getElementById('addName').value
     address = document.getElementById('addAddress').value
+    if(name == "" || address == ""){
+      console.log("Should break")
+      return null;
+    }
+    document.getElementById('hiddenSection').style.display= 'none';
     axios.post('http://127.0.0.1:8000/api/favaddress/create/', {
       name : name,
       address : address,
@@ -25,6 +29,8 @@ function addFavAddress(){
     //Resets the form if users adds another location
     document.getElementById('addName').value="";
     document.getElementById('addAddress').value="";
+    document.getElementById('favNameError').style.display = 'none';
+    document.getElementById('favLocError').style.display = 'none';
 }
 
 
@@ -82,7 +88,7 @@ async function getFavAddressAwait(){
      innerHTML += '<li><div class="btn-group"><button class="favAddressBtn" onClick=enterAddress('+ addresses[i].id +')><img class="favouriteicon" src="../static/images/favAddress.png"/>'+ addresses[i].name + '</button><button class="removebtn" onClick=deleteLocation(' + addresses[i].id + ')><img class="removeicon" src="../static/images/remove_fav.png"/></button></div></li>'
     }
     if (addresses.length < 5){
-      innerHTML += '<li><button class="addFavAddressBtn" onclick=showForm()><img class="" src="../static/images/favAddress2.png"/>Add Location<img class="removeicon addicon" src="../static/images/add_fav.png"/></button></li>'
+      innerHTML += '<li><button id="newlocbtn" class="addFavAddressBtn" onclick=showForm()><img class="" src="../static/images/favAddress2.png"/>Add Location<img class="removeicon addicon" src="../static/images/add_fav.png"/></button></li>'
     }
     favAddressSection.innerHTML = innerHTML;
   }
@@ -90,6 +96,32 @@ async function getFavAddressAwait(){
 
 //Called when page loads to display favourite stops
 getFavAddressAwait();
+
+
+document.getElementById('favAddressSubmitBtn').addEventListener('click', () => {
+  if(document.getElementById('addName').value === ""){
+    document.getElementById('favNameError').style.display = 'block'
+    setTimeout(() =>{
+      document.getElementById('favNameError').style.display = 'none'
+    },5000)
+  }
+  if(document.getElementById('addAddress').value === ""){
+    document.getElementById('favLocError').style.display = 'block'
+    setTimeout(() =>{
+      document.getElementById('favLocError').style.display = 'none'
+    },6000)
+  }
+})
+
+document.getElementById('addName').addEventListener('click', () => {
+  document.getElementById('favNameError').style.display = 'none'
+})
+
+document.getElementById('addAddress').addEventListener('click', () => {
+  document.getElementById('favLocError').style.display = 'none'
+})
+
+
 
 
 

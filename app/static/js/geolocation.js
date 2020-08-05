@@ -35,7 +35,7 @@ const getJourney = () => new Promise((resolve, reject) => {
 			var id = data[i].id
             var route = JSON.parse(data[i].routeObject)
             route[0]['savedTripID'] = id
-            routes.push(route[0]);
+            routes.push(route);
         }
        	resolve(routes);
 	})
@@ -52,17 +52,19 @@ async function getJourneyAwait(){
   }
   //Needs to be in this scope
   window.routes = routes
+  console.log(routes)
   var innerHTML = " "; 
   if(!(routes === null)) {
     for (var i = 0; i < routes.length; i++){
     	var line = routes[i].Line
     	var tripID = routes[i].savedTripID
     	var routeNumber = i + 1
+    	var index = routes[i].length - 1
     	for(var q = 0; q < stops_import.length; q++){
-    		if (routes[i]['Departure Stop'] === stops_import[q].id){
+    		if (routes[i][0]['Departure Stop'] === stops_import[q].id){
     			var startStation = stops_import[q].name
     		}
-    		if (routes[i]['Arrival Stop'] === stops_import[q].id){
+    		if (routes[i][index]['Arrival Stop'] === stops_import[q].id){
     			var endStation = stops_import[q].name
     		}
     	}

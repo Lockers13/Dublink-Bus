@@ -106,7 +106,7 @@ function favStopButton(stopid){
 function initMap() {
 	//Map options
 	var options = {
-		zoom: 16,
+		zoom: 8,
 		center: { lat: 53.3477, lng: -6.2800 },
 		styles: mapStyle,
 		disableDefaultUI: true
