@@ -107,9 +107,11 @@ timeBox.addEventListener('input', ()=>{
 document.getElementById('planRouteSubmit').addEventListener('click', () =>{
     if(document.getElementById('startLocation').value === ""){
         document.getElementById('startStopError').style.display = 'block';
+        document.getElementById('planRouteSectionContainter').scrollIntoView(true)
     }
     if(document.getElementById('endLocation').value === ""){
         document.getElementById('endStopError').style.display = 'block';
+        document.getElementById('planRouteSectionContainter').scrollIntoView(true)
     }
 
 })

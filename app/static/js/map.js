@@ -381,6 +381,7 @@ function initMap() {
 					map.setZoom(13);
 				})
 		}
+		document.getElementById('mapSectionContainer').scrollIntoView(true);
 
 	}
 
@@ -396,6 +397,13 @@ function initMap() {
     	})
     	.then(res => console.log(res))
     	.catch(err => console.log(err))
+
+    	setTimeout(()=> {
+    		getJourneyAwait()
+    		getJourneyAwait()
+    		getJourneyAwait()
+    		document.getElementById('savedTrips').scrollIntoView()
+    	},1000)
 	}
 
 	function bind_buttons(btn_array, id_suffix, route_info, route_info_keys, func) {
@@ -495,7 +503,7 @@ function initMap() {
 					}
 				}
 				if(!route_flag)
-					directions.innerHTML += "<br><p class='center'>Sorry, we could not find any data for the specified route.<br>Please try again...!</p>"
+					directions.innerHTML += "<br><p class='noRouteFound'>Sorry, we could not find any data for the specified route.<br>Please try again...!</p>"
 
 				
 				let route_info_keys = Object.keys(route_info)

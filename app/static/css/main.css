@@ -350,6 +350,10 @@ li{
   display: none;
 }
 
+.noRouteFound{
+  text-align: center;
+  font-size: 28px;
+}
 
 @media only screen and (max-width: 600px) {
   .stoptextbox{
@@ -420,6 +424,10 @@ li{
 
   #startStopError, #endStopError{
     font-size: 14px;
+  }
+
+  .noRouteFound{
+    font-size: 20px;
   }
 
 }
