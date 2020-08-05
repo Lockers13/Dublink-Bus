@@ -16,6 +16,8 @@ function addFavAddress(){
       return null;
     }
     document.getElementById('hiddenSection').style.display= 'none';
+    axios.defaults.xsrfCookieName = 'csrftoken';
+    axios.defaults.xsrfHeaderName = 'X-CSRFToken';
     axios.post('http://127.0.0.1:8000/api/favaddress/create/', {
       name : name,
       address : address,

@@ -225,6 +225,14 @@ p{
   margin-top: 30px;
 }
 
+.black{
+  color: var(--black);
+}
+
+.pink{
+  color: var(--pink);
+}
+
 
 .favouriteicon{
   float:left;

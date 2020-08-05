@@ -13,6 +13,7 @@ let markerClusterGlob = []
 //Called from infowindow button
 function addFavStop(stopid) {
 
+
 	const addNewFav = new Promise((resolve, reject) => {
 		user = current_user
 		axios.post('http://127.0.0.1:8000/api/favstop/create/', {
@@ -106,7 +107,7 @@ function favStopButton(stopid){
 function initMap() {
 	//Map options
 	var options = {
-		zoom: 8,
+		zoom: 16,
 		center: { lat: 53.3477, lng: -6.2800 },
 		styles: mapStyle,
 		disableDefaultUI: true
@@ -385,18 +386,62 @@ function initMap() {
 
 	}
 
+	//Taken from https://docs.djangoproject.com/en/1.8/ref/csrf/#ajax
+	function getCookie(name) {
+	    var cookieValue = null;
+	    if (document.cookie && document.cookie != '') {
+	        var cookies = document.cookie.split(';');
+	        for (var i = 0; i < cookies.length; i++) {
+	            var cookie = jQuery.trim(cookies[i]);
+	            // Does this cookie string begin with the name we want?
+	            if (cookie.substring(0, name.length + 1) == (name + '=')) {
+	                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+	                break;
+	            }
+	        }
+	    }
+	    return cookieValue;
+	}
+
 	function takeTrip(route_obj) {
 		console.log(JSON.stringify(route_obj))
-		user = current_user
-    	name = "Test"
-    	routeObject = JSON.stringify(route_obj)
-    	axios.post('http://127.0.0.1:8000/api/plannedjourney/create/', {
+		
+		var myData = {
+			user: current_user,
+	    	name: "Test",
+	    	routeObject: JSON.stringify(route_obj)
+	    };
+
+    	fetch("http://127.0.0.1:8000/api/plannedjourney/create/", {
+		    method: "post",
+		    credentials: "same-origin",
+		    headers: {
+		        "X-CSRFToken": getCookie("csrftoken"),
+		        "Accept": "application/json",
+		        "Content-Type": "application/json"
+		    },
+		    body: JSON.stringify(myData)
+		}).then(function(response) {
+		    return response.json();
+		}).then(function(data) {
+		    console.log("Data is ok", data);
+		}).catch(function(ex) {
+		    console.log("parsing failed", ex);
+		});
+    	
+
+
+
+
+
+
+    	/*axios.post('http://127.0.0.1:8000/api/plannedjourney/create/', {
       	name : name,
       	routeObject : routeObject,
       	user : user
     	})
     	.then(res => console.log(res))
-    	.catch(err => console.log(err))
+    	.catch(err => console.log(err))*/
 
     	setTimeout(()=> {
     		getJourneyAwait()
@@ -440,7 +485,6 @@ function initMap() {
 	function routeViewClick(event) {
 		let addr1 = document.getElementById('startLocation').value
 		let addr2 = document.getElementById('endLocation').value
-		console.log(typeof(addr1), addr2)
 		if(addr1 == "" || addr2 == ""){
 			console.log("Not running function")
 			return;
@@ -453,13 +497,14 @@ function initMap() {
 			"&end_addr=" + addr2)
 			.then(response => response.json())
 			.then(function (data) {
-				console.log(data)
 				directions.innerHTML = ""
 				let route_keys = Object.keys(data)
 				let count = 0
 				let route_info = {}
 				let route_flag = false
 				let directionsinnerHTML = ""
+				//Collect buttons and then click each, buttons will be hidden from user
+				var predictBtns = []
 				for (let i = 0; i < route_keys.length; i++) {
 				
 					let route = route_keys[i]
@@ -467,12 +512,11 @@ function initMap() {
 					
 					if (data[route]["routable"] == "b") {
 						route_info[route] = []
-						directionsinnerHTML += "<button type='button' class='collapsible'>Route " + ++count + "</button><div class='content'>"
+						directionsinnerHTML += "<button type='button' class='collapsible'>Route " + ++count + "</button><div class='content'><br><p class='black'>ESTIMATED JOURNEY DURATION: <span class='pink'>Loading</span> </p><br>"
 						for (let j = 0; j < step_keys.length; j++) {
 							let step = "Step_" + (j + 1)
 							try {
-								directionsinnerHTML += data[route][step]["Instructions"] + "<br>"
-
+								directionsinnerHTML += data[route][step]["Instructions"]+ " "
 								if (Object.keys(data[route][step]).length > 1) {
 									route_flag = true
 
@@ -497,8 +541,9 @@ function initMap() {
 						"<button class='directionsbtn trip_take' id='" + route + "_trip'>ADD AS SAVED TRIP</button>"+
 						"<button class='directionsbtn route_plot' id='" + route + "''>PLOT ROUTE</button>" + 
 						"<button class='directionsbtn route_pred' id='" + route + "_pred'>PREDICT ROUTE</button></div>"
+						predictBtns.push(route+"_pred")
 						directions.innerHTML = directionsinnerHTML;
-						//directions.innerHTML += "<br>"
+						//This allows for collapsible functionality for the results, wont open without
 						createCollapse()
 					}
 				}
@@ -515,8 +560,11 @@ function initMap() {
 				bind_buttons(plot_btns, "", route_info, route_info_keys, getPlotMarkers)
 				bind_buttons(pred_btns, "_pred", route_info, route_info_keys, predictRoute)
 				bind_buttons(trip_btns, "_trip", route_info, route_info_keys, takeTrip)
-				
+				for(var k = 0; k < predictBtns.length; k++){
+					document.getElementById(predictBtns[k]).click()
+				}
 				})
+
 	}
 
 

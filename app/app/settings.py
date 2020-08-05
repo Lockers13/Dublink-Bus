@@ -134,3 +134,12 @@ LOGIN_URL = 'login'
 
 
 CORS_ORIGIN_ALLOW_ALL = True
+
+
+
+# Django rest framework
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.SessionAuthentication'
+    ]
+}
