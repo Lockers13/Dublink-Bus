@@ -103,6 +103,25 @@ timeBox.addEventListener('input', ()=>{
 })
 
 
+//Error handling for missing inputs of stop boxes
+document.getElementById('planRouteSubmit').addEventListener('click', () =>{
+    if(document.getElementById('startLocation').value === ""){
+        document.getElementById('startStopError').style.display = 'block';
+    }
+    if(document.getElementById('endLocation').value === ""){
+        document.getElementById('endStopError').style.display = 'block';
+    }
+
+})
+
+//Clear error messages
+document.getElementById('startLocation').addEventListener('click', () => {
+    document.getElementById('startStopError').style.display = 'none';
+})
+
+document.getElementById('endLocation').addEventListener('click', () => {
+    document.getElementById('endStopError').style.display = 'none';
+})
 
 
 

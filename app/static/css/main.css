@@ -50,6 +50,11 @@ p{
   color: var(--white);
 }
 
+.errorImage{
+  height: 20px;
+  margin-right: 5px;
+}
+
 @media only screen and (max-width: 600px) {
   #home{
     background: url('../images/home.jpg') 100% 100% no-repeat;
@@ -341,6 +346,10 @@ li{
   display:none;
 }
 
+#startStopError, #endStopError{
+  display: none;
+}
+
 
 @media only screen and (max-width: 600px) {
   .stoptextbox{
@@ -406,6 +415,10 @@ li{
 
   .favAddressInput{
     width: 90%;
+    font-size: 14px;
+  }
+
+  #startStopError, #endStopError{
     font-size: 14px;
   }
 

@@ -42,13 +42,15 @@
 		<div id="planRouteSectionContainter" class="col-sm-12 col-md-6">
 			<h1> PLAN A TRIP </h1>
 			<div class="routePlanForm">
+				<p id="startStopError"><img class="errorImage" src="{% static 'images/error.png' %}"/>Error: Please enter a start stop</p>
 				<input id="startLocation" placeholder="Enter start location" type="text" class="stoptextbox"/>
+				<p id="endStopError"><img class="errorImage" src="{% static 'images/error.png' %}"/>Error: Please enter an end stop</p>
 				<input id="endLocation" placeholder="Enter end location" type="text" class="stoptextbox"/>
 				<div id="daySelect">
 				</div>
 				<div class="timeSelect">
 					<!-- <input class="timeBox" type="time" value="13:30"/> -->
-					<p id="timeError">Times in the past are not allowed</p>
+					<p id="timeError"><img class="errorImage" src="{% static 'images/error.png' %}"/>Times in the past are not allowed</p>
 					<input id="time" class="timeBox" type="time" value="13:30"/>
 				</div>
 				{% if user.is_authenticated %}
@@ -110,7 +112,7 @@
 				<div id="tripmessage" class="message">
 					<p class="pleasenote"><span class="pinkspan">PLEASE NOTE:</span> Location tracking must be enabled to see this feature </p>
 					{% if user.is_authenticated %}
-	                	<p>Oh No! Looks like you don't have any trips planned. To plan a trip use the route prediction tool above and select 'TAKE A TRIP' to get live updates on your journey times based on our most up to date predictions and see additional journey information.</p>
+	                	<p>Oh No! Looks like you don't have any trips planned. To plan a trip use the route prediction tool above and select 'ADD AS SAVED TRIP' to get live updates on your journey times based on our most up to date predictions and see additional journey information. To activate this feature select your desired saved trip when you are within 100 meters of the starting stop.</p>
                    {% else %}
                     	<p class="notsignedin"><a href="{% url 'register' %}">Sign up</a> or <a href="{% url 'login' %}">log in</a> to see additional stop information</p>
                     {% endif %}

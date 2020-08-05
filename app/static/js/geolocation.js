@@ -27,6 +27,9 @@ const getJourney = () => new Promise((resolve, reject) => {
 	    return response.json();
 	})
 	.then(data => {
+		if(data.length === 0){
+			resolve(null)
+		}
 		routes = []
 		for (var i =0; i < data.length; i++){
 			var id = data[i].id

@@ -432,8 +432,14 @@ function initMap() {
 	function routeViewClick(event) {
 		let addr1 = document.getElementById('startLocation').value
 		let addr2 = document.getElementById('endLocation').value
+		console.log(typeof(addr1), addr2)
+		if(addr1 == "" || addr2 == ""){
+			console.log("Not running function")
+			return;
+		}
 		addr1 = addr1.replace(" ", "%20").replace("'", "%27")
 		addr2 = addr2.replace(" ", "%20").replace("'", "%27")
+
 
 		fetch("http://localhost:8000/routes/api/find_route?start_addr=" + addr1 +
 			"&end_addr=" + addr2)
