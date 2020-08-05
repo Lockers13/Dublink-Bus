@@ -294,7 +294,7 @@ function initMap() {
 
 	function predictRoute(route_obj) {
 		//Dates and dates index coming from route_predict.js
-
+		console.log(route_obj)
 		let chosenDate = dates[datesIndex];
 		let weather_data = {"spec": ""}
 
@@ -412,6 +412,23 @@ function initMap() {
 			}
 	}
 
+	function createCollapse(){
+		var coll = document.getElementsByClassName("collapsible");
+		var i;
+
+		for (i = 0; i < coll.length; i++) {
+		  coll[i].addEventListener("click", function() {
+		    this.classList.toggle("active");
+		    var content = this.nextElementSibling;
+		    if (content.style.maxHeight){
+		      content.style.maxHeight = null;
+		    } else {
+		      content.style.maxHeight = content.scrollHeight + "px";
+		    } 
+		  });
+		}
+	}
+
 	function routeViewClick(event) {
 		let addr1 = document.getElementById('startLocation').value
 		let addr2 = document.getElementById('endLocation').value
@@ -428,6 +445,7 @@ function initMap() {
 				let count = 0
 				let route_info = {}
 				let route_flag = false
+				let directionsinnerHTML = ""
 				for (let i = 0; i < route_keys.length; i++) {
 				
 					let route = route_keys[i]
@@ -435,13 +453,11 @@ function initMap() {
 					
 					if (data[route]["routable"] == "b") {
 						route_info[route] = []
-						directions.innerHTML += "<h2>Route " + ++count + "</h2><button class='route_plot' id='" + route + "' style='display:inline-block;float:left;'>Plot Route</button>" + 
-						"<button class='route_pred' id='" + route + "_pred' style='display:inline-block;float:left;'>Predict Route</button>" +
-						"<button class='trip_take' id='" + route + "_trip' style='display:inline-block;float:left;'>Take A Trip</button><br><br>"
+						directionsinnerHTML += "<button type='button' class='collapsible'>Route " + ++count + "</button><div class='content'>"
 						for (let j = 0; j < step_keys.length; j++) {
 							let step = "Step_" + (j + 1)
 							try {
-								directions.innerHTML += "-> " + data[route][step]["Instructions"] + "<br>"
+								directionsinnerHTML += data[route][step]["Instructions"] + "<br>"
 
 								if (Object.keys(data[route][step]).length > 1) {
 									route_flag = true
@@ -452,22 +468,28 @@ function initMap() {
 										"Arrival Stop": data[route][step]["Route Validation"]["End stop"],
 										"Route ID": data[route][step]["Route Validation"]["Route ID"]
 									})
-									directions.innerHTML += "<br><ul style'margin-left:200px;'>"
-									directions.innerHTML += "<li>Line: " + data[route][step]["Line"] + "</li>"
-									directions.innerHTML += "<li>Departure Stop: " + data[route][step]["Departure Stop Name"] + "</li>"
-									directions.innerHTML += "<li>Arrival Stop: " + data[route][step]["Arrival Stop Name"] + "</li>"
-									directions.innerHTML += "</ul><br>"
+									directionsinnerHTML += "<br><ul style'margin-left:200px;'>"
+									directionsinnerHTML += "<li>Line: " + data[route][step]["Line"] + "</li>"
+									directionsinnerHTML += "<li>Departure Stop: " + data[route][step]["Departure Stop Name"] + "</li>"
+									directionsinnerHTML += "<li>Arrival Stop: " + data[route][step]["Arrival Stop Name"] + "</li>"
+									directionsinnerHTML += "</ul><br>"
 								}
 							}
 							catch {
 								;
 							}
 						}
-						directions.innerHTML += "<br>"
+						directionsinnerHTML += 
+						"<button class='directionsbtn trip_take' id='" + route + "_trip'>ADD AS SAVED TRIP</button>"+
+						"<button class='directionsbtn route_plot' id='" + route + "''>PLOT ROUTE</button>" + 
+						"<button class='directionsbtn route_pred' id='" + route + "_pred'>PREDICT ROUTE</button></div>"
+						directions.innerHTML = directionsinnerHTML;
+						//directions.innerHTML += "<br>"
+						createCollapse()
 					}
 				}
 				if(!route_flag)
-					directions.innerHTML += "<br>Sorry, we could not find any data for the specified route.<br>Please try again...!"
+					directions.innerHTML += "<br><p class='center'>Sorry, we could not find any data for the specified route.<br>Please try again...!</p>"
 
 				
 				let route_info_keys = Object.keys(route_info)
@@ -702,7 +724,7 @@ function initMap() {
 				});
 				currentPosList.push(marker);
 				var latLng = new google.maps.LatLng(lat, lng);
-				map.panTo(latLng);
+				//map.panTo(latLng);
 				//updatedLatLng = new google.maps.LatLng(data.coords.latitude, data.coords.longitude);
 				//console.log(updatedLatLng);
 			},

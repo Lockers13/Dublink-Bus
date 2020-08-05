@@ -44,7 +44,6 @@ const getJourney = () => new Promise((resolve, reject) => {
 
 async function getJourneyAwait(){
   const routes = await getJourney();
-  console.log(routes)
   if(permissionDenied === true){
   	return;
   }
@@ -53,7 +52,6 @@ async function getJourneyAwait(){
   var innerHTML = " "; 
   if(!(routes === null)) {
     for (var i = 0; i < routes.length; i++){
-    	console.log(routes[i])
     	var line = routes[i].Line
     	var tripID = routes[i].savedTripID
     	var routeNumber = i + 1

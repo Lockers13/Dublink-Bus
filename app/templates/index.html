@@ -48,6 +48,7 @@
 				</div>
 				<div class="timeSelect">
 					<!-- <input class="timeBox" type="time" value="13:30"/> -->
+					<p id="timeError">Times in the past are not allowed</p>
 					<input id="time" class="timeBox" type="time" value="13:30"/>
 				</div>
 				{% if user.is_authenticated %}
@@ -68,7 +69,9 @@
 			</div><br><br>
 			<div class="RoutePlanResults" style="color:white">
 				<span id="results2"></span>
+				
 			<div>
+
 		</div>
 	<!--Must have missed a few div tags somewhere, keep these in -->
 	</div>
@@ -88,7 +91,7 @@
 	<div class="row">
 		<div class="col-lg-12 col-md-12 col-sm-12">
 			<div id="takeatrip" class="takeTripSection">
-				<h1 class="tripTitle"> CURRENT JOURNEY INFO </h1>
+				<h1 class="tripTitle"> YOUR SAVED TRIPS </h1>
 				<div class="locationmessage" id="gettingLocation">
 					<p class="locationmessage"> Hang in there with us, we are just getting your current location <p>
 					<p>
@@ -181,8 +184,8 @@
 <script type="text/javascript" src="{% static 'js/get_route.js' %}"></script>
 <!-- Version of map script with key commented out while styling due to many refreshes -->
 <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBTqQ5XI6Z3N5j26PNXbFKUxUFfq8dnGV8&libraries=places&callback=initialize"></script>
-<!-- <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBTqQ5XI6Z3N5j26PNXbFKUxUFfq8dnGV8&libraries=places&callback=initialize"></script> -->
-<!-- <script async defer src="https://maps.googleapis.com/maps/api/js?key=&libraries=places&callback=initialize"></script> -->
+<!-- <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBTqQ5XI6Z3N5j26PNXbFKUxUFfq8dnGV8&libraries=places&callback=initialize"></script>
+ --><!-- <script async defer src="https://maps.googleapis.com/maps/api/js?key=&libraries=places&callback=initialize"></script> -->
 <script type="text/javascript" src="{% static 'js/mapcluster.js' %}"></script>
 <!--Favourite Address script -->
 <script type="text/javascript" src="{% static 'js/favouriteAddress.js' %}"></script>
@@ -197,10 +200,6 @@
 <script type="text/javascript" src="{% static 'js/weather.js' %}"></script>
 
 
+
 {% endblock content %}
 
-
-<p>
-	<button id="starttripbtn" onClick=startJourney(routes[' + i + ''])>'+startStation+' to '+endStation+' </button>
-	<button id="removetripbtn" onClick=removeTrip('+tripID+')> X </button>
-</p>
