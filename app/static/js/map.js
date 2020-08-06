@@ -354,8 +354,8 @@ function initMap() {
 					.then(response => response.json())
 					.then(function (data) {
 						console.log(data)
-						document.getElementById(display).innerHTML = "Your planned route will take approx: " + 
-						data["journey_info"]["journey_time"]["hours"] + " hours and " + 
+						document.getElementById(display).innerHTML = " " + 
+						data["journey_info"]["journey_time"]["hours"] + " hour(s) and " + 
 						data["journey_info"]["journey_time"]["minutes"] + " minutes"
 					})
 			}
@@ -582,9 +582,8 @@ function initMap() {
 				bind_buttons(trip_btns, "_trip", route_info, route_info_keys, takeTrip)
 				//Click each route predict button automatically and hide button from the user
 				for(var k = 0; k < predictBtns.length; k++){
-					//document.getElementById(predictBtns[k]).click()
-					
-					
+					document.getElementById(predictBtns[k]).click()
+					document.getElementById(predictBtns[k]).style.display = 'none'	
 				}
 				})
 

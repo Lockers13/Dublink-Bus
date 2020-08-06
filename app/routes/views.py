@@ -69,7 +69,8 @@ class RoutePredictView(generics.RetrieveAPIView):
             #model_pickle = os.path.join(data_dir, 'pickle_file_XG/XG_{}.pkl'.format(lineid))
             model_pickle = os.path.join(data_dir, 'pickle_file\\XG_{}.pkl'.format(lineid))
             model = joblib.load(open(model_pickle, 'rb'))
-        except:
+        except Exception as e:
+            print(e)
             return Response("ERROR: incorrect file structure", status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         direction = 0
         with open(os.path.join(data_dir,'stop_sequence/stop_{0}.csv'.format(lineid)), 'r') as f:
