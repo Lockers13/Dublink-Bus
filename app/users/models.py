@@ -12,7 +12,7 @@ class Profile (models.Model):
 
 class FavStop (models.Model):
 	name = models.CharField(max_length = 100)
-	stopid = models.IntegerField()
+	stopid = models.IntegerField(primary_key=True)
 	user = models.ForeignKey(User, on_delete=models.CASCADE)
 
 	def __str__(self):

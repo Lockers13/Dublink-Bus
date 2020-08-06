@@ -18,7 +18,7 @@ class FavStopSerializer(serializers.ModelSerializer):
 
 	class Meta:
 		model = FavStop
-		fields = ('id', 'name','stopid','user','current_user')
+		fields = ('name','stopid','user','current_user')
 
 
 class FavAddressSerializer(serializers.ModelSerializer):

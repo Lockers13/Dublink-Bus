@@ -10,23 +10,26 @@ var polyline = []
 let markerClusterGlob = []
 
 
+//Below lists are used to contain stops that have been favourited during the current session
+
 //Called from infowindow button
 function addFavStop(stopid) {
 
+	console.log("Add fav stop activated with stopid of: ",stopid )
 
-	const addNewFav = new Promise((resolve, reject) => {
-		user = current_user
-		axios.post('http://127.0.0.1:8000/api/favstop/create/', {
-			name: stopid,
-			stopid: stopid,
-			user: user,
-			current_user: user
-		})
-		.then(res => resolve(res))
-		.catch(err => reject(err))
-	});
+	
+	user = current_user
+	axios.post('http://127.0.0.1:8000/api/favstop/create/', {
+		name: stopid,
+		stopid: stopid,
+		user: user,
+		current_user: user
+	})
+	.then(res => console.log(res))
+	.catch(err => console.log(err))
+	
 
-	async function getFavStops() {
+	/*async function getFavStops() {
 		favouriteStopsPKs = []
 		setTimeout(()=>{
 			fetch("api/favstop/")
@@ -44,7 +47,7 @@ function addFavStop(stopid) {
 		},3000)
 		//Increase this number if want to be a delay effect between map load and stops load 	
 	}
-	getFavStops()
+	getFavStops()*/
 
 	//Adjust front end
 	var icon = {
@@ -60,15 +63,18 @@ function addFavStop(stopid) {
 		}
 	}
 
+	console.log("")
+
 }
 
 //Called from info window button
 function removeFavStop(stopid) {
+	console.log("stopid is: ", stopid)
 	//Communicate with backend
 	var index = favouriteStops.indexOf(stopid);
 	var primarykey = (favouriteStopsPKs[index]);
 	console.log("Primary key is: ", primarykey);
-	axios.delete(`http://127.0.0.1:8000/api/favstop/destroy/${primarykey}`)
+	axios.delete(`http://127.0.0.1:8000/api/favstop/destroy/${stopid}`)
 		.then(res => console.log("Success", res))
 		.catch(err => console.log("Error", err))
 	//Adjust front end
@@ -92,12 +98,14 @@ function favStopButton(stopid){
 	console.log("Favourite button has been clicked")
 	
 	var button = document.getElementById('favBtn')
+	console.log("Button value: ", button.innerHTML)
 	if (button.innerHTML===" Add Stop As Favourite "){
+		console.log("Adding stop")
 		addFavStop(stopid)
 		button.innerHTML = " Unfavourite Stop ";
 	}
 	else if (button.innerHTML===" Unfavourite Stop "){
-		console.log("Unfavourite button of fav has been clicked")
+		console.log("Removing stop")
 		removeFavStop(stopid)
 		button.innerHTML = " Add Stop As Favourite ";
 	}
@@ -293,9 +301,9 @@ function initMap() {
 	const get_button = document.getElementById('planRouteSubmit')
 	const directions = document.getElementById('results2')
 
-	function predictRoute(route_obj) {
+	function predictRoute(route_obj, display) {
+
 		//Dates and dates index coming from route_predict.js
-		console.log(route_obj)
 		let chosenDate = dates[datesIndex];
 		let weather_data = {"spec": ""}
 
@@ -346,9 +354,9 @@ function initMap() {
 					.then(response => response.json())
 					.then(function (data) {
 						console.log(data)
-						alert("Your planned route will take approx: " + 
+						document.getElementById(display).innerHTML = "Your planned route will take approx: " + 
 						data["journey_info"]["journey_time"]["hours"] + " hours and " + 
-						data["journey_info"]["journey_time"]["minutes"] + " minutes")
+						data["journey_info"]["journey_time"]["minutes"] + " minutes"
 					})
 			}
 			
@@ -404,7 +412,6 @@ function initMap() {
 	}
 
 	function takeTrip(route_obj) {
-		console.log(JSON.stringify(route_obj))
 		
 		var myData = {
 			user: current_user,
@@ -451,10 +458,19 @@ function initMap() {
     	},1000)
 	}
 
-	function bind_buttons(btn_array, id_suffix, route_info, route_info_keys, func) {
+	function bind_buttons(btn_array, id_suffix, route_info, route_info_keys, func, display) {
 		for (let index = 0; index < btn_array.length; index++) {
 			try {
-				if(route_info[route_info_keys[index]].length > 0) {
+				if(display){
+					if(route_info[route_info_keys[index]].length > 0) {
+						keyed_button = document.getElementById(route_info_keys[index] + id_suffix)
+						console.log("Display when binding: ", display[route_info_keys[index]])
+						let displayID = display[route_info_keys[index]].toString()
+						console.log(typeof(displayID))
+						console.log(keyed_button)
+						keyed_button.addEventListener("click", func.bind(event, route_info[route_info_keys[index]], displayID))
+					}
+				} else {
 					keyed_button = document.getElementById(route_info_keys[index] + id_suffix)
 					keyed_button.addEventListener("click", func.bind(event, route_info[route_info_keys[index]]))
 				}
@@ -505,6 +521,7 @@ function initMap() {
 				let directionsinnerHTML = ""
 				//Collect buttons and then click each, buttons will be hidden from user
 				var predictBtns = []
+				var displayDicts = {}
 				for (let i = 0; i < route_keys.length; i++) {
 				
 					let route = route_keys[i]
@@ -512,7 +529,10 @@ function initMap() {
 					
 					if (data[route]["routable"] == "b") {
 						route_info[route] = []
-						directionsinnerHTML += "<button type='button' class='collapsible'>Route " + ++count + "</button><div class='content'><br><p class='black'>ESTIMATED JOURNEY DURATION: <span class='pink'>Loading</span> </p><br>"
+						//PredictionDisplay is used to assign id to journey time display and data passed to predict route button as dataset
+						var predictionDisplayID = "display"+route
+						displayDicts[route] = predictionDisplayID
+						directionsinnerHTML += "<button type='button' class='collapsible'>Route " + ++count + "</button><div class='content'><br><p class='black'>ESTIMATED JOURNEY DURATION: <span class='pink' id="+predictionDisplayID+">Loading</span> </p><br>"
 						for (let j = 0; j < step_keys.length; j++) {
 							let step = "Step_" + (j + 1)
 							try {
@@ -558,10 +578,13 @@ function initMap() {
 				let trip_btns = document.getElementsByClassName('trip_take')
 				
 				bind_buttons(plot_btns, "", route_info, route_info_keys, getPlotMarkers)
-				bind_buttons(pred_btns, "_pred", route_info, route_info_keys, predictRoute)
+				bind_buttons(pred_btns, "_pred", route_info, route_info_keys, predictRoute, displayDicts)
 				bind_buttons(trip_btns, "_trip", route_info, route_info_keys, takeTrip)
+				//Click each route predict button automatically and hide button from the user
 				for(var k = 0; k < predictBtns.length; k++){
-					document.getElementById(predictBtns[k]).click()
+					//document.getElementById(predictBtns[k]).click()
+					
+					
 				}
 				})
 
@@ -643,7 +666,6 @@ function initMap() {
 		var stop = split[0]
 		var stopidString = split[1].substring( split[1].lastIndexOf(":") + 1, split[1].lastIndexOf(" "));
 		var stopid = parseInt(stopidString, 10);
-		console.log(stopid)
 		for (i = 0; i < stops_import.length; i++) {
 			if (stop === stops_import[i].name && stopid === stops_import[i].id) {
 

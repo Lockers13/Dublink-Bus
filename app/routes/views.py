@@ -51,8 +51,8 @@ class RouteMapView(generics.RetrieveAPIView):
 class RoutePredictView(generics.RetrieveAPIView):
 
     def get(self, request):
-        data_dir = '/Users/lconroy/comp_msc/dublink_bus/model_int_new'
-        #data_dir = 'C:\\Users\\rbyrn\\Desktop\\dublinbus\\app\\model_integration'
+        #data_dir = '/Users/lconroy/comp_msc/dublink_bus/model_int_new'
+        data_dir = 'C:\\Users\\rbyrn\\Desktop\\dublinbus\\app\\model_integration'
 
         lineid = request.query_params.get('lineid')
         routeid = request.query_params.get('routeid')
@@ -66,8 +66,8 @@ class RoutePredictView(generics.RetrieveAPIView):
         feels_like = request.query_params.get('feels_like')
 
         try:
-            model_pickle = os.path.join(data_dir, 'pickle_file_XG/XG_{}.pkl'.format(lineid))
-            #model_pickle = os.path.join(data_dir, 'pickle_file\\XG_{}.pkl'.format(lineid))
+            #model_pickle = os.path.join(data_dir, 'pickle_file_XG/XG_{}.pkl'.format(lineid))
+            model_pickle = os.path.join(data_dir, 'pickle_file\\XG_{}.pkl'.format(lineid))
             model = joblib.load(open(model_pickle, 'rb'))
         except:
             return Response("ERROR: incorrect file structure", status=status.HTTP_500_INTERNAL_SERVER_ERROR)
