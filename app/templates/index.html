@@ -111,11 +111,11 @@
 					<button class="gotitbutton"> Got it! </button>
 				</div>
 				<div id="tripmessage" class="message">
-					<p class="pleasenote"><span class="pinkspan">PLEASE NOTE:</span> Location tracking must be enabled to see this feature </p>
+					<p class="pleasenote"><span class="pinkspan">PLEASE NOTE:</span> Location tracking must be enabled to use this feature and see your saved trips</p>
 					{% if user.is_authenticated %}
 	                	<p>Oh No! Looks like you don't have any trips planned. To plan a trip use the route prediction tool above and select 'ADD AS SAVED TRIP' to get live updates on your journey times based on our most up to date predictions and see additional journey information. To activate this feature select your desired saved trip when you are within 100 meters of the starting stop.</p>
                    {% else %}
-                    	<p class="notsignedin"><a href="{% url 'register' %}">Sign up</a> or <a href="{% url 'login' %}">log in</a> to see additional stop information</p>
+                    	<p class="notsignedin"><a href="{% url 'register' %}">Sign up</a> or <a href="{% url 'login' %}">log in</a> to add saved trips and track your journey in real time</p>
                     {% endif %}
 				</div>
 				<div id="tripcomplete">
@@ -164,7 +164,8 @@
 </div> -->
 
 
-
+<!-- Containes getCookie function used for posts -->
+<script type="text/javascript" src="{% static 'js/getCookies.js' %}"></script>
 <!-- Adding Axios -->
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 <!--Below passing current user, used for the adding of favourite stops/Addresses-->

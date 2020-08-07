@@ -16,13 +16,31 @@ function addFavAddress(){
       return null;
     }
     document.getElementById('hiddenSection').style.display= 'none';
-    axios.post('http://127.0.0.1:8000/api/favaddress/create/', {
-      name : name,
-      address : address,
-      user : user
-    })
-    .then(console.log("Success"))
-    .catch(err => console.log(err))
+
+    var dataSent = {
+        name: name,
+        address: address,
+        user:user
+      };
+
+      fetch('http://127.0.0.1:8000/api/favaddress/create/', {
+        method: "post",
+        credentials: "same-origin",
+        headers: {
+            "X-CSRFToken": getCookie("csrftoken"),
+            "Accept": "application/json",
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(dataSent)
+    }).then(function(response) {
+        return response.json();
+    }).then(function(data) {
+        console.log("Data is ok", data);
+    }).catch(function(ex) {
+        console.log("parsing failed", ex);
+    });
+
+
     //Needs to be called twice
     getFavAddressAwait();
     getFavAddressAwait(); 
@@ -35,9 +53,19 @@ function addFavAddress(){
 
 
 function deleteLocation(primarykey){
-  axios.delete(`http://127.0.0.1:8000/api/favaddress/destroy/${primarykey}`)
-    .then(res => console.log(res))
-    .catch(err => console.log(err));
+
+  fetch(`http://127.0.0.1:8000/api/favaddress/destroy/${primarykey}` ,{
+    method: 'DELETE',
+    credentials: "same-origin",
+    headers: {
+        "X-CSRFToken": getCookie("csrftoken"),
+        "Accept": "application/json",
+        "Content-Type": "application/json"
+    }
+  })
+  .then(res => console.log("Success", res))
+  .catch(err => console.log("Error", err))
+
     //Needs to be called twice
     getFavAddressAwait();
     getFavAddressAwait();

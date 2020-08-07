@@ -70,10 +70,16 @@ async function getJourneyAwait(){
     }
     document.getElementById('tripmessage').style.display='grid';
     document.getElementById('tripmessage').innerHTML = innerHTML;
+  }	else {
+  	document.getElementById('tripmessage').innerHTML = '<p class="pleasenote"><span class="pinkspan">PLEASE NOTE:</span> Location tracking must be enabled to use this feature </p><p>Oh No! Looks like you do not have any trips planned. To plan a trip use the route prediction tool above and select "ADD AS SAVED TRIP" to get live updates on your journey times based on our most up to date predictions and see additional journey information. To activate this feature select your desired saved trip when you are within 100 meters of the starting stop.</p>'
   }
 }
 
-getJourneyAwait()
+//Don't want to run if user is not signed in
+if(current_user != 0){
+	getJourneyAwait()
+
+}
 
 
 
@@ -101,10 +107,6 @@ function distanceToStop(currentLat, currentLon, destinationLat, destinationLon){
 	return distance
 }
 
-function validateCO2Points(){
-	//pass
-}
-
 //Variables for models are dayNum, seconds, currentTemp and currentWeatherDescription
 //Information needed for the model predictions
 let day = new Date();
@@ -121,7 +123,7 @@ let date = moment().format().substring(0,10);
 let temp;
 let weatherCond;
 //Get weather for the models
-/*fetch("http://localhost:8000/routes/api/get_weather/?datetime=" + date + "%20" + hours + ":00:00")
+fetch("http://localhost:8000/routes/api/get_weather/?datetime=" + date + "%20" + hours + ":00:00")
 .then(response => {
 	return response.json()
 })
@@ -130,10 +132,8 @@ let weatherCond;
 	//Not too sure if desc or main will be needed for the final model
 	//console.log(data.hourly_weather[0].desc)
 	weatherCond = data.hourly_weather[0].main
-})*/
+})
 
-//Temp hardcoded for the moment
-temp = 14.67 
 
 //Route should be the object created from the getRoute function
 function startJourney(route){
@@ -143,7 +143,7 @@ function startJourney(route){
 		return;
 	}
 
-
+	let gettingLocationVar = true
 	//Switches to true if location is found so timeout error s not shown
 	document.getElementById('tripmessage').style.display="none";
 	document.getElementById('gettingLocation').style.display="block";
@@ -176,10 +176,14 @@ function startJourney(route){
 		.then(data => {
 			console.log("Fetched stops: ", data)
 			if('geolocation' in navigator) {
-			   	
+			   		gettingLocationVar = false;
 			   	//This gets the users current locations, once off to ensure they are within the correct distance of start stop
   					document.getElementById('gettingLocation').style.display="none";
   					document.getElementById('tripmessage').style.display='grid';
+  					//Plot markers expect route object inside array
+  					var routeArr = []
+  					routeArr.push(route)
+  					initMap(routeArr)
 
   					if (distanceToStop(currentLat, currentLong, data[0].lat, data[0].long) > 100000){
   						console.log("Too far from first stop")
@@ -284,9 +288,9 @@ function startJourney(route){
 						console.log("Reached the end")
 						document.getElementById('selectedTrip').style.display='none';
 						document.getElementById('tripInfo').style.display='none';
-						document.getElementById('end').style.display='none';
+						//document.getElementById('end').style.display='none';
 						let completeinnerHTML = "";
-						completeinnerHTML += '<p>Wooo, you made it to your stop. Save your trip for another time or remove it from your saved trips</p> <button id="removeTrip" onClick=removeTrip('+savedTripID+'> Remove Trip! </button><button id="keepTrip"> Save For Next Time! </button>'
+						completeinnerHTML += '<p>Wooo, you made it to your stop. See you again soon.</p>'
 						document.getElementById('tripcompleteimage').style.display = 'block';
 						document.getElementById('tripcompletecontent').innerHTML = completeinnerHTML;
 
@@ -346,19 +350,39 @@ function startJourney(route){
 				});
 			}, 5000);
 	})
+
+	//Additional error handler in case error in finding location
+	setTimeout(()=>{
+		if(gettingLocationVar === true){
+			document.getElementById('gettingLocation').style.display="none";
+			document.getElementById('cantfindlocation').style.display='block';
+		}
+	},15000)
 }
 
 document.getElementById('end').addEventListener('click', () =>{
 	document.getElementById('selectedTrip').style.display='none';
 	document.getElementById('tripInfo').style.display='none';
 	document.getElementById('end').style.display='none';
+	document.getElementById('tripcompleteimage').style.display = 'none';
+	document.getElementById('tripcompletecontent').style.display = 'none';
+	//This resets the map so the current journey is no longer plotted on it
+	initMap()
 	getJourneyAwait();
 })
 
 function removeTrip(primarykey){
-	axios.delete(`http://127.0.0.1:8000/api/plannedjourney/destroy/${primarykey}`)
-    .then(res => console.log(res))
-    .catch(err => console.log(err));
+	fetch(`http://127.0.0.1:8000/api/plannedjourney/destroy/${primarykey}` ,{
+		method: 'DELETE',
+		credentials: "same-origin",
+        headers: {
+            "X-CSRFToken": getCookie("csrftoken"),
+            "Accept": "application/json",
+            "Content-Type": "application/json"
+        }
+	})
+	.then(res => console.log("Success", res))
+	.catch(err => console.log("Error", err));
     getJourneyAwait();
     getJourneyAwait();
 }

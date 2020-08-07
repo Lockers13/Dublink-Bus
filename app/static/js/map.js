@@ -16,38 +16,31 @@ let markerClusterGlob = []
 function addFavStop(stopid) {
 
 	console.log("Add fav stop activated with stopid of: ",stopid )
-
-	
 	user = current_user
-	axios.post('http://127.0.0.1:8000/api/favstop/create/', {
-		name: stopid,
-		stopid: stopid,
-		user: user,
-		current_user: user
-	})
-	.then(res => console.log(res))
-	.catch(err => console.log(err))
-	
 
-	/*async function getFavStops() {
-		favouriteStopsPKs = []
-		setTimeout(()=>{
-			fetch("api/favstop/")
-			.then(response => {
-				return response.json();
-			})
-			.then(data => {
-				data.forEach((stop) => {
-					favouriteStopsPKs.push(stop.id)
-				});
-			})
-			.catch(error => {
-				console.log(error)
-			})
-		},3000)
-		//Increase this number if want to be a delay effect between map load and stops load 	
-	}
-	getFavStops()*/
+	 var dataSent = {
+        name: stopid,
+        stopid: stopid,
+        user:user,
+        current_user: user
+      };
+
+      fetch('http://127.0.0.1:8000/api/favstop/create/', {
+        method: "post",
+        credentials: "same-origin",
+        headers: {
+            "X-CSRFToken": getCookie("csrftoken"),
+            "Accept": "application/json",
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(dataSent)
+    }).then(function(response) {
+        return response.json();
+    }).then(function(data) {
+        console.log("Data is ok", data);
+    }).catch(function(ex) {
+        console.log("parsing failed", ex);
+    });
 
 	//Adjust front end
 	var icon = {
@@ -63,20 +56,26 @@ function addFavStop(stopid) {
 		}
 	}
 
-	console.log("")
-
 }
 
 //Called from info window button
 function removeFavStop(stopid) {
-	console.log("stopid is: ", stopid)
 	//Communicate with backend
 	var index = favouriteStops.indexOf(stopid);
 	var primarykey = (favouriteStopsPKs[index]);
-	console.log("Primary key is: ", primarykey);
-	axios.delete(`http://127.0.0.1:8000/api/favstop/destroy/${stopid}`)
-		.then(res => console.log("Success", res))
-		.catch(err => console.log("Error", err))
+	
+	fetch(`http://127.0.0.1:8000/api/favstop/destroy/${stopid}` ,{
+		method: 'DELETE',
+		credentials: "same-origin",
+        headers: {
+            "X-CSRFToken": getCookie("csrftoken"),
+            "Accept": "application/json",
+            "Content-Type": "application/json"
+        }
+	})
+	.then(res => console.log("Success", res))
+	.catch(err => console.log("Error", err))
+	
 	//Adjust front end
 	var icon = {
 				url: '../static/images/bus-stop.png',
@@ -95,24 +94,22 @@ function removeFavStop(stopid) {
 }
 
 function favStopButton(stopid){
-	console.log("Favourite button has been clicked")
 	
 	var button = document.getElementById('favBtn')
-	console.log("Button value: ", button.innerHTML)
 	if (button.innerHTML===" Add Stop As Favourite "){
-		console.log("Adding stop")
 		addFavStop(stopid)
 		button.innerHTML = " Unfavourite Stop ";
 	}
 	else if (button.innerHTML===" Unfavourite Stop "){
-		console.log("Removing stop")
 		removeFavStop(stopid)
 		button.innerHTML = " Add Stop As Favourite ";
 	}
 }
 
 //Function is automatically as callback in index.html script tag for map
-function initMap() {
+//routeArr is an optional arguement that is only passed from geolocation feature to use getPlotMarkers
+//routeArr is used at the very bottom of this function
+function initMap(routeArr) {
 	//Map options
 	var options = {
 		zoom: 16,
@@ -202,21 +199,16 @@ function initMap() {
 		}
 
 
-		//Used for clustering, will exclude favourites so are visible outside clusters
-		/*if (route === false){
-			if (favouriteStops.includes(stop.id)){
-				//pass
-			}else {
-				markerCluster.addMarker(marker)	
-			}
-		}*/
-
+		
 		//Content for infowindow
-		if(favourite === true){
+		//Checking if user is signed in to ensure fav button is not displayed if not signed in
+		if(current_user != 0 && favourite === true){
 			var contentString = '<h6 class="windowtitle">' + marker.name + '</h6>' + '<br>' + '<button class="windowbtn" id="favBtn" htmlType="submit" onClick=favStopButton(' + marker.id + ')> Unfavourite Stop </button>' 
-		} else {
+		} else if(current_user != 0) {
 	    	var contentString = '<h6 class="windowtitle">' + marker.name + '</h6>' + '<br>' + '<button class="windowbtn" id="favBtn" htmlType="submit" onClick=favStopButton(' + marker.id + ')> Add Stop As Favourite </button>' 
-	    }	
+	    } else {
+	    	var contentString = '<h6 class="windowtitle">' + marker.name + '</h6>' + '<br>' + '<p class="notsignedin">Sign in to save stop as favourite </p>'
+	    }
 		
 
 		//Marker click event
@@ -303,6 +295,7 @@ function initMap() {
 
 	function predictRoute(route_obj, display) {
 
+		console.log(route_obj)
 		//Dates and dates index coming from route_predict.js
 		let chosenDate = dates[datesIndex];
 		let weather_data = {"spec": ""}
@@ -340,6 +333,7 @@ function initMap() {
 				clouds = weather_data["weather"]['clouds']
 				feels_like = weather_data["weather"]['day_feels_like']
 			}
+			let estimatedTime = 0
 			for (let i = 0; i < route_obj.length; i++) {
 				fetch("http://localhost:8000/routes/api/predict?lineid=" + route_obj[i]["Line"] +
 					"&start_stop=" + route_obj[i]["Departure Stop"].toString() +
@@ -353,15 +347,17 @@ function initMap() {
 					"&dow=" + chosenDay)
 					.then(response => response.json())
 					.then(function (data) {
-						console.log(data)
-						document.getElementById(display).innerHTML = " " + 
-						data["journey_info"]["journey_time"]["hours"] + " hour(s) and " + 
-						data["journey_info"]["journey_time"]["minutes"] + " minutes"
+						//Will return the total minutes for a journey
+						estimatedTime += ((data["journey_info"]["journey_time"]["hours"] * 60) +  data["journey_info"]["journey_time"]["minutes"])
+						console.log(time)
 					})
 			}
-			
-		})
-		
+			setTimeout(()=>{
+				var hours = Math.floor(estimatedTime / 60);  
+				var minutes = estimatedTime % 60;
+				document.getElementById(display).innerHTML = hours + " hour(s) " + minutes + " minutes";         
+			},7000)
+		})	
 	}
 
 	function getPlotMarkers(route_obj) {
@@ -376,7 +372,6 @@ function initMap() {
 				"&routeid=" + route_obj[i]["Route ID"])
 				.then(response => response.json())
 				.then(function (data) {
-					console.log(data);
 					let line_color;
 					line_color = (i % 2 == 0) ? "#1F70E0" : "#FF70E0";
 					for (let j = 0; j < data.length; j++) {
@@ -391,8 +386,9 @@ function initMap() {
 				})
 		}
 		document.getElementById('mapSectionContainer').scrollIntoView(true);
-
 	}
+
+
 
 	//Taken from https://docs.djangoproject.com/en/1.8/ref/csrf/#ajax
 	function getCookie(name) {
@@ -436,20 +432,6 @@ function initMap() {
 		    console.log("parsing failed", ex);
 		});
     	
-
-
-
-
-
-
-    	/*axios.post('http://127.0.0.1:8000/api/plannedjourney/create/', {
-      	name : name,
-      	routeObject : routeObject,
-      	user : user
-    	})
-    	.then(res => console.log(res))
-    	.catch(err => console.log(err))*/
-
     	setTimeout(()=> {
     		getJourneyAwait()
     		getJourneyAwait()
@@ -464,10 +446,7 @@ function initMap() {
 				if(display){
 					if(route_info[route_info_keys[index]].length > 0) {
 						keyed_button = document.getElementById(route_info_keys[index] + id_suffix)
-						console.log("Display when binding: ", display[route_info_keys[index]])
 						let displayID = display[route_info_keys[index]].toString()
-						console.log(typeof(displayID))
-						console.log(keyed_button)
 						keyed_button.addEventListener("click", func.bind(event, route_info[route_info_keys[index]], displayID))
 					}
 				} else {
@@ -502,7 +481,6 @@ function initMap() {
 		let addr1 = document.getElementById('startLocation').value
 		let addr2 = document.getElementById('endLocation').value
 		if(addr1 == "" || addr2 == ""){
-			console.log("Not running function")
 			return;
 		}
 		addr1 = addr1.replace(" ", "%20").replace("'", "%27")
@@ -655,7 +633,12 @@ function initMap() {
 			}
 		},2000)
 	}
-	getFavIDsAwait()
+
+	//Don't want to run if user not signed in
+	//Current_user === 0  if not signed in
+	if (current_user != 0 ){
+		getFavIDsAwait()
+	}
 
 	//Functionality for the map search bar
 	const inputBox = document.getElementById('stoptextbox');
@@ -819,6 +802,18 @@ function initMap() {
 			}
 		);
 	}, 4000);
+
+	//routeArr is an optional arguement for init map
+	//Is passed when track journey feature is used
+	//Should be an array containing route object(s)
+	if(routeArr){
+		setTimeout(() =>{
+			markerClusterGlob[0].clearMarkers();
+			clearOverlays()
+			markerClusterGlob[1].clearMarkers();
+			getPlotMarkers(routeArr);
+		},5000)
+	}
 
 }
 

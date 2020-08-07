@@ -491,6 +491,11 @@ li{
   padding-right: 20px;
 }
 
+.notsignedin{
+  text-align: center;
+  color: var(--black);
+}
+
 @media only screen and (max-width: 600px) {
   #map {
     width: 90%;
@@ -880,9 +885,20 @@ tr:nth-child(even) {
   align-content: center;
 }
 
+.gotitbutton{
+  border: 3px solid var(--pink);
+  background-color: var(--pink);
+  border-radius:2em;
+  margin-top: 10px;
+}
+
 #end{
   display:none;
-  margin-left: 45.5%;
+  margin-left: 45.75%;
+  border: 3px solid var(--pink);
+  background-color: var(--pink);
+  border-radius:2em;
+  margin-top: 20px;
 }
 
 #gettingLocation{
@@ -1036,6 +1052,16 @@ tr:nth-child(even) {
   .plannedtripcontainer{
     width: 100%;
     margin-left: 0px;
+  }
+
+  #end{
+    display:none;
+    width: 80%;
+    margin-left: 10%;
+    border: 3px solid var(--pink);
+    background-color: var(--pink);
+    border-radius:2em;
+    margin-bottom: 10px;
   }
 }
 
