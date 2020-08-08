@@ -157,10 +157,9 @@ class RouteFindView(generics.RetrieveAPIView):
             error_data = "ERROR, no routes found"
             return Response(error_data, status=status.HTTP_503_SERVICE_UNAVAILABLE)
 
-        data = process_resp(routes)
+        data = process_resp(routes, dt, option)
 
         data = bin_duplicates(data)
-        data["scheduled_for"] = {"datetime": dt, "option": option}
 
         return Response(data, status=status.HTTP_200_OK)
 

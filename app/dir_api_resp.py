@@ -1,6 +1,6 @@
 from route_validator import validate_route
 
-def process_resp(routes):        
+def process_resp(routes, dt, option):        
     data = {}
     count_route = 1
 
@@ -52,6 +52,8 @@ def process_resp(routes):
         data[route_key]["routable"] = "b" if valid_routes == bus_journeys and bus_journeys != 0 \
             and not other_transit else "w" if valid_routes > 0 and bus_journeys == 0 and not other_transit \
             else "n"
+        
+        data[route_key]["schedule"] = {"datetime": dt, "option": option}
             
         count_route += 1
 

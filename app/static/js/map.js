@@ -361,7 +361,12 @@ function initMap(routeArr) {
 	}
 
 	function getPlotMarkers(route_obj) {
-		markerClusterGlob[0].clearMarkers();
+		try {
+			markerClusterGlob[0].clearMarkers();
+		}
+		catch {
+			;
+		}
 		clearOverlays()
 		//var markerCluster = new MarkerClusterer(map, [], clusterOptions);
 		removeLine()
@@ -492,6 +497,7 @@ function initMap(routeArr) {
 																							  //and datetime must have format "dd/mm/yyyy hh:mm:ss"
 			.then(response => response.json())
 			.then(function (data) {
+
 				directions.innerHTML = ""
 				let route_keys = Object.keys(data)
 				let count = 0
@@ -502,7 +508,7 @@ function initMap(routeArr) {
 				var predictBtns = []
 				var displayDicts = {}
 				for (let i = 0; i < route_keys.length; i++) {
-				
+					
 					let route = route_keys[i]
 					step_keys = Object.keys(data[route])
 					
@@ -523,7 +529,8 @@ function initMap(routeArr) {
 										"Line": data[route][step]["Line"],
 										"Departure Stop": data[route][step]["Route Validation"]["Start_stop"],
 										"Arrival Stop": data[route][step]["Route Validation"]["End stop"],
-										"Route ID": data[route][step]["Route Validation"]["Route ID"]
+										"Route ID": data[route][step]["Route Validation"]["Route ID"],
+										"Schedule": data[route]["schedule"]
 									})
 									directionsinnerHTML += "<br><ul style'margin-left:200px;'>"
 									directionsinnerHTML += "<li>Line: " + data[route][step]["Line"] + "</li>"
@@ -565,6 +572,7 @@ function initMap(routeArr) {
 					document.getElementById(predictBtns[k]).style.display = 'none'	
 				}
 				})
+				console.log(route_info)
 
 	}
 
