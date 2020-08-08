@@ -18,6 +18,8 @@ from dir_api_resp import process_resp
 from sqlalchemy import create_engine, event
 import pymysql
 from sqlalchemy.sql import text
+import datetime
+from datetime import datetime
 
 class RouteMapView(generics.RetrieveAPIView):
     queryset = ''
@@ -51,8 +53,8 @@ class RouteMapView(generics.RetrieveAPIView):
 class RoutePredictView(generics.RetrieveAPIView):
 
     def get(self, request):
-        #data_dir = '/Users/lconroy/comp_msc/dublink_bus/model_int_new'
-        data_dir = 'C:\\Users\\rbyrn\\Desktop\\dublinbus\\app\\model_integration'
+        data_dir = '/Users/lconroy/comp_msc/dublink_bus/model_int_new'
+        #data_dir = 'C:\\Users\\rbyrn\\Desktop\\dublinbus\\app\\model_integration'
 
         lineid = request.query_params.get('lineid')
         routeid = request.query_params.get('routeid')
@@ -66,8 +68,8 @@ class RoutePredictView(generics.RetrieveAPIView):
         feels_like = request.query_params.get('feels_like')
 
         try:
-            #model_pickle = os.path.join(data_dir, 'pickle_file_XG/XG_{}.pkl'.format(lineid))
-            model_pickle = os.path.join(data_dir, 'pickle_file\\XG_{}.pkl'.format(lineid))
+            model_pickle = os.path.join(data_dir, 'pickle_file_XG/XG_{}.pkl'.format(lineid))
+            #model_pickle = os.path.join(data_dir, 'pickle_file\\XG_{}.pkl'.format(lineid))
             model = joblib.load(open(model_pickle, 'rb'))
         except Exception as e:
             print(e)
@@ -129,9 +131,16 @@ class RouteFindView(generics.RetrieveAPIView):
         addr_suffix = ",Dublin,Ireland"
         start_addr = request.query_params.get('start_addr') + addr_suffix
         end_addr = request.query_params.get('end_addr') + addr_suffix
-        api_url = "https://maps.googleapis.com/maps/api/directions/" + \
-            "json?origin={0}&destination={1}&alternatives=true&mode=transit&key=AIzaSyBTqQ5XI6Z3N5j26PNXbFKUxUFfq8dnGV8".format(
-                start_addr, end_addr, os.environ.get('DIR_API_KEY'))
+        dt = request.query_params.get('dt')
+        option = request.query_params.get('option')
+        option = "departure_time" if option == "depart_at" else "arrival_time"
+
+        dt_epoch = int(datetime.timestamp(datetime.strptime(dt, "%d/%m/%Y %H:%M:%S")))
+
+        api_url = "https://maps.googleapis.com/maps/api/directions/json?origin={0}&destination={1}&{2}={3}&alternatives=true&mode=transit&key=AIzaSyBTqQ5XI6Z3N5j26PNXbFKUxUFfq8dnGV8".format(start_addr, end_addr, option, dt_epoch)
+
+        print(api_url)
+        
 
         try:
             res = requests.get(api_url)
@@ -140,6 +149,7 @@ class RouteFindView(generics.RetrieveAPIView):
             return Response(error_data, status=status.HTTP_503_SERVICE_UNAVAILABLE)
 
         json_resp = json.loads(res.text)
+
 
         try:
             routes = json_resp['routes']
@@ -151,6 +161,7 @@ class RouteFindView(generics.RetrieveAPIView):
         data = process_resp(routes)
 
         data = bin_duplicates(data)
+        data["scheduled_for"] = dt
 
         return Response(data, status=status.HTTP_200_OK)
 

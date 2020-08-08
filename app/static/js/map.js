@@ -488,7 +488,8 @@ function initMap(routeArr) {
 
 
 		fetch("http://localhost:8000/routes/api/find_route?start_addr=" + addr1 +
-			"&end_addr=" + addr2)
+			"&end_addr=" + addr2 + "&option=" + "depart_at" + "&dt=" + "18/08/2020 13:55:00") //option must be either "depart_at" or "arrive_by" 
+																							  //and datetime must have format "dd/mm/yyyy hh:mm:ss"
 			.then(response => response.json())
 			.then(function (data) {
 				directions.innerHTML = ""
