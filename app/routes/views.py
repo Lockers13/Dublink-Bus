@@ -161,7 +161,7 @@ class RouteFindView(generics.RetrieveAPIView):
         data = process_resp(routes)
 
         data = bin_duplicates(data)
-        data["scheduled_for"] = dt
+        data["scheduled_for"] = {"datetime": dt, "option": option}
 
         return Response(data, status=status.HTTP_200_OK)
 
