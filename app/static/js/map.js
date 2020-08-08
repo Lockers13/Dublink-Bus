@@ -320,18 +320,20 @@ function initMap(routeArr) {
 
 			})
 		.then(function () {
-			let temp, rain, clouds, feels_like;
+			let temp, rain, clouds, feels_like, main;
 			if(weather_data["spec"] == "hourly") {
 				temp = weather_data["weather"]['temp']
 				rain = weather_data["weather"]['rainfall']
 				clouds = weather_data["weather"]['clouds']
 				feels_like = weather_data["weather"]['feels_like']
+				main = weather_data["weather"]['main']
 			}
 			else {
 				temp = weather_data["weather"]['day_temp']
 				rain = weather_data["weather"]['rainfall']
 				clouds = weather_data["weather"]['clouds']
 				feels_like = weather_data["weather"]['day_feels_like']
+				main = weather_data["weather"]['main']
 			}
 			let estimatedTime = 0
 			for (let i = 0; i < route_obj.length; i++) {
@@ -344,6 +346,7 @@ function initMap(routeArr) {
 					"&rain=" + rain +
 					"&clouds=" + clouds +
 					"&feels_like=" + feels_like +
+					"&main=" + main +
 					"&dow=" + chosenDay)
 					.then(response => response.json())
 					.then(function (data) {

@@ -53,10 +53,10 @@ class RouteMapView(generics.RetrieveAPIView):
 class RoutePredictView(generics.RetrieveAPIView):
 
     def get(self, request):
-        data_dir = '/Users/lconroy/comp_msc/dublink_bus/model_int_new'
+        data_dir = '/Users/lconroy/comp_msc/dublink_bus/final_models'
         #data_dir = 'C:\\Users\\rbyrn\\Desktop\\dublinbus\\app\\model_integration'
 
-        lineid = request.query_params.get('lineid')
+        lineid = request.query_params.get('lineid').upper()
         routeid = request.query_params.get('routeid')
         start_stop = request.query_params.get('start_stop')
         end_stop = request.query_params.get('end_stop')
@@ -66,9 +66,10 @@ class RoutePredictView(generics.RetrieveAPIView):
         temp = request.query_params.get('temp')
         clouds = request.query_params.get('clouds')
         feels_like = request.query_params.get('feels_like')
+        main = request.query_params.get('main')
 
         try:
-            model_pickle = os.path.join(data_dir, 'pickle_file_XG/XG_{}.pkl'.format(lineid))
+            model_pickle = os.path.join(data_dir, 'pickle_file_XG_03082020/XG_{}.pkl'.format(lineid))
             #model_pickle = os.path.join(data_dir, 'pickle_file\\XG_{}.pkl'.format(lineid))
             model = joblib.load(open(model_pickle, 'rb'))
         except Exception as e:
@@ -87,17 +88,13 @@ class RoutePredictView(generics.RetrieveAPIView):
             'lineid': lineid,
             'start_stop': start_stop,
             'end_stop': end_stop,
-            'direction': direction,
             'time_secs': time_secs,
             'dow': dow,
             'holiday': "0",
             'temp': temp,
             'feels_like': feels_like,
-            'pressure': "10.6",
-            'humidity': "89.0",
-            'wind_speed': "2.6",
             'clouds_all': clouds,
-            'weather_id': "310"
+            'weather_main': main
         }
 
         data = {}
