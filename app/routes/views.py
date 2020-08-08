@@ -139,7 +139,6 @@ class RouteFindView(generics.RetrieveAPIView):
 
         api_url = "https://maps.googleapis.com/maps/api/directions/json?origin={0}&destination={1}&{2}={3}&alternatives=true&mode=transit&key=AIzaSyBTqQ5XI6Z3N5j26PNXbFKUxUFfq8dnGV8".format(start_addr, end_addr, option, dt_epoch)
 
-        print(api_url)
         
 
         try:
