@@ -20,6 +20,46 @@ import pymysql
 from sqlalchemy.sql import text
 import datetime
 from datetime import datetime
+from ast import literal_eval
+from euclidean_dist import lat_long_prox
+
+class NearestStopView(generics.RetrieveAPIView):
+    queryset = ''
+
+    def get(self, request):
+ 
+        latitude = round(float(request.query_params.get('lat')), 10)
+        longitude = round(float(request.query_params.get('long')), 10)
+     
+        path = "/Users/lconroy/comp_msc/dublink_bus/clusters/backend_cluster_dict.json"
+
+        with open(path, 'r') as f:
+            cluster_dict = json.loads(f.read())
+
+        cluster_keys = [literal_eval(s) for s in cluster_dict.keys()]
+        cluster_dists = {}
+
+        for i in cluster_keys:
+            cluster_dists[str(i)] = lat_long_prox(latitude, longitude, i[0], i[1])
+
+        cluster_dists = {k: v for k, v in sorted(cluster_dists.items(), key=lambda item: item[1])}
+
+        nearest_stops = {}
+
+        for i in cluster_dict[list(cluster_dists.keys())[0]]:
+            nearest_stops[str(i)] = lat_long_prox(latitude, longitude, i[0], i[1])
+
+        nearest_stops = {k: v for k, v in sorted(nearest_stops.items(), key=lambda item: item[1])}
+        nearest_stop_keys = list(nearest_stops.keys())
+
+        with open('/Users/lconroy/comp_msc/dublink_bus/clusters/stops_latlong.json', 'r') as g:
+            stops_latlong = json.loads(g.read())
+
+        nearest_stop_list = []
+        for i in nearest_stop_keys[:10]:
+            nearest_stop_list.append(stops_latlong[i])
+
+        return Response(nearest_stop_list, status=status.HTTP_200_OK)
 
 class RouteMapView(generics.RetrieveAPIView):
     queryset = ''
