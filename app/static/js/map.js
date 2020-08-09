@@ -808,11 +808,12 @@ function initMap(routeArr) {
 	//Should be an array containing route object(s)
 	if(routeArr){
 		setTimeout(() =>{
-			markerClusterGlob[0].clearMarkers();
+			for (var y = 0; y< markerClusterGlob.length; y++){
+				markerClusterGlob[y].clearMarkers();
+			}
 			clearOverlays()
-			markerClusterGlob[1].clearMarkers();
 			getPlotMarkers(routeArr);
-		},5000)
+		},3000)
 	}
 
 }

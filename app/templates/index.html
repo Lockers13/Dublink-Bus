@@ -103,7 +103,7 @@
 				</div>
 				<div id="cantfindlocation">
 					<img id="cantfindimage" src="{% static 'images/searching.png' %}"/>
-					<p>Where are you?? Looks like we can't find your location. Please make sure location tracking is allowed and use your device outdoors for best results. Refreshing the page a couple of times can help if you are indoors</p>
+					<p>Where are you?? Looks like we can't find your location. Please make sure location tracking is allowed and use your device outdoors for best results. Refreshing the page a couple of times can help if you are indoors. You should be able to see your location on the map.</p>
 					<button class="gotitbutton"> Got it! </button>
 				</div>
 				<div id="toofar">
@@ -111,7 +111,7 @@
 					<button class="gotitbutton"> Got it! </button>
 				</div>
 				<div id="tripmessage" class="message">
-					<p class="pleasenote"><span class="pinkspan">PLEASE NOTE:</span> Location tracking must be enabled to use this feature and see your saved trips</p>
+					<p class="pleasenote"><span class="pinkspan">PLEASE NOTE:</span> Location tracking must be enabled to use this feature and see your saved trips. Please make sure you can see your current position on the map. If your position is not shown on the map please reload the page. This feature should be used on a mobile devive or outdoors for best results</p>
 					{% if user.is_authenticated %}
 	                	<p>Oh No! Looks like you don't have any trips planned. To plan a trip use the route prediction tool above and select 'ADD AS SAVED TRIP' to get live updates on your journey times based on our most up to date predictions and see additional journey information. To activate this feature select your desired saved trip when you are within 100 meters of the starting stop.</p>
                    {% else %}
@@ -136,7 +136,7 @@
 							<div id="tripInfo">
 								<h3>Trip Information</h4>
 								<!-- <p>Estimated Arrival Time: <span class="pinkspan" id="estimatedArrival" ></span> </p> -->
-								<p id="timeLeftP">Estimated Time Until Destination: <span class="pinkspan" id="timeLeft" ></span> </p>
+								<p id="timeLeftP">Estimated Time On Bus Until Destination: <span class="pinkspan" id="timeLeft" ></span> </p>
 								<p>Stops Until Destination: <span class="pinkspan" id="stopsLeft" ></span> </p>
 								<p>Distance to Destination: <span class="pinkspan" id="distanceLeft" ></span> </p>
 							</div>
