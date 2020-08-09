@@ -246,7 +246,6 @@ function startJourney(route){
 
 	async function getJourneyLegsAwait(){
   		const journeyArr = await getJourneyLegs();
-  		console.log("Journey Object Array: " ,journeyArr)
   		let nextStopList = []
   		for(var i = 0; i < journeyArr.length; i++ ){
   			for( var j = 0; j < journeyArr[i].stops.length; j++){
@@ -268,7 +267,6 @@ function startJourney(route){
 				initMap(route)
 
 				if (distanceToStop(currentLat, currentLong, beginningStop.lat, beginningStop.long) > 100000){
-					console.log("Too far from first stop")
 					document.getElementById('toofar').style.display = "block";
 					document.getElementById('tripmessage').style.display = 'none';
 					//Want to end functon in this case
@@ -329,7 +327,6 @@ function startJourney(route){
 							return response.json()
 						})
 						.then(data => {
-							console.log(data)
 							time += data.journey_info.journey_time.hours * 60
 							time += data.journey_info.journey_time.minutes
 
@@ -343,7 +340,6 @@ function startJourney(route){
 								return response.json()
 							})
 							.then(data => {
-								console.log(data)
 								time += data.journey_info.journey_time.hours * 60
 								time += data.journey_info.journey_time.minutes
 							})
@@ -358,7 +354,6 @@ function startJourney(route){
 							return response.json()
 						})
 						.then(data => {
-							console.log(data)
 							time += data.journey_info.journey_time.hours * 60
 							time += data.journey_info.journey_time.minutes
 
@@ -372,7 +367,6 @@ function startJourney(route){
 								return response.json()
 							})
 							.then(data => {
-								console.log(data)
 								time += data.journey_info.journey_time.hours * 60
 								time += data.journey_info.journey_time.minutes
 
@@ -386,7 +380,6 @@ function startJourney(route){
 									return response.json()
 								})
 								.then(data => {
-									console.log(data)
 									time += data.journey_info.journey_time.hours * 60
 									time += data.journey_info.journey_time.minutes
 								})
@@ -415,7 +408,6 @@ function startJourney(route){
   						var hours = Math.floor(time / 60);  
 						var minutes = time % 60;
 						timeLeft.innerHTML = hours + " hour(s) " + minutes + " minutes";
-						console.log(journeyArr)
   					},5000)
   				//Bracket is for else after distance to first stop check
 				}
@@ -429,7 +421,6 @@ function startJourney(route){
 					
 						if (distanceToStop(data.coords.latitude, data.coords.longitude, desiredStop.lat, desiredStop.long) < 100
 							&& nextStopList.length < 3){
-							console.log("Reached the end")
 							document.getElementById('selectedTrip').style.display='none';
 							document.getElementById('tripInfo').style.display='none';
 							//document.getElementById('end').style.display='none';
@@ -440,7 +431,6 @@ function startJourney(route){
 						}
 
 						else if (distanceToStop(data.coords.latitude, data.coords.longitude, nextStopList[1].lat, nextStopList[1].long) < 100){
-							console.log("Reached next stop")
 							//Shift before displaying so don't display stops already visited
 							nextStopList.shift();
 							innerHTML = "";
@@ -451,7 +441,6 @@ function startJourney(route){
 	  								innerHTML += "<p>" + nextStopList[k].name + "<p>"
 	  							}
 	  						}
-	  						console.log("Next stop list after shifting:", nextStopList)
 	  						upcomingStops.innerHTML = innerHTML;
 	  						//Remove first element from list
 	  						stopsLeft.innerHTML = nextStopList.length;
@@ -472,7 +461,6 @@ function startJourney(route){
 								mins = day.getMinutes()
 								seconds = ((hours * 3600) + (mins * 60))
 
-		  						console.log("You want to calculate time here now")
 		  						time = 0;
 		  						if (journeyArr.length === 1){
 									startStop = journeyArr[0].stops[0].id
@@ -488,7 +476,6 @@ function startJourney(route){
 										time += data.journey_info.journey_time.minutes
 									})
 								}else if (journeyArr.length === 2){
-									console.log("Making second calculation of time")
 									startStop = journeyArr[0].stops[0].id
 									endStop = journeyArr[0].stops[journeyArr[0].stops.length - 1].id 
 									routeid = journeyArr[0].routeid
@@ -511,7 +498,6 @@ function startJourney(route){
 											return response.json()
 										})
 										.then(data => {
-											console.log("2nd calculation of time:", data)
 											time += data.journey_info.journey_time.hours * 60
 											time += data.journey_info.journey_time.minutes
 										})
@@ -526,7 +512,6 @@ function startJourney(route){
 										return response.json()
 									})
 									.then(data => {
-										console.log(data)
 										time += data.journey_info.journey_time.hours * 60
 										time += data.journey_info.journey_time.minutes
 
@@ -540,7 +525,6 @@ function startJourney(route){
 											return response.json()
 										})
 										.then(data => {
-											console.log(data)
 											time += data.journey_info.journey_time.hours * 60
 											time += data.journey_info.journey_time.minutes
 
@@ -554,7 +538,6 @@ function startJourney(route){
 												return response.json()
 											})
 											.then(data => {
-												console.log(data)
 												time += data.journey_info.journey_time.hours * 60
 												time += data.journey_info.journey_time.minutes
 											})
