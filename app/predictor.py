@@ -64,8 +64,10 @@ def get_prediction(model, m_args, data_dir):
     df_route_list = df_sequence.iloc[route_list].apply(lambda x: x.reset_index(drop=True))
 
 
-    DIRECTION = df_route_list.iloc[0]['DIRECTION']
-
+    try:
+        DIRECTION = df_route_list.loc[0]['DIRECTION']
+    except Exception as e:
+        print(e)
 
     df_query = df_query.drop(['SUBMIT_TIME'],axis=1)
 
