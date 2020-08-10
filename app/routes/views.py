@@ -32,6 +32,7 @@ class NearestStopView(generics.RetrieveAPIView):
         longitude = round(float(request.query_params.get('long')), 10)
      
         path = "/Users/lconroy/comp_msc/dublink_bus/clusters/backend_cluster_dict.json"
+        #path = "C:\\Users\\rbyrn\\Desktop\\clusters\\backend_cluster_dict.json"
 
         with open(path, 'r') as f:
             cluster_dict = json.loads(f.read())
@@ -53,6 +54,7 @@ class NearestStopView(generics.RetrieveAPIView):
         nearest_stop_keys = list(nearest_stops.keys())
 
         with open('/Users/lconroy/comp_msc/dublink_bus/clusters/stops_latlong.json', 'r') as g:
+        #with open('C:\\Users\\rbyrn\\Desktop\\clusters\\stops_latlong.json', 'r') as g:
             stops_latlong = json.loads(g.read())
 
         nearest_stop_list = []

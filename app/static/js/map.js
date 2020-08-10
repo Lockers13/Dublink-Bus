@@ -9,9 +9,6 @@ var markerList = []
 var polyline = []
 let markerClusterGlob = []
 
-
-//Below lists are used to contain stops that have been favourited during the current session
-
 //Called from infowindow button
 function addFavStop(stopid) {
 
@@ -488,12 +485,21 @@ function initMap(routeArr) {
 	function routeViewClick(event) {
 		let addr1 = document.getElementById('startLocation').value
 		let addr2 = document.getElementById('endLocation').value
+		
 		if(addr1 == "" || addr2 == ""){
 			return;
 		}
 		addr1 = addr1.replace(" ", "%20").replace("'", "%27")
 		addr2 = addr2.replace(" ", "%20").replace("'", "%27")
 
+		let option;
+		if(document.getElementById('radio-a').checked) {
+  			option = "depart_at"
+		}else if(document.getElementById('radio-b').checked) {
+ 			option = "arrive_by"
+		}
+
+		console.log(option)
 
 		fetch("http://localhost:8000/routes/api/find_route?start_addr=" + addr1 +
 			"&end_addr=" + addr2 + "&option=" + "depart_at" + "&dt=" + "18/08/2020 13:55:00") //option must be either "depart_at" or "arrive_by" 
@@ -557,7 +563,7 @@ function initMap(routeArr) {
 					}
 				}
 				if(!route_flag)
-					directions.innerHTML += "<br><p class='noRouteFound'>Sorry, we could not find any data for the specified route.<br>Please try again...!</p>"
+					directions.innerHTML += "<br><p class='noRouteFound'>Sorry, we could not find you a route.<br>Please try different locations or a different date and time.</p>"
 
 				
 				let route_info_keys = Object.keys(route_info)
@@ -654,12 +660,21 @@ function initMap(routeArr) {
 
 	//Functionality for the map search bar
 	const inputBox = document.getElementById('stoptextbox');
-	function findStop() {
-		var station = inputBox.value;
-		var split = station.split(" (")
-		var stop = split[0]
-		var stopidString = split[1].substring( split[1].lastIndexOf(":") + 1, split[1].lastIndexOf(" "));
-		var stopid = parseInt(stopidString, 10);
+	function findStop(name, id) {
+		//Will only access this if args passed in
+		//Used for the neaerest stop button 
+		if(name, id){
+			var stop = name
+			var stopid = id
+			console.log(stop, stopid)
+		}
+		else{
+			var station = inputBox.value;
+			var split = station.split(" (")
+			var stop = split[0]
+			var stopidString = split[1].substring( split[1].lastIndexOf(":") + 1, split[1].lastIndexOf(" "));
+			var stopid = parseInt(stopidString, 10);
+		}
 		for (i = 0; i < stops_import.length; i++) {
 			if (stop === stops_import[i].name && stopid === stops_import[i].id) {
 
@@ -757,6 +772,46 @@ function initMap(routeArr) {
 			findStop();
 		}
 	});
+
+	document.getElementById('nearestStop').addEventListener('click', ()=>{
+		findNearestStop()
+	})
+	/*Function to find the nearest stop, requires gps*/
+	function findNearestStop (){
+		if('geolocation' in navigator) {
+		 //This simply gets the users location
+		 	document.getElementById('nearestStopError').style.display = 'block';
+		  	navigator.geolocation.getCurrentPosition((position) => {
+		  		document.getElementById('nearestStopError').style.display = 'none';
+		  		currentLocation = (position.coords);
+		  		currentLat = currentLocation.latitude;
+		  		currentLong = currentLocation.longitude;
+		  		fetch("http://localhost:8000/routes/api/find_nearest/?lat="+currentLat+"&long="+currentLong)
+				.then(response => {
+					return response.json();
+				})
+				.then(data => {
+					console.log(data)
+					let name = data[0].name
+					let id = data[0].id
+					findStop(name, id)
+				})
+			},
+			function(error) {
+		    if (error.code == error.PERMISSION_DENIED)
+		    	document.getElementById('nearestStopError').style.display = 'block';
+		    	setTimeout(() => {
+		    		document.getElementById('nearestStopError').style.display = 'none';
+		    	},10000)
+		  	});
+		}
+		else{
+			document.getElementById('nearestStopError').style.display = 'block';
+			setTimeout(() => {
+				document.getElementById('nearestStopError').style.display = 'none';
+			},10000)
+		}
+	}
 
 	/* Below Timeouts are to display and upadate users position on the map */
 

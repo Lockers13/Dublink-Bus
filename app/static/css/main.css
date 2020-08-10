@@ -310,7 +310,7 @@ li{
 #daySelect{
   width: 100%;
   margin-top: 10px;
-  margin-bottom: 10px;
+  margin-bottom: 25px;
 }
 
 .dayBox{
@@ -475,7 +475,7 @@ li{
   background-color: var(--black);
   border-bottom: 3px solid var(--pink);
   color:var(--white);
-  margin-bottom: 20px;
+  margin-bottom: 10px;
   width:70%;
   text-decoration: none;
   font-size: 20px;
@@ -496,17 +496,42 @@ li{
   color: var(--black);
 }
 
+.or{
+  text-align: center;
+  margin-bottom: 5px;
+}
+
+.mapbtn{
+  text-align: center;
+  font-size: 12px;
+  border: 3px solid var(--pink);
+  border-radius:2em;
+  width: 70%;
+  background-color: var(--pink);
+  color: var(--white);
+  align-self: center;
+  margin-left: 15%;
+  margin-bottom: 10px;
+}
+
+#nearestStopError{
+  text-align: center;
+  display: none;
+}
+
 @media only screen and (max-width: 600px) {
   #map {
     width: 90%;
     margin-left: 5%;
-    height: 350px;
+    height: 380px;
+    margin-top: 10px;
   }
 
   .mapContainer{
     width: 100%;
     height: 400px;
     margin-left: 0%;
+    margin-bottom: -35px;
   }
 
   .maptextbox{
@@ -1253,5 +1278,177 @@ footer img{
   }
 }
 
+/* Styling for radio button taken from https://codepen.io/nickbottomley/pen/uhfmn */
 
+.switch {
+  margin-bottom: 20px;
+}
+/* main styles */
+.switch {
+  width: 80%;
+  position: relative;
+}
+.switch input {
+  position: absolute;
+  top: 0;
+  z-index: 2;
+  opacity: 0;
+  cursor: pointer;
+}
+.switch input:checked {
+  z-index: 1;
+}
+.switch input:checked + label {
+  opacity: 1;
+  cursor: default;
+}
+.switch input:not(:checked) + label:hover {
+  opacity: 0.5;
+}
+.switch label {
+  color: #fff;
+  opacity: 0.33;
+  transition: opacity 0.25s ease;
+  cursor: pointer;
+}
+.switch .toggle-outside {
+  height: 100%;
+  border-radius: 2rem;
+  padding: 0.25rem;
+  overflow: hidden;
+  transition: 0.25s ease all;
+}
+.switch .toggle-inside {
+  border-radius: 5rem;
+  background: #fff;
+  position: absolute;
+  transition: 0.25s ease all;
+}
+.switch--horizontal {
+  width: 18rem;
+  height: 3rem;
+  margin: 0 auto;
+  font-size: 0;
+  margin-bottom: 1rem;
+}
+.switch--horizontal input {
+  height: 3rem;
+  width: 6rem;
+  left: 6rem;
+  margin: 0;
+}
+.switch--horizontal label {
+  font-size: 1.5rem;
+  line-height: 3rem;
+  display: inline-block;
+  width: 6rem;
+  height: 100%;
+  margin: 0;
+  text-align: center;
+}
+.switch--horizontal label:last-of-type {
+  margin-left: 6rem;
+}
+.switch--horizontal .toggle-outside {
+  background: var(--pink);
+  position: absolute;
+  width: 6rem;
+  left: 6rem;
+}
+.switch--horizontal .toggle-inside {
+  height: 2.5rem;
+  width: 2.5rem;
+}
+.switch--horizontal input:checked ~ .toggle-outside .toggle-inside {
+  left: 0.25rem;
+}
+.switch--horizontal input ~ input:checked ~ .toggle-outside .toggle-inside {
+  left: 3.25rem;
+}
+.switch--vertical {
+  width: 12rem;
+  height: 6rem;
+}
+.switch--vertical input {
+  height: 100%;
+  width: 3rem;
+  right: 0;
+  margin: 0;
+}
+.switch--vertical label {
+  font-size: 1.5rem;
+  line-height: 3rem;
+  display: block;
+  width: 8rem;
+  height: 50%;
+  margin: 0;
+  text-align: center;
+}
+.switch--vertical .toggle-outside {
+  background: #fff;
+  position: absolute;
+  width: 3rem;
+  height: 100%;
+  right: 0;
+  top: 0;
+}
+.switch--vertical .toggle-inside {
+  height: 2.5rem;
+  left: 0.25rem;
+  top: 0.25rem;
+  width: 2.5rem;
+}
+.switch--vertical input:checked ~ .toggle-outside .toggle-inside {
+  top: 0.25rem;
+}
+.switch--vertical input ~ input:checked ~ .toggle-outside .toggle-inside {
+  top: 3.25rem;
+}
+.switch--no-label label {
+  width: 0;
+  height: 0;
+  visibility: hidden;
+  overflow: hidden;
+}
+.switch--no-label input:checked ~ .toggle-outside .toggle-inside {
+  background: rgba(0,0,0,0.2);
+  border: 1px solid rgba(0,0,0,0.2);
+}
+.switch--no-label input ~ input:checked ~ .toggle-outside {
+  background: #fff;
+}
+.switch--no-label input ~ input:checked ~ .toggle-outside .toggle-inside {
+  background: #2ecc71;
+}
+.switch--no-label.switch--vertical {
+  width: 3rem;
+}
+.switch--no-label.switch--horizontal {
+  width: 6rem;
+}
+.switch--no-label.switch--horizontal input,
+.switch--no-label.switch--horizontal .toggle-outside {
+  left: 0;
+}
+.switch--expanding-inner input:checked + label:hover ~ .toggle-outside .toggle-inside {
+  height: 2.5rem;
+  width: 2.5rem;
+}
+.switch--expanding-inner.switch--horizontal input:hover ~ .toggle-outside .toggle-inside {
+  width: 3.5rem;
+}
+.switch--expanding-inner.switch--horizontal input:hover ~ input:checked ~ .toggle-outside .toggle-inside {
+  left: 2.25rem;
+}
+.switch--expanding-inner.switch--vertical input:hover ~ .toggle-outside .toggle-inside {
+  height: 3.5rem;
+}
+.switch--expanding-inner.switch--vertical input:hover ~ input:checked ~ .toggle-outside .toggle-inside {
+  top: 2.25rem;
+}
 
+.radioOption{
+  font-size: 20px;
+  margin-left: 5px;
+  margin-right: 5px;
+}

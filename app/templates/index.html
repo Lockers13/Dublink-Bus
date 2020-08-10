@@ -34,6 +34,11 @@
 			<div class="mapForm">
 				<input type="text" name="" id="stoptextbox" placeholder="Enter stop name or stop id to search on map" class="maptextbox"/>
 			</div>
+			<p class="or"> OR </p>
+			<div class="mapbtncontainer">
+				<p id="nearestStopError"><img class="errorImage" src="{% static 'images/error.png' %}"/>Error: We cannot find your location</p>
+				<button id="nearestStop" class="mapbtn"> Nearest Stop To Me </button>
+			</div>
 			<div class="mapContainer">
 				<div id="map"></div>
 			</div>
@@ -48,6 +53,12 @@
 				<input id="endLocation" placeholder="Enter end location" type="text" class="stoptextbox"/>
 				<div id="daySelect">
 				</div>
+				<div class="switch switch--horizontal">
+			      <input id="radio-a" type="radio" name="first-switch" checked="checked"/>
+			      <label for="radio-a"><span class="radioOption">Leave At</span></label>
+			      <input id="radio-b" type="radio" name="first-switch"/>
+			      <label for="radio-b"><span class="radioOption">Arrive By</span></label><span class="toggle-outside"><span class="toggle-inside"></span></span>
+    			</div>
 				<div class="timeSelect">
 					<p id="timeError"><img class="errorImage" src="{% static 'images/error.png' %}"/>Times in the past are not allowed</p>
 					<input id="time" class="timeBox" type="time" value="13:30"/>
