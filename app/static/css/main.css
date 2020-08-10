@@ -1181,12 +1181,52 @@ footer img{
   .logoutContainer{
     margin-bottom: 100px;
   }
+
 }
 
 @media only screen and (max-width: 800px) {
   .logoutContainer{
     margin-bottom: 100px;
   }
+}
+
+/* Register Page */
+.requiredField{
+  color: white;
+  text-align: center;
+}
+
+.white{
+  text-align: center;
+  color: white;
+}
+
+.emailinput{
+   text-align: center;
+    border:none;
+    background-color: var(--black);
+    border-bottom: 3px solid var(--pink);
+    color:var(--white);
+    margin-bottom: 20px;
+    text-decoration: none;
+    font-size: 28px;
+    margin-top: 10px;
+}
+
+.registerbtn{
+  text-align: center;
+  margin-top: 20px;
+  background-color: var(--pink);
+}
+
+.registerbtncont{
+  align-content: center;
+  align-content: center;
+  text-align: center;
+}
+
+.registerbtn:hover{
+  background-color: var(--pink);
 }
 
 
@@ -1451,4 +1491,8 @@ footer img{
   font-size: 20px;
   margin-left: 5px;
   margin-right: 5px;
+}
+
+small{
+  color: white;
 }
