@@ -32,6 +32,8 @@ def process_resp(routes, dt, option):
                     data[route_key][step_key]["Arrival Stop Name"] = arr_name
                     data[route_key][step_key]["Line"] = transit_details['line']['short_name'].upper()
                     data[route_key][step_key]["Num Stops"] = transit_details['num_stops']
+                    data[route_key][step_key]["Departure Time"] = transit_details['departure_time']["text"]
+                    data[route_key][step_key]["Arrival Time"] = transit_details['arrival_time']["text"]
                     route_validation = validate_route(
                         transit_details['departure_stop'],
                         transit_details['arrival_stop'],

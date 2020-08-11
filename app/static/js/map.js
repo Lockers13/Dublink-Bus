@@ -539,6 +539,8 @@ function initMap(routeArr) {
 										"Departure Stop": data[route][step]["Route Validation"]["Start_stop"],
 										"Arrival Stop": data[route][step]["Route Validation"]["End stop"],
 										"Route ID": data[route][step]["Route Validation"]["Route ID"],
+										"Arrival Time": data[route][step]["Arrival Time"],
+										"Departure Time": data[route][step]["Departure Time"],
 										"Schedule": data[route]["schedule"]
 									})
 									directionsinnerHTML += "<br><ul style'margin-left:200px;'>"
@@ -571,6 +573,7 @@ function initMap(routeArr) {
 				let plot_btns = document.getElementsByClassName('route_plot')
 				let pred_btns = document.getElementsByClassName('route_pred')
 				let trip_btns = document.getElementsByClassName('trip_take')
+				console.log(route_info)
 				
 				bind_buttons(plot_btns, "", route_info, route_info_keys, getPlotMarkers)
 				bind_buttons(pred_btns, "_pred", route_info, route_info_keys, predictRoute, displayDicts)
