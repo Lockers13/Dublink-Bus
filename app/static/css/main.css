@@ -1088,6 +1088,10 @@ tr:nth-child(even) {
     border-radius:2em;
     margin-bottom: 10px;
   }
+
+  .tripTitle{
+    font-size: 26px;
+  }
 }
 
 
