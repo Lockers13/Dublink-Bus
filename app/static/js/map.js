@@ -506,7 +506,7 @@ function initMap(routeArr) {
 																							  //and datetime must have format "dd/mm/yyyy hh:mm:ss"
 			.then(response => response.json())
 			.then(function (data) {
-
+				console.log(data)
 				directions.innerHTML = ""
 				let route_keys = Object.keys(data)
 				let count = 0

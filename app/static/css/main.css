@@ -8,6 +8,7 @@
 
 html {
   scroll-behavior: smooth;
+  overflow-x: hidden;
 }
 
 body {
@@ -36,6 +37,7 @@ p{
   background-size: cover;
   padding-top: 250px;
   min-height: 650px;
+  min-width: 100%;
 }
 
 #home h1{
