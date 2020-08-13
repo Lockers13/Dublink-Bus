@@ -362,6 +362,11 @@ li{
   display:none;
 }
 
+#futuretimeError{
+  text-align: center;
+  display:none;
+}
+
 #startStopError, #endStopError{
   display: none;
 }
@@ -1025,6 +1030,11 @@ tr:nth-child(even) {
 
 .pleasenote{
   text-align: center;
+}
+
+.leaveat{
+  color: var(--black);
+  display: none;
 }
 
 

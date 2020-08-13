@@ -61,6 +61,7 @@
     			</div>
 				<div class="timeSelect">
 					<p id="timeError"><img class="errorImage" src="{% static 'images/error.png' %}"/>Times in the past are not allowed</p>
+					<p id="futuretimeError"><img class="errorImage" src="{% static 'images/error.png' %}"/>Arrive By time must be at least 3 hours in the future for current day</p>
 					<input id="time" class="timeBox" type="time" value="13:30"/>
 				</div>
 				{% if user.is_authenticated %}

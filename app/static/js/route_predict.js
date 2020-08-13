@@ -9,6 +9,7 @@ var weekdayNums = [];
 //var fiveDays = [];
 //Chosen day is what is passed to the model
 var chosenDay;
+var chosenDate;
 var count = 0;
 var datesIndex = 0;
 var dates = [];
@@ -23,7 +24,7 @@ function getDays () {
     for (let i = 0; i <= daysRequired; i++) {
       days.push( moment().add(i, 'days').format('Do') )
       months.push( moment().add(i, 'days').format('MMMM') )
-      dates.push( moment().add(i, 'days').format().substring(0,10) )
+      dates.push( moment().add(i, 'days').format('DD/MM/YYYY').substring(0,10) )
       fiveDays.push( moment().add(i, 'days').format('dddd').substring(0,3).toUpperCase() )
     }
 
@@ -58,11 +59,14 @@ function getDays () {
         }
         daySelect.innerHTML= innerHTML;
     }
+    chosenDate = dates[0];
 }
 
 getDays();
 
 function selectDay (value) {
+    var dateIndex = weekdayNums.indexOf(value);
+    chosenDate = dates[dateIndex]
     chosenDay = value;
     //Quick fix for error when selecting sunday
     if (chosenDay === -1){
@@ -98,6 +102,24 @@ timeBox.addEventListener('input', ()=>{
         timeBox.value = updatedTime; 
         setTimeout(()=>{
             document.getElementById('timeError').style.display = 'none'
+        },6000)
+    }  
+})
+
+timeBox.addEventListener('input', ()=>{
+    var futureTime = moment().add(3, "hours").format("HH:mm");
+    console.log(futureTime)
+    let dapArrOption;
+    if(document.getElementById('radio-a').checked) {
+        depArroption = "depart_at"
+    }else if(document.getElementById('radio-b').checked) {
+        depArroption = "arrive_by"
+    }
+    if(chosenDay === weekdayNums[0] && timeBox.value < futureTime && depArroption === "arrive_by"){
+        document.getElementById('futuretimeError').style.display = 'block'
+        timeBox.value = futureTime; 
+        setTimeout(()=>{
+            document.getElementById('futuretimeError').style.display = 'none'
         },6000)
     }  
 })

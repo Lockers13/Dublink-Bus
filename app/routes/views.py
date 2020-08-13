@@ -31,8 +31,8 @@ class NearestStopView(generics.RetrieveAPIView):
         latitude = round(float(request.query_params.get('lat')), 10)
         longitude = round(float(request.query_params.get('long')), 10)
      
-        path = "/Users/lconroy/comp_msc/dublink_bus/clusters/backend_cluster_dict.json"
-        #path = "C:\\Users\\rbyrn\\Desktop\\clusters\\backend_cluster_dict.json"
+        #path = "/Users/lconroy/comp_msc/dublink_bus/clusters/backend_cluster_dict.json"
+        path = "C:\\Users\\rbyrn\\Desktop\\clusters\\backend_cluster_dict.json"
 
         with open(path, 'r') as f:
             cluster_dict = json.loads(f.read())
@@ -95,8 +95,8 @@ class RouteMapView(generics.RetrieveAPIView):
 class RoutePredictView(generics.RetrieveAPIView):
 
     def get(self, request):
-        data_dir = '/Users/lconroy/comp_msc/dublink_bus/final_models'
-        #data_dir = 'C:\\Users\\rbyrn\\Desktop\\dublinbus\\app\\model_integration'
+        #data_dir = '/Users/lconroy/comp_msc/dublink_bus/final_models'
+        data_dir = 'C:\\Users\\rbyrn\\Desktop\\dublinbus\\app\\model_integration'
 
         lineid = request.query_params.get('lineid').upper()
         routeid = request.query_params.get('routeid')

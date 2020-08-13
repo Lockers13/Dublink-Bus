@@ -12,7 +12,6 @@ let markerClusterGlob = []
 //Called from infowindow button
 function addFavStop(stopid) {
 
-	console.log("Add fav stop activated with stopid of: ",stopid )
 	user = current_user
 
 	 var dataSent = {
@@ -292,7 +291,6 @@ function initMap(routeArr) {
 
 	function predictRoute(route_obj, display) {
 
-		console.log(route_obj)
 		//Dates and dates index coming from route_predict.js
 		let chosenDate = dates[datesIndex];
 		let weather_data = {"spec": ""}
@@ -347,6 +345,7 @@ function initMap(routeArr) {
 					"&dow=" + chosenDay)
 					.then(response => response.json())
 					.then(function (data) {
+						console.log(data)
 						//Will return the total minutes for a journey
 						estimatedTime += ((data["journey_info"]["journey_time"]["hours"] * 60) +  data["journey_info"]["journey_time"]["minutes"])
 						console.log(time)
@@ -492,17 +491,18 @@ function initMap(routeArr) {
 		addr1 = addr1.replace(" ", "%20").replace("'", "%27")
 		addr2 = addr2.replace(" ", "%20").replace("'", "%27")
 
-		let option;
+		let dapArrOption;
 		if(document.getElementById('radio-a').checked) {
-  			option = "depart_at"
+  			depArroption = "depart_at"
 		}else if(document.getElementById('radio-b').checked) {
- 			option = "arrive_by"
+ 			depArroption = "arrive_by"
 		}
 
-		console.log(option)
+		let chosenTime = document.getElementById('time').value + ":00"
+
 
 		fetch("http://localhost:8000/routes/api/find_route?start_addr=" + addr1 +
-			"&end_addr=" + addr2 + "&option=" + "depart_at" + "&dt=" + "18/08/2020 13:55:00") //option must be either "depart_at" or "arrive_by" 
+			"&end_addr=" + addr2 + "&option=" + depArroption + "&dt=" + chosenDate +" "+ chosenTime) //option must be either "depart_at" or "arrive_by" 
 																							  //and datetime must have format "dd/mm/yyyy hh:mm:ss"
 			.then(response => response.json())
 			.then(function (data) {
@@ -545,6 +545,7 @@ function initMap(routeArr) {
 									})
 									directionsinnerHTML += "<br><ul style'margin-left:200px;'>"
 									directionsinnerHTML += "<li>Line: " + data[route][step]["Line"] + "</li>"
+									directionsinnerHTML += "<li> Bus Departs at: " + data[route][step]["Departure Time"]+ "</li>"
 									directionsinnerHTML += "<li>Departure Stop: " + data[route][step]["Departure Stop Name"] + "</li>"
 									directionsinnerHTML += "<li>Arrival Stop: " + data[route][step]["Arrival Stop Name"] + "</li>"
 									directionsinnerHTML += "</ul><br>"
@@ -573,7 +574,6 @@ function initMap(routeArr) {
 				let plot_btns = document.getElementsByClassName('route_plot')
 				let pred_btns = document.getElementsByClassName('route_pred')
 				let trip_btns = document.getElementsByClassName('trip_take')
-				console.log(route_info)
 				
 				bind_buttons(plot_btns, "", route_info, route_info_keys, getPlotMarkers)
 				bind_buttons(pred_btns, "_pred", route_info, route_info_keys, predictRoute, displayDicts)
@@ -584,8 +584,6 @@ function initMap(routeArr) {
 					document.getElementById(predictBtns[k]).style.display = 'none'	
 				}
 				})
-				console.log(route_info)
-
 	}
 
 
