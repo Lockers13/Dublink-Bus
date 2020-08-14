@@ -1,0 +1,221 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% load static %}
+{% block content %}	
+
+<!-- start banner -->
+<section id="home">
+	<div class="container">
+		<div class="row toptitle">
+			<div class="col-md-offset-2 col-md-8">
+				<div class="homeContent">
+					<h1 class="shake-slow">DUBLINK BUS</h1>
+					<h1 class="secondaryHeading">Get there on time</h1>
+					<div class="element">
+						{% if user.is_authenticated %}
+	                    	<div class="sub-element">Hello, {{user.username}}</div>
+	                    	<div class="sub-element">Welcome back</div>
+	                    {% else %}
+	                    	<div class="sub-element"><a href="{% url 'register' %}">Sign up</a> or <a href="{% url 'login' %}">log in</a> to use great extra features</div>
+	                    {% endif %}
+	                </div>
+	            </div>
+			</div>
+		</div>
+	</div>
+</section>
+<!-- end banner -->
+
+<div class="upperContainer">
+	<div class="row">
+		
+		<div id="mapSectionContainer" class="col-sm-12 col-md-6">
+			<h1>SEE THE STOPS</h1>
+			<div class="mapForm">
+				<input type="text" name="" id="stoptextbox" placeholder="Enter stop name or stop id to search on map" class="maptextbox"/>
+			</div>
+			<p class="or"> OR </p>
+			<div class="mapbtncontainer">
+				<p id="nearestStopError"><img class="errorImage" src="{% static 'images/error.png' %}"/>Error: We cannot find your location</p>
+				<button id="nearestStop" class="mapbtn"> Nearest Stop To Me </button>
+			</div>
+			<div class="mapContainer">
+				<div id="map"></div>
+			</div>
+		</div>
+
+		<div id="planRouteSectionContainter" class="col-sm-12 col-md-6">
+			<h1> PLAN A TRIP </h1>
+			<div class="routePlanForm">
+				<p id="startStopError"><img class="errorImage" src="{% static 'images/error.png' %}"/>Error: Please enter a start stop</p>
+				<input id="startLocation" placeholder="Enter start location" type="text" class="stoptextbox"/>
+				<p id="endStopError"><img class="errorImage" src="{% static 'images/error.png' %}"/>Error: Please enter an end stop</p>
+				<input id="endLocation" placeholder="Enter end location" type="text" class="stoptextbox"/>
+				<div id="daySelect">
+				</div>
+				<div class="switch switch--horizontal">
+			      <input id="radio-a" type="radio" name="first-switch" checked="checked"/>
+			      <label for="radio-a"><span class="radioOption">Leave At</span></label>
+			      <input id="radio-b" type="radio" name="first-switch"/>
+			      <label for="radio-b"><span class="radioOption">Arrive By</span></label><span class="toggle-outside"><span class="toggle-inside"></span></span>
+    			</div>
+				<div class="timeSelect">
+					<p id="timeError"><img class="errorImage" src="{% static 'images/error.png' %}"/>Times in the past are not allowed</p>
+					<p id="futuretimeError"><img class="errorImage" src="{% static 'images/error.png' %}"/>Arrive By time must be at least 3 hours in the future for current day</p>
+					<input id="time" class="timeBox" type="time" value="13:30"/>
+				</div>
+				{% if user.is_authenticated %}
+					<h4 id="locationsHeader"> Quick Access Locations </h4>
+					<ul id="favAddressSection">
+					</ul>
+					<div id="hiddenSection">
+						<form class="addFavAddress" onsubmit="return false"> 
+							<p id="favNameError"><img class="errorImage" src="{% static 'images/error.png' %}"/>Error: Please enter a name for location</p>
+							<input id="addName" class="favAddressInput" type="text" name="" placeholder="Enter name for location" maxlength = "10"> 
+							<p id="favLocError"><img class="errorImage" src="{% static 'images/error.png' %}"/>Error: Please enter a location</p>
+							<input id="addAddress" class="favAddressInput" type="text" name="" placeholder="Enter location address"> 
+							<button id="favAddressSubmitBtn" class="routePlanButton" onClick=addFavAddress()> Submit </button> 
+						</form>
+					</div>	
+		        {% else %}
+			          	<p><a href="{% url 'login' %}">Log in</a> or <a href="{% url 'register' %}"> register </a> to save favourite locations </p>
+		        {% endif %}
+		        <button class="routePlanButton" id="planRouteSubmit">Search</button>
+			</div><br><br>
+			<div class="RoutePlanResults" style="color:white">
+				<span id="results2"></span>
+				
+			<div>
+
+		</div>
+	<!--Must have missed a few div tags somewhere, keep these in -->
+	</div>
+	</div>
+	</div>
+	</div>
+
+		
+	</div>
+</div>
+	
+<!-- <div>
+	<p id="journey_info"></p>
+</div> -->
+
+<div class="lowerContainer" id="savedTrips">
+	<div class="row">
+		<div class="col-lg-12 col-md-12 col-sm-12">
+			<div id="takeatrip" class="takeTripSection">
+				<h1 class="tripTitle"> YOUR SAVED TRIPS </h1>
+				<div class="locationmessage" id="gettingLocation">
+					<p class="locationmessage"> Hang in there with us, we are just getting your current location <p>
+					<p>
+						<div class="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+					</p>
+				</div>
+				<div id="cantfindlocation">
+					<img id="cantfindimage" src="{% static 'images/searching.png' %}"/>
+					<p>Where are you?? Looks like we can't find your location. Please make sure location tracking is allowed and use your device outdoors for best results. Refreshing the page a couple of times can help if you are indoors. You should be able to see your location on the map.</p>
+					<button class="gotitbutton"> Got it! </button>
+				</div>
+				<div id="toofar">
+					<p>Sorry, looks like you are too far from the starting stop to begin this trip. Please see your location on the map and start the trip within 100 meters of the starting stop or create a new trip</p>
+					<button class="gotitbutton"> Got it! </button>
+				</div>
+				<div id="tripmessage" class="message">
+					<p class="pleasenote"><span class="pinkspan">PLEASE NOTE:</span> Location tracking must be enabled to use this feature and see your saved trips. Please make sure you can see your current position on the map. If your position is not shown on the map please reload the page. This feature should be used on a mobile devive or outdoors for best results</p>
+					{% if user.is_authenticated %}
+	                	<p>Oh No! Looks like you don't have any trips planned. To plan a trip use the route prediction tool above and select 'ADD AS SAVED TRIP' to get live updates on your journey times based on our most up to date predictions and see additional journey information. To activate this feature select your desired saved trip when you are within 100 meters of the starting stop.</p>
+                   {% else %}
+                    	<p class="notsignedin"><a href="{% url 'register' %}">Sign up</a> or <a href="{% url 'login' %}">log in</a> to add saved trips and track your journey in real time</p>
+                    {% endif %}
+				</div>
+				<div id="tripcomplete">
+					<img id="tripcompleteimage" src="{% static 'images/tripcomplete.png' %}"/>
+					<div id="tripcompletecontent">
+					</div>
+				</div>
+				<div class="container">
+					<div class="row">
+						<div class="col-sm-12 col-md-6">
+							<div id="selectedTrip">
+								<h3>Upcoming Stops</h4>
+								<div id="upcomingStops">
+								</div>
+							</div>
+						</div>
+						<div class="col-sm-12 col-md-6">
+							<div id="tripInfo">
+								<h3>Trip Information</h4>
+								<!-- <p>Estimated Arrival Time: <span class="pinkspan" id="estimatedArrival" ></span> </p> -->
+								<p id="timeLeftP">Estimated Time On Bus Until Destination: <span class="pinkspan" id="timeLeft" ></span> </p>
+								<p>Stops Until Destination: <span class="pinkspan" id="stopsLeft" ></span> </p>
+								<p>Distance to Destination: <span class="pinkspan" id="distanceLeft" ></span> </p>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div id="endJourney">
+		<button id="end">End Journey</button>
+	</div>
+
+</div>
+
+
+<!-- <div style="margin-top:20px" id="getRouteContainer">
+	<form id="route_get_form">
+		Origin Address: <input value="Rathmines Road" style="display:block;margin:20;" id="addr1" type="text">
+		Destination Address: <input value="Grafton Street" style="display:block;margin:20;" id="addr2" type="text">
+		<br>
+		<button type="submit" class="btn btn-primary" id="rget_btn">Get Route</button>
+	</form>
+</div> -->
+
+
+<!-- Containes getCookie function used for posts -->
+<script type="text/javascript" src="{% static 'js/getCookies.js' %}"></script>
+<!-- Adding Axios -->
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<!--Below passing current user, used for the adding of favourite stops/Addresses-->
+<script type="text/javascript">var context = {current_user: '{{current_user}}'};</script>
+<!--Static stops used for both geolocation and map, only static content -->
+<script type="text/javascript" src="{% static 'js/static_stops.js' %}"></script>
+<!-- Library to get accurate date and times for route planning -->
+<script type="text/javascript" src="{% static 'js/moment.min.js' %}"></script>
+<!--Geolocation script -->
+<script type="text/javascript" src="{% static 'js/geolocation.js' %}"></script>
+<!--Map related scripts-->
+<script type="text/javascript" src="{% static 'js/mapStyle.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/route_predict.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/get_route.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/distinct_lines.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/map.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/initialize.js' %}"></script>
+<!--Route prediction scripts-->
+<script type="text/javascript" src="{% static 'js/route_predict.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/get_route.js' %}"></script>
+<!-- Version of map script with key commented out while styling due to many refreshes -->
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBTqQ5XI6Z3N5j26PNXbFKUxUFfq8dnGV8&libraries=places&callback=initialize"></script>
+<!-- <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBTqQ5XI6Z3N5j26PNXbFKUxUFfq8dnGV8&libraries=places&callback=initialize"></script>
+ --><!-- <script async defer src="https://maps.googleapis.com/maps/api/js?key=&libraries=places&callback=initialize"></script> -->
+<script type="text/javascript" src="{% static 'js/mapcluster.js' %}"></script>
+<!--Favourite Address script -->
+<script type="text/javascript" src="{% static 'js/favouriteAddress.js' %}"></script>
+<!-- <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBMnTVsjzHYZLzjrQxikSY6UiXOBCzmOXw&libraries=places&callback=initialize"></script> -->
+<!-- <script async defer src="https://maps.googleapis.com/maps/api/js?key={{ key }}&libraries=places&callback=initialize"></script> -->
+<script type="text/javascript" src="{% static 'js/mapcluster.js' %}"></script>
+<!--Jquery used for autocomplete search bar -->
+<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script type="text/javascript" src="{% static 'js/searchBar.js' %}"></script>
+<!--Fetch weather data, last as will likely be used last--> 
+<script type="text/javascript" src="{% static 'js/weather.js' %}"></script>
+
+
+
+{% endblock content %}
+

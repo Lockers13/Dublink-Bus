@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="container">
+	<div class="row">
+		<div class="col-lg-12 col-md-12 col-sm-12 logoutContainer">
+			<h2 class="logoutTitle"> Logged out successfully </h2>
+			<div class="border-top pt-3">
+				<p class="loginAgain text-muted"> Log In Again <a href="{% url 'login' %}">Here</a> </p>
+				<p class="loginAgain text-muted"> Go To Homepage <a href="{% url 'home' %}">Here</a> </p>
+			</div>
+		</div>
+	</div>
+</div>
+
+{% endblock content %}

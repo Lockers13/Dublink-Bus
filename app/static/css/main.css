@@ -1,0 +1,1515 @@
+:root {
+  --pink:#F86379;
+  --black:#202346;
+  --white:#ffffff;
+  --overlay-color: rgba(24, 39, 51 , 0.85);
+  --menu-speed: 0.75s;
+}
+
+html {
+  scroll-behavior: smooth;
+  overflow-x: hidden;
+}
+
+body {
+  background: var(--black);
+  color: #333333;
+  margin-top: 5rem;
+  margin: 0;
+  padding: 0;
+  font-family: 'Poppins', sans-serif;
+  overflow-x: hidden;
+}
+
+h1{
+  color:var(--pink);
+  text-align: center;
+}
+
+p{
+  color: var(--white);
+}
+
+
+/* start home */
+#home{
+  background: url('../images/home-min.jpg') 100% 100% no-repeat;
+  background-size: cover;
+  padding-top: 250px;
+  min-height: 650px;
+  min-width: 100%;
+}
+
+#home h1{
+  font-weight: 300;
+  font-size: 70px;
+  padding-bottom: 10px;
+}
+
+.element {
+  height: 60px;
+  font-size: 22px;
+  font-weight: bold;
+  color: var(--white);
+}
+
+.errorImage{
+  height: 20px;
+  margin-right: 5px;
+}
+
+@media only screen and (max-width: 600px) {
+  #home{
+    background: url('../images/home.jpg') 100% 100% no-repeat;
+    background-size: cover;
+    padding-top: 100px;
+    min-height: 450px;
+    width: 100%;
+  }
+
+  .homeContent{
+    margin-bottom: 300px;
+    text-align: center;
+  }
+
+  .sub-elemet{
+    text-align: center;
+  }
+}
+
+/* end home */
+
+
+        /*Upper container styling starts here */
+
+.upperContainer{
+  display: inline-block;
+  width: 100%;
+  margin-top: 30px;
+  padding-bottom: 30px;
+}
+
+.upperContainer h1{
+  text-decoration: underline;
+}
+
+        
+        /*Route planner styling start*/
+.stoptextbox{
+  text-align: center;
+  border:none;
+  background-color: var(--black);
+  border-bottom: 3px solid var(--pink);
+  color:var(--white);
+  margin-bottom: 20px;
+  width:80%;
+  text-decoration: none;
+  font-size: 28px;
+  margin-top: 10px;
+}
+
+::-webkit-input-placeholder { /* Edge */
+  color: var(--white);
+}
+
+:-ms-input-placeholder { /* Internet Explorer 10-11 */
+  color: var(--white);
+}
+
+::placeholder {
+  color: var(--white);
+}
+
+
+.routePlanForm{
+  text-align: center;
+}
+
+.addressBox{
+  width:100%;
+}
+
+.routePlanButton{
+  width: 60%;
+  height: 45px;
+  font-size: 30px;
+  background-color: var(--pink);
+  color: var(--white);
+  text-decoration: none;
+  border: 1px solid var(--pink);
+  border-radius: 5px;
+}
+
+.routePlanResults{
+  align-content: center;
+  text-align: center;
+}
+
+.collapsible {
+  background-color: var(--pink);
+  color: var(--black);
+  cursor: pointer;
+  padding: 18px;
+  width: 100%;
+  border: none;
+  text-align: left;
+  outline: none;
+  font-size: 20px;
+  width: 80%;
+  margin-left: 10%;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.active, .collapsible:hover {
+  background-color: var(--white);
+  color: var(--black);
+}
+
+.collapsible:after {
+  content: '\002B';
+  color: var(--black);
+  font-weight: bold;
+  float: right;
+  margin-left: 5px;
+}
+
+.active:after {
+  content: "\2212";
+}
+
+.content {
+  padding: 0 18px;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.2s ease-out;
+  background-color: var(--white);
+  width: 80%;
+  margin-left: 10%;
+  color:var(--black);
+  margin-top: -10px;
+}
+
+.directionsbtn{
+  text-align: center;
+  background-color: var(--pink);
+  border: 3px solid var(--pink);
+  border-radius:2em;
+  color:var(--white);
+  margin-bottom: 10px;
+  margin-top: 10px;
+  width:50%;
+  text-decoration: none;
+  font-size: 18px;
+}
+
+.addFavAddress{
+  margin: 20px;
+  margin-bottom: 70px;
+}
+
+.favAddressInput{
+  text-align: center;
+  border:none;
+  background-color: var(--black);
+  border-bottom: 3px solid var(--pink);
+  color:var(--white);
+  margin-bottom: 20px;
+  width:60%;
+  text-decoration: none;
+  font-size: 28px;
+  margin-top: 20px;
+}
+
+#favNameError, #favLocError{
+  display: none;
+}
+
+#planRouteSubmit{
+  margin-top: 30px;
+}
+
+.black{
+  color: var(--black);
+}
+
+.pink{
+  color: var(--pink);
+}
+
+
+.favouriteicon{
+  float:left;
+  height: 30px;
+  width: 30px;
+}
+
+.removebtn{
+  float: right;
+  background-color: red;
+}
+
+.removeicon{
+  float: right;
+}
+
+#locationsHeader{
+  color: var(--white);
+  font-size: 20px;
+}
+
+.btn-group {
+  text-align: center;
+  background-color: var(--pink);
+  border: 3px solid var(--pink);
+  border-radius:2em;
+  color:var(--white);
+  margin-bottom: 10px;
+  width:30%;
+  text-decoration: none;
+  font-size: 18px;
+}
+
+.favAddressBtn{
+  border: 3px solid var(--pink);
+  border-radius:2em;
+  width: 80%;
+}
+
+.addFavAddressBtn{
+  text-align: center;
+  font-size: 18px;
+  border: 3px solid var(--white);
+  border-radius:2em;
+  width: 30%;
+  background-color: var(--black);
+  color: var(--white);
+}
+
+.removebtn{
+  border-radius:2em;
+}
+
+.btn-group button{
+  border: none;
+  background-color: var(--pink);
+}
+
+ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+li{
+  margin:0;
+  padding:0;
+}
+
+#hiddenSection{
+  display: none;
+}
+
+#daySelect{
+  width: 100%;
+  margin-top: 10px;
+  margin-bottom: 25px;
+}
+
+.dayBox{
+  display: inline-block;
+  margin:0px 10px 0px 10px;
+}
+
+.dayButton{
+  border: none;
+  background-color: var(--black);
+  padding-bottom: 2px;
+  border-radius: 5px; 
+}
+
+.dayCurrent{
+  background-color: var(--pink);
+}
+
+.dayButton h6{
+  margin-bottom: 5px;
+  color:var(--white); 
+}
+
+.dayMonth{
+  margin-bottom: -2.5px;
+}
+
+.timeSelect{
+  width: 100%;
+  margin: 20px 0px 20px 0px;
+  color:white;
+}
+
+.timeBox{
+  background-color: var(--pink);
+  color: white;
+  border-radius: 5px;
+  border:none;
+  padding-left: 4px;
+  font-size: 19px;
+  margin: 5px 0px 5px 0px;
+}
+
+#timeError{
+  text-align: center;
+  display:none;
+}
+
+#futuretimeError{
+  text-align: center;
+  display:none;
+}
+
+#startStopError, #endStopError{
+  display: none;
+}
+
+.noRouteFound{
+  text-align: center;
+  font-size: 28px;
+}
+
+@media only screen and (max-width: 600px) {
+  .stoptextbox{
+    width: 90%;
+    font-size: 14px;
+  }
+
+
+  #planRouteSectionContainter{
+    margin-top: 80px;
+  }
+
+  .routePlanForm{
+    text-align: center;
+    margin-top: 30px; 
+  }
+
+  .test{
+    font-size: 12px;
+    width: 50%;
+  }
+
+  .favouriteicon{
+  float:left;
+  height: 20px;
+  width: 20px;
+  }
+
+  .removeicon{
+    float: right;
+    height: 20px;
+    width: 20px;
+  }
+
+  .btn-group{
+    width: 60%;
+    font-size: 14px;
+    margin: 10px 0px 10px 0px;
+  }
+
+  .addFavAddressBtn{
+    width: 60%;
+    font-size: 14px;
+    margin-top: 10px;
+  }
+
+  .addicon{
+    margin-right: 17px;
+    margin-top: 5px;
+  }
+
+  .directionsbtn{
+    text-align: center;
+    background-color: var(--pink);
+    border: 3px solid var(--pink);
+    border-radius:2em;
+    color:var(--white);
+    margin-bottom: 15px;
+    width:100%;
+    text-decoration: none;
+    font-size: 18px;
+  }
+
+  .favAddressInput{
+    width: 90%;
+    font-size: 14px;
+  }
+
+  #startStopError, #endStopError{
+    font-size: 14px;
+  }
+
+  .noRouteFound{
+    font-size: 20px;
+  }
+
+}
+
+        
+        /*Map styling starts here */
+
+#map{
+  height: 600px;
+  width: 90%;
+  align-self: center;
+}
+
+#mapSectionContainer{
+  display: inline-block;
+  float: right;
+  vertical-align:top;
+}
+
+.mapContainer{
+  align-content: center;
+  margin-left: 10%;
+}
+
+.mapForm{
+  text-align: center;
+}
+
+.maptextbox{
+  text-align: center;
+  border:none;
+  background-color: var(--black);
+  border-bottom: 3px solid var(--pink);
+  color:var(--white);
+  margin-bottom: 10px;
+  width:70%;
+  text-decoration: none;
+  font-size: 20px;
+  margin-top: 10px;
+}
+
+.ui-autocomplete {
+  max-height: 200px;
+  overflow-y: auto;
+  /* prevent horizontal scrollbar */
+  overflow-x: hidden;
+  /* add padding to account for vertical scrollbar */
+  padding-right: 20px;
+}
+
+.notsignedin{
+  text-align: center;
+  color: var(--black);
+}
+
+.or{
+  text-align: center;
+  margin-bottom: 5px;
+}
+
+.mapbtn{
+  text-align: center;
+  font-size: 12px;
+  border: 3px solid var(--pink);
+  border-radius:2em;
+  width: 70%;
+  background-color: var(--pink);
+  color: var(--white);
+  align-self: center;
+  margin-left: 15%;
+  margin-bottom: 10px;
+}
+
+#nearestStopError{
+  text-align: center;
+  display: none;
+}
+
+@media only screen and (max-width: 600px) {
+  #map {
+    width: 90%;
+    margin-left: 5%;
+    height: 380px;
+    margin-top: 10px;
+  }
+
+  .mapContainer{
+    width: 100%;
+    height: 400px;
+    margin-left: 0%;
+    margin-bottom: -35px;
+  }
+
+  .maptextbox{
+  text-align: center;
+  border:none;
+  background-color: var(--black);
+  border-bottom: 3px solid var(--pink);
+  color:var(--white);
+  margin-bottom: 20px;
+  width:80%;
+  text-decoration: none;
+  font-size: 11px;
+  margin-top: 10px;
+  }
+}
+
+/*Map styling ends here */
+/*Loader start (Taken from: https://projects.lukehaas.me/css-loaders/) */
+
+.spinner {
+  width: 10px;
+  height: 10px;
+  margin: 30px 20px 30px 20px;
+  position: absolute;
+  top:0;
+  bottom:0;
+  right:0;
+  left:0;
+}
+
+.double-bounce1, .double-bounce2 {
+  width: 50%;
+  height: 50%;
+  border-radius: 50%;
+  background-color: #28A7E9 ;
+  opacity: 0.6;
+  position: absolute;
+  align-self: center;
+  -webkit-animation: sk-bounce 2.0s infinite ease-in-out;
+  animation: sk-bounce 2.0s infinite ease-in-out;
+}
+
+.double-bounce2 {
+  -webkit-animation-delay: -1.0s;
+  animation-delay: -1.0s;
+}
+
+@-webkit-keyframes sk-bounce {
+  0%, 100% { -webkit-transform: scale(0.0) }
+  50% { -webkit-transform: scale(1.0) }
+}
+
+@keyframes sk-bounce {
+  0%, 100% { 
+    transform: scale(0.0);
+    -webkit-transform: scale(0.0);
+  } 50% { 
+    transform: scale(1.0);
+    -webkit-transform: scale(1.0);
+  }
+}
+
+/*Loader end*/
+
+
+
+
+/*Menu Testing */
+/* CORE STYLES */
+
+.btn {
+  display: inline-block;
+  border: none;
+  background: var(--white);
+  color: var(--black);
+  padding: 0.75rem 1.5rem;
+  margin-top: 1rem;
+  transition: opacity 1s ease-in-out;
+  text-decoration: none;
+}
+
+.btn:hover {
+  opacity: 0.7;
+}
+
+/* MENU STYLES */
+.menu-wrap {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1;
+}
+
+.menu-wrap .toggler {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 2;
+  cursor: pointer;
+  width: 50px;
+  height: 50px;
+  opacity: 0;
+}
+
+.menu-wrap .hamburger {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1;
+  width: 60px;
+  height: 60px;
+  padding: 1rem;
+  background: #0D0E12;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Hamburger Line */
+.menu-wrap .hamburger > div {
+  position: relative;
+  flex: none;
+  width: 100%;
+  height: 2px;
+  background: var(--white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.4s ease;
+}
+
+/* Hamburger Lines - Top & Bottom */
+.menu-wrap .hamburger > div::before,
+.menu-wrap .hamburger > div::after {
+  content: '';
+  position: absolute;
+  z-index: 1;
+  top: -10px;
+  width: 100%;
+  height: 2px;
+  background: inherit;
+}
+
+/* Moves Line Down */
+.menu-wrap .hamburger > div::after {
+  top: 10px;
+}
+
+/* Toggler Animation */
+.menu-wrap .toggler:checked + .hamburger > div {
+  transform: rotate(135deg);
+}
+
+/* Turns Lines Into X */
+.menu-wrap .toggler:checked + .hamburger > div:before,
+.menu-wrap .toggler:checked + .hamburger > div:after {
+  top: 0;
+  transform: rotate(90deg);
+}
+
+/* Rotate On Hover When Checked */
+.menu-wrap .toggler:checked:hover + .hamburger > div {
+  transform: rotate(225deg);
+}
+
+/* Show Menu */
+.menu-wrap .toggler:checked ~ .menu {
+  visibility: visible;
+}
+
+.menu-wrap .toggler:checked ~ .menu > div {
+  transform: scale(1);
+  transition-duration: var(--menu-speed);
+}
+
+.menu-wrap .toggler:checked ~ .menu > div > div {
+  opacity: 1;
+  transition:  opacity 0.4s ease 0.4s;
+}
+
+.menu-wrap .menu {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  visibility: hidden;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.menu-wrap .menu > div {
+  background: var(--overlay-color);
+  border-radius: 50%;
+  width: 200vw;
+  height: 200vw;
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  transform: scale(0);
+  transition: all 0.4s ease;
+}
+
+.menu-wrap .menu > div > div {
+  text-align: center;
+  max-width: 90vw;
+  max-height: 100vh;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.menu-wrap .menu > div > div > ul > li {
+  list-style: none;
+  color: #fff;
+  font-size: 1.5rem;
+  padding: 1rem;
+}
+
+.menu-wrap .menu > div > div > ul > li > a {
+  color: inherit;
+  text-decoration: none;
+  transition: color 0.4s ease;
+}
+
+.hamburger{
+  position: relative;
+  top:0;
+}
+
+
+/*Styling for real time information*/
+
+.realtime{
+  color:var(--black);
+  text-align: center;
+  margin-top: 10px;
+  margin-bottom: 5px;
+  margin-left: 10%;
+}
+
+h6{
+  margin-top: 3px;
+  margin-bottom: -5px;
+  text-align: center;
+}
+
+tr:nth-child(even) {
+  background-color: #dddddd;
+}
+
+.realtimeerror{
+  color: var(--black);
+  text-align: center;
+  margin-top: 10px;
+  margin-bottom: 5px;
+}
+
+.windowbtn{
+  text-align: center;
+  font-size: 12px;
+  border: 3px solid var(--white);
+  border-radius:2em;
+  width: 80%;
+  background-color: var(--pink);
+  color: var(--white);
+  margin-top: -10px;
+  align-self: center;
+  margin-left: 10%;
+}
+
+.windowtitle{
+  margin-top: 5px;
+}
+
+.windowCenter{
+  background-color: blue;
+  align-content: center;
+}
+
+
+/*//// Lower container styling /////*/
+
+.lowerContainer{
+  height: 100%;
+  background-color: var(--white);
+  width: 100%;
+  border-top: 10px solid var(--white);
+  border-top-left-radius: 50px;
+  border-top-right-radius: 50px;
+  border-bottom: 10px solid var(--white);
+  border-bottom-left-radius: 50px;
+  border-bottom-right-radius: 50px;
+  margin-bottom: 30px;
+
+} 
+
+.lowerContainer h1{
+  text-decoration: underline;
+  margin-top: 20px;
+}
+
+.lowerContainer h3{
+  text-decoration: underline;
+  margin-top: 20px;
+  margin-bottom: 15px;
+}
+
+.tripTitle{
+  margin-bottom: 30px;
+}
+
+.message{
+  margin-top: 50px;
+  width: 80%;
+  margin-left: 10%;
+}
+
+.message p{
+  color: var(--black);
+  font-size: 22px;
+}
+
+#selectedTrip{
+  display: none;
+  text-align: center;
+}
+
+#upcomingStops{
+  height: 180px;
+  overflow: auto;
+}
+
+#upcomingStops p{
+  color: var(--black);
+}
+
+.nextStop{
+  color: var(--pink);
+}
+
+#upcomingStops::-webkit-scrollbar {
+  width: .5em;
+  background-color: var(--black);
+}
+ 
+#upcomingStops::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 6px var(--black);
+}
+ 
+#upcomingStops::-webkit-scrollbar-thumb {
+  background-color: var(--pink);
+  outline: 1px solid var(--pink);
+}
+
+#tripInfo{
+  display: none;
+  text-align: center;
+}
+
+#tripInfo p{
+  color: var(--black);
+  /*text-align: left;*/
+ /* margin-left: 40px;*/
+}
+
+.pinkspan{
+  color:var(--pink);
+}
+
+#endJourney{
+  width: 100%;
+  justify-content: center;
+  align-content: center;
+}
+
+.gotitbutton{
+  border: 3px solid var(--pink);
+  background-color: var(--pink);
+  border-radius:2em;
+  margin-top: 10px;
+}
+
+#end{
+  display:none;
+  margin-left: 45.75%;
+  border: 3px solid var(--pink);
+  background-color: var(--pink);
+  border-radius:2em;
+  margin-top: 20px;
+}
+
+#gettingLocation{
+  display: none;
+  margin-top: 30px; 
+}
+
+.locationmessage{
+  text-align: center;
+  color: var(--pink);
+  font-size: 34px;
+}
+
+#cantfindlocation{
+  margin: 10px 25px 0px 25px;
+  text-align: center;
+  font-size: 26px;
+  display: none;
+}
+
+#cantfindlocation p{
+  color:var(--pink);
+  margin-right: 20px;
+  margin-left: 20px;
+}
+
+#cantfindimage{
+  margin-top: 30px
+  margin-bottom: 20px;
+  height: 100px;
+}
+
+#toofar{
+  margin: 10px 25px 0px 25px;
+  text-align: center;
+  font-size: 26px;
+  display: none;
+}
+
+#toofar p{
+  color:var(--black);
+  margin-right: 40px;
+  margin-left: 40px;
+}
+
+#tripcomplete{
+  margin: 10px 25px 0px 25px;
+  text-align: center;
+  font-size: 26px;
+  /*display: none;*/
+}
+
+#tripcomplete p{
+  color:var(--pink);
+  margin-right: 20px;
+  margin-left: 20px;
+}
+
+#tripcompleteimage{
+  margin-top: 30px
+  margin-bottom: 20px;
+  height: 100px;
+  display: none;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.plannedtripcontainer{
+  align-content: center;
+  text-align: center;
+  width: 60%;
+  margin-left: 20%;
+  margin-top: 10px;
+}
+
+
+#removetripbtn{
+  float: right;
+  border: 3px solid var(--pink);
+  background-color: var(--pink);
+  border-radius:2em;
+  font-weight: bold;
+  width: 5%;
+}
+
+#starttripbtn{
+  border: 3px solid var(--pink);
+  background-color: var(--pink);
+  border-radius:2em;
+  float: left;
+}
+
+.notsignedin{
+  text-align: center;
+}
+
+.pleasenote{
+  text-align: center;
+}
+
+.leaveat{
+  color: var(--black);
+  display: none;
+}
+
+
+@media only screen and (max-width: 600px) {
+  .message{
+    margin-top: 30px;
+    width: 80%;
+    margin-left: 10%;
+  }
+
+  .message p{
+    color: var(--black);
+    font-size: 18px;
+  }
+
+  #upcomingStops{
+    margin-bottom: 30px;
+  }
+
+  #tripInfo{
+    margin-top: 25px;
+  }
+
+  #cantfindlocation{
+    font-size: 20px;
+  }
+
+  #cantfindimage{
+    margin-bottom: 30px;
+  }
+
+  #tripcomplete{
+    font-size: 20px;
+  }
+
+  #tripcomplete image{
+    margin-bottom: 30px;
+  }
+
+  #starttripbtn{
+    width: 60%;
+  }
+
+  #removetripbtn{
+  float: right;
+  border: 3px solid var(--pink);
+  background-color: var(--pink);
+  border-radius:2em;
+  font-weight: bold;
+  width: 10%;
+  }
+
+  .plannedtripcontainer{
+    width: 100%;
+    margin-left: 0px;
+  }
+
+  #end{
+    display:none;
+    width: 80%;
+    margin-left: 10%;
+    border: 3px solid var(--pink);
+    background-color: var(--pink);
+    border-radius:2em;
+    margin-bottom: 10px;
+  }
+
+  .tripTitle{
+    font-size: 26px;
+  }
+}
+
+
+
+/*Footer Styling*/
+
+footer{
+  padding-top: 30px;
+  padding-bottom: 20px;
+  align-content: center;
+  text-align: center;
+}
+
+footer img{
+  height: 55px;
+  margin-bottom: 25px;
+}
+
+
+/* Login page Styling */
+
+.loginForm{
+  width: 100%;
+  margin-bottom: 300px;
+  color: var(--white);
+}
+
+.loginTitle{
+  text-align: center;
+  color: var(--pink);
+  font-size: 48px;
+}
+
+.buttonCenter{
+  text-align: center;
+  margin-top: 20px;
+}
+
+.loginButton{
+  background-color: var(--pink);
+}
+
+.loginButton:hover {
+  background-color: var(--pink);
+}
+
+.textinput{
+  text-align: center;
+  border:none;
+  background-color: var(--black);
+  border-bottom: 3px solid var(--pink);
+  color:var(--white);
+  margin-bottom: 20px;
+  text-decoration: none;
+  font-size: 28px;
+  margin-top: 10px;
+}
+
+@media only screen and (max-width: 600px) {
+  .loginForm{
+    margin-bottom: 100px;
+  }
+}
+
+@media only screen and (max-width: 800px) {
+  .loginForm{
+    margin-bottom: 100px;
+  }
+}
+
+
+/* Logout page Styling */
+
+.logoutTitle{
+  text-align: center;
+  color: var(--pink);
+  font-size: 48px;
+}
+
+.logoutContainer{
+  margin-bottom: 400px;
+}
+
+.loginAgain{
+  text-align: center;
+  margin-top: 100px;
+  font-size: 40px;
+}
+
+@media only screen and (max-width: 600px) {
+  .logoutContainer{
+    margin-bottom: 100px;
+  }
+
+}
+
+@media only screen and (max-width: 800px) {
+  .logoutContainer{
+    margin-bottom: 100px;
+  }
+}
+
+/* Register Page */
+.requiredField{
+  color: white;
+  text-align: center;
+}
+
+.white{
+  text-align: center;
+  color: white;
+}
+
+.emailinput{
+   text-align: center;
+    border:none;
+    background-color: var(--black);
+    border-bottom: 3px solid var(--pink);
+    color:var(--white);
+    margin-bottom: 20px;
+    text-decoration: none;
+    font-size: 28px;
+    margin-top: 10px;
+}
+
+.registerbtn{
+  text-align: center;
+  margin-top: 20px;
+  background-color: var(--pink);
+}
+
+.registerbtncont{
+  align-content: center;
+  align-content: center;
+  text-align: center;
+}
+
+.registerbtn:hover{
+  background-color: var(--pink);
+}
+
+
+
+/* Loader */
+
+.lds-roller {
+  display: inline-block;
+  position: relative;
+  width: 80px;
+  height: 80px;
+}
+.lds-roller div {
+  animation: lds-roller 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+  transform-origin: 40px 40px;
+}
+.lds-roller div:after {
+  content: " ";
+  display: block;
+  position: absolute;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--pink);
+  margin: -4px 0 0 -4px;
+}
+.lds-roller div:nth-child(1) {
+  animation-delay: -0.036s;
+}
+.lds-roller div:nth-child(1):after {
+  top: 63px;
+  left: 63px;
+}
+.lds-roller div:nth-child(2) {
+  animation-delay: -0.072s;
+}
+.lds-roller div:nth-child(2):after {
+  top: 68px;
+  left: 56px;
+}
+.lds-roller div:nth-child(3) {
+  animation-delay: -0.108s;
+}
+.lds-roller div:nth-child(3):after {
+  top: 71px;
+  left: 48px;
+}
+.lds-roller div:nth-child(4) {
+  animation-delay: -0.144s;
+}
+.lds-roller div:nth-child(4):after {
+  top: 72px;
+  left: 40px;
+}
+.lds-roller div:nth-child(5) {
+  animation-delay: -0.18s;
+}
+.lds-roller div:nth-child(5):after {
+  top: 71px;
+  left: 32px;
+}
+.lds-roller div:nth-child(6) {
+  animation-delay: -0.216s;
+}
+.lds-roller div:nth-child(6):after {
+  top: 68px;
+  left: 24px;
+}
+.lds-roller div:nth-child(7) {
+  animation-delay: -0.252s;
+}
+.lds-roller div:nth-child(7):after {
+  top: 63px;
+  left: 17px;
+}
+.lds-roller div:nth-child(8) {
+  animation-delay: -0.288s;
+}
+.lds-roller div:nth-child(8):after {
+  top: 56px;
+  left: 12px;
+}
+@keyframes lds-roller {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Styling for radio button taken from https://codepen.io/nickbottomley/pen/uhfmn */
+
+.switch {
+  margin-bottom: 20px;
+}
+/* main styles */
+.switch {
+  width: 80%;
+  position: relative;
+}
+.switch input {
+  position: absolute;
+  top: 0;
+  z-index: 2;
+  opacity: 0;
+  cursor: pointer;
+}
+.switch input:checked {
+  z-index: 1;
+}
+.switch input:checked + label {
+  opacity: 1;
+  cursor: default;
+}
+.switch input:not(:checked) + label:hover {
+  opacity: 0.5;
+}
+.switch label {
+  color: #fff;
+  opacity: 0.33;
+  transition: opacity 0.25s ease;
+  cursor: pointer;
+}
+.switch .toggle-outside {
+  height: 100%;
+  border-radius: 2rem;
+  padding: 0.25rem;
+  overflow: hidden;
+  transition: 0.25s ease all;
+}
+.switch .toggle-inside {
+  border-radius: 5rem;
+  background: #fff;
+  position: absolute;
+  transition: 0.25s ease all;
+}
+.switch--horizontal {
+  width: 18rem;
+  height: 3rem;
+  margin: 0 auto;
+  font-size: 0;
+  margin-bottom: 1rem;
+}
+.switch--horizontal input {
+  height: 3rem;
+  width: 6rem;
+  left: 6rem;
+  margin: 0;
+}
+.switch--horizontal label {
+  font-size: 1.5rem;
+  line-height: 3rem;
+  display: inline-block;
+  width: 6rem;
+  height: 100%;
+  margin: 0;
+  text-align: center;
+}
+.switch--horizontal label:last-of-type {
+  margin-left: 6rem;
+}
+.switch--horizontal .toggle-outside {
+  background: var(--pink);
+  position: absolute;
+  width: 6rem;
+  left: 6rem;
+}
+.switch--horizontal .toggle-inside {
+  height: 2.5rem;
+  width: 2.5rem;
+}
+.switch--horizontal input:checked ~ .toggle-outside .toggle-inside {
+  left: 0.25rem;
+}
+.switch--horizontal input ~ input:checked ~ .toggle-outside .toggle-inside {
+  left: 3.25rem;
+}
+.switch--vertical {
+  width: 12rem;
+  height: 6rem;
+}
+.switch--vertical input {
+  height: 100%;
+  width: 3rem;
+  right: 0;
+  margin: 0;
+}
+.switch--vertical label {
+  font-size: 1.5rem;
+  line-height: 3rem;
+  display: block;
+  width: 8rem;
+  height: 50%;
+  margin: 0;
+  text-align: center;
+}
+.switch--vertical .toggle-outside {
+  background: #fff;
+  position: absolute;
+  width: 3rem;
+  height: 100%;
+  right: 0;
+  top: 0;
+}
+.switch--vertical .toggle-inside {
+  height: 2.5rem;
+  left: 0.25rem;
+  top: 0.25rem;
+  width: 2.5rem;
+}
+.switch--vertical input:checked ~ .toggle-outside .toggle-inside {
+  top: 0.25rem;
+}
+.switch--vertical input ~ input:checked ~ .toggle-outside .toggle-inside {
+  top: 3.25rem;
+}
+.switch--no-label label {
+  width: 0;
+  height: 0;
+  visibility: hidden;
+  overflow: hidden;
+}
+.switch--no-label input:checked ~ .toggle-outside .toggle-inside {
+  background: rgba(0,0,0,0.2);
+  border: 1px solid rgba(0,0,0,0.2);
+}
+.switch--no-label input ~ input:checked ~ .toggle-outside {
+  background: #fff;
+}
+.switch--no-label input ~ input:checked ~ .toggle-outside .toggle-inside {
+  background: #2ecc71;
+}
+.switch--no-label.switch--vertical {
+  width: 3rem;
+}
+.switch--no-label.switch--horizontal {
+  width: 6rem;
+}
+.switch--no-label.switch--horizontal input,
+.switch--no-label.switch--horizontal .toggle-outside {
+  left: 0;
+}
+.switch--expanding-inner input:checked + label:hover ~ .toggle-outside .toggle-inside {
+  height: 2.5rem;
+  width: 2.5rem;
+}
+.switch--expanding-inner.switch--horizontal input:hover ~ .toggle-outside .toggle-inside {
+  width: 3.5rem;
+}
+.switch--expanding-inner.switch--horizontal input:hover ~ input:checked ~ .toggle-outside .toggle-inside {
+  left: 2.25rem;
+}
+.switch--expanding-inner.switch--vertical input:hover ~ .toggle-outside .toggle-inside {
+  height: 3.5rem;
+}
+.switch--expanding-inner.switch--vertical input:hover ~ input:checked ~ .toggle-outside .toggle-inside {
+  top: 2.25rem;
+}
+
+.radioOption{
+  font-size: 20px;
+  margin-left: 5px;
+  margin-right: 5px;
+}
+
+small{
+  color: white;
+}
