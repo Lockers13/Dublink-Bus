@@ -16,15 +16,10 @@ virtualenv env -p python3.7
 Use the package manager [pip](https://pip.pypa.io/en/stable/) to install required packages:
 ```bash
 
-pip install - r requirements.txt
+pip install -r requirements.txt
 ```
-Unzip backend_data_store:
 ```bash
-tar -xvf bds.tar.gz
-```
-Move backend_data_store to directory {project-name}/app/
-```bash
-mv backend_data_store/ app/
+export DB_PWD={password}
 ```
 Connect to database using port-forwarding via ssh (Note: this step requires DB password):
 ```bash
