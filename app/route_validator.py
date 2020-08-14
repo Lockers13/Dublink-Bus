@@ -32,7 +32,7 @@ def validate_route(start_stop, end_stop, line_id):
     def validate(start_stop, end_stop, line_id, interpolate1, interpolate2):
         #json_file = '/Users/lconroy/comp_msc/dublink_bus/DB_webapp/app/static/json/routemaps/{0}_routemap.json'.format(line_id)
         #json_file = 'C:\\Users\\rbyrn\\Desktop\\dublinbus\\app\\static\\json\\routemaps\\{0}_routemap.json'.format(line_id)
-        json_file = os.path.join(settings.BASE_DIR, 'backend_data_store/routemaps/{0}_routemap.json'.format(line_id))
+        json_file = os.path.join(settings.BASE_DIR, 'backend_data_store', 'routemaps', '{0}_routemap.json'.format(line_id))
         if not os.path.exists(json_file):
             return {"Status code": 2, "Start_stop": None,
                         "End stop": None, "Route ID": None}
