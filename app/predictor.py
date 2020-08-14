@@ -51,7 +51,7 @@ def get_prediction(model, m_args, data_dir):
 
 
 
-    df_sequence = pd.read_csv(os.path.join(data_dir, 'stop_sequence/stop_{0}.csv'.format(m_args['lineid'])))
+    df_sequence = pd.read_csv(os.path.join(data_dir, 'stop_sequence', 'stop_{0}.csv'.format(m_args['lineid'])))
 
 
     route_list = []
@@ -75,7 +75,7 @@ def get_prediction(model, m_args, data_dir):
     df_query_stop1 = df_query.drop(['STOPPOINTID2'],axis=1)
     df_query_stop2 = df_query.drop(['STOPPOINTID1'],axis=1)
 
-    df_timetable = pd.read_csv(os.path.join(data_dir,'timetable_new_file/timetable_{0}.csv'.format(m_args['lineid'])))
+    df_timetable = pd.read_csv(os.path.join(data_dir,'timetable_new_file', 'timetable_{0}.csv'.format(m_args['lineid'])))
 
 
     df_timetable = df_timetable.astype('str')

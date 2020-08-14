@@ -46,8 +46,7 @@ def process_resp(routes, dt, option):
                     other_transit = True
 
             except Exception as e:
-                data[route_key][step_key]["Instructions"] = step['html_instructions']
-                print(str(e))     
+                data[route_key][step_key]["Instructions"] = step['html_instructions']   
             finally:
                 count_step += 1
 

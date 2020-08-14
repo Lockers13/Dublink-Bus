@@ -530,7 +530,7 @@ function initMap(routeArr) {
 						for (let j = 0; j < step_keys.length; j++) {
 							let step = "Step_" + (j + 1)
 							try {
-								directionsinnerHTML += data[route][step]["Instructions"]+ " "
+								directionsinnerHTML += data[route][step]["Instructions"]+ "<br>"
 								if (Object.keys(data[route][step]).length > 1) {
 									route_flag = true
 

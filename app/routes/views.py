@@ -18,10 +18,11 @@ from dir_api_resp import process_resp
 from sqlalchemy import create_engine, event
 import pymysql
 from sqlalchemy.sql import text
-import datetime
+#import datetime
 from datetime import datetime
 from ast import literal_eval
 from euclidean_dist import lat_long_prox
+from app import settings
 
 class NearestStopView(generics.RetrieveAPIView):
     queryset = ''
@@ -32,7 +33,8 @@ class NearestStopView(generics.RetrieveAPIView):
         longitude = round(float(request.query_params.get('long')), 10)
      
         #path = "/Users/lconroy/comp_msc/dublink_bus/clusters/backend_cluster_dict.json"
-        path = "C:\\Users\\rbyrn\\Desktop\\clusters\\backend_cluster_dict.json"
+        #path = "C:\\Users\\rbyrn\\Desktop\\clusters\\backend_cluster_dict.json"
+        path = os.path.join(settings.BASE_DIR, 'backend_data_store', 'clusters', 'backend_cluster_dict.json')
 
         with open(path, 'r') as f:
             cluster_dict = json.loads(f.read())
@@ -53,7 +55,7 @@ class NearestStopView(generics.RetrieveAPIView):
         nearest_stops = {k: v for k, v in sorted(nearest_stops.items(), key=lambda item: item[1])}
         nearest_stop_keys = list(nearest_stops.keys())
 
-        with open('/Users/lconroy/comp_msc/dublink_bus/clusters/stops_latlong.json', 'r') as g:
+        with open(os.path.join(settings.BASE_DIR, 'backend_data_store', 'clusters', 'stops_latlong.json'), 'r') as g:
         #with open('C:\\Users\\rbyrn\\Desktop\\clusters\\stops_latlong.json', 'r') as g:
             stops_latlong = json.loads(g.read())
 
@@ -71,8 +73,8 @@ class RouteMapView(generics.RetrieveAPIView):
         start_stop = int(request.query_params.get('start'))
         end_stop = int(request.query_params.get('end'))
         routeID = request.query_params.get('routeid')
-        url = staticfiles_storage.url('json/routemaps/{}_routemap.json'.format(lineid))
-        with open(settings.BASE_DIR + url, 'r') as f:
+        url = os.path.join('backend_data_store', 'routemaps', '{}_routemap.json'.format(lineid))
+        with open(os.path.join(settings.BASE_DIR, url), 'r') as f:
                 linemap = json.loads(f.read())
         routemap = linemap[routeID]
         on_route = False
@@ -96,7 +98,8 @@ class RoutePredictView(generics.RetrieveAPIView):
 
     def get(self, request):
         #data_dir = '/Users/lconroy/comp_msc/dublink_bus/final_models'
-        data_dir = 'C:\\Users\\rbyrn\\Desktop\\dublinbus\\app\\model_integration'
+        #data_dir = 'C:\\Users\\rbyrn\\Desktop\\dublinbus\\app\\model_integration'
+        data_dir = os.path.join(settings.BASE_DIR, 'backend_data_store', 'final_models')
 
         lineid = request.query_params.get('lineid').upper()
         routeid = request.query_params.get('routeid')
@@ -111,20 +114,20 @@ class RoutePredictView(generics.RetrieveAPIView):
         main = request.query_params.get('main')
 
         try:
-            model_pickle = os.path.join(data_dir, 'pickle_file_XG_03082020/XG_{}.pkl'.format(lineid))
+            model_pickle = os.path.join(data_dir, 'pickle_file_XG_03082020', 'XG_{}.pkl'.format(lineid))
             #model_pickle = os.path.join(data_dir, 'pickle_file\\XG_{}.pkl'.format(lineid))
             model = joblib.load(open(model_pickle, 'rb'))
         except Exception as e:
             print(e)
             return Response("ERROR: incorrect file structure", status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-        direction = 0
-        with open(os.path.join(data_dir,'stop_sequence/stop_{0}.csv'.format(lineid)), 'r') as f:
-            for line in f:
-                if line.split(",")[1] == routeid:
-                    direction = line.split(",")[2]
-                    break
-        if direction == 0:
-            return Response("ERROR: cannot get direction", status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        #direction = 0
+        #with open(os.path.join(data_dir,'stop_sequence/stop_{0}.csv'.format(lineid)), 'r') as f:
+         #   for line in f:
+          #      if line.split(",")[1] == routeid:
+           #         direction = line.split(",")[2]
+            #        break
+        #if direction == 0:
+         #   return Response("ERROR: cannot get direction", status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
         m_args = {
             'lineid': lineid,
@@ -226,10 +229,15 @@ class WeatherRetrieveView(generics.RetrieveAPIView):
     def get(self, request):
 
         datetimestr = request.query_params.get('datetime')
-        print(datetimestr)
+        datetimestr1 = datetimestr.split(" ")[0]
+        datetimestr2 = datetimestr.split(" ")[1]
+        try:
+            datetimestr = datetime.strptime(datetimestr1, '%d/%m/%Y').strftime('%Y-%m-%d') + " " + datetimestr2
+        except ValueError:
+            pass
          # change os.environ.get('DB_PWD') if API returns "error problem with DB cnx"
         try:
-            cnx = create_engine('mysql+pymysql://root:fake_james99@localhost:3307/dublin_bus') 
+            cnx = create_engine('mysql+pymysql://root:' + os.environ.get('DB_PWD') + '@localhost:3307/dublin_bus') 
         except:
             error_data = "ERROR, problem with DB cnx"
             return Response(error_data, status=status.HTTP_503_SERVICE_UNAVAILABLE)
