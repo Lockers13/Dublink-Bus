@@ -34,7 +34,7 @@ class NearestStopView(generics.RetrieveAPIView):
      
         #path = "/Users/lconroy/comp_msc/dublink_bus/clusters/backend_cluster_dict.json"
         #path = "C:\\Users\\rbyrn\\Desktop\\clusters\\backend_cluster_dict.json"
-        paath = os.path.join(settings.BASE_DIR, 'backend_data_store', 'clusters', 'backend_cluster_dict.json')
+        path = os.path.join(settings.BASE_DIR, 'backend_data_store', 'clusters', 'backend_cluster_dict.json')
 
         with open(path, 'r') as f:
             cluster_dict = json.loads(f.read())
