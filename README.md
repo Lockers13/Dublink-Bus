@@ -26,7 +26,7 @@ Move backend_data_store to directory {project-name}/app/
 ```bash
 mv backend_data_store/ app/
 ```
-Connect to database using port-forwarding via ssh:
+Connect to database using port-forwarding via ssh (Note: this step requires DB password):
 ```bash
 ssh -N -f -L localhost:3307:localhost:3306 student@ipa-006.ucd.ie
 ```
