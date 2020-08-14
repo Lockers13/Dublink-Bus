@@ -18,7 +18,7 @@ from dir_api_resp import process_resp
 from sqlalchemy import create_engine, event
 import pymysql
 from sqlalchemy.sql import text
-import datetime
+#import datetime
 from datetime import datetime
 from ast import literal_eval
 from euclidean_dist import lat_long_prox
@@ -229,7 +229,10 @@ class WeatherRetrieveView(generics.RetrieveAPIView):
     def get(self, request):
 
         datetimestr = request.query_params.get('datetime')
-        print(datetimestr)
+        datetimestr1 = datetimestr.split(" ")[0]
+        datetimestr2 = datetimestr.split(" ")[1]
+        datetimestr = datetime.strptime(datetimestr1, '%d/%m/%Y').strftime('%Y-%m-%d') + " " + datetimestr2
+
          # change os.environ.get('DB_PWD') if API returns "error problem with DB cnx"
         try:
             cnx = create_engine('mysql+pymysql://root:' + os.environ.get('DB_PWD') + '@localhost:3307/dublin_bus') 
