@@ -1,0 +1,2 @@
+log into vm
+cd into dub
