@@ -10,7 +10,7 @@ djangorestframework==3.11.2
 idna==2.10
 joblib==0.16.0
 mysqlclient==2.0.0
-numpy==1.19.0
+numpy==1.22.0
 pandas==1.0.5
 pycodestyle==2.6.0
 PyMySQL==0.9.3
