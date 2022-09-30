@@ -8,7 +8,7 @@ django-cprofile-middleware==1.0.5
 django-crispy-forms==1.9.1
 djangorestframework==3.11.2
 idna==2.10
-joblib==0.16.0
+joblib==1.2.0
 mysqlclient==2.0.0
 numpy==1.19.0
 pandas==1.0.5
